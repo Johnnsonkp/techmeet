@@ -1,0 +1,26 @@
+services:
+  frontend:
+    build:
+      context: ./client
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    command: npm run dev
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./server
+    volumes:
+      - ./server:/app
+    ports:
+      - "5328:5328"
+    environment:
+      - FLASK_APP=run.py
+      - FLASK_ENV=development
+    command: python3 run.py --host=0.0.0.0 --port=5328
