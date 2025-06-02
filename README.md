@@ -6,6 +6,13 @@ A central hub for discovering tech events, conferences, all things tech-related 
 ```
 to be added
 ```
+
+## Structure
+|
+|
+|
+
+
 ## Contributing
 
 John Nikpolukwu
