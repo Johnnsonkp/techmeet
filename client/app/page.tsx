@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 
 import { CalendarSmall } from '@/components/calendar/SmallCalendar';
 import Image from 'next/image'
+import Link from 'next/link';
 
 export default function Home() {
 
@@ -44,16 +45,41 @@ export default function Home() {
   const interval = setInterval(updateCountdown, 1000);
   
 
+  // useEffect(() => {
+  //   // oauth route
+  //   fetch("http://127.0.0.1:5328/api/v1/oauth_connection/login")
+  //     .then(res => res.json())
+  //     .then(data => setData(data))
+  //     .catch(err => console.error(err));
+
+
+  //   updateCountdown()
+  // }, []);
+
   useEffect(() => {
-    // oauth route
-    fetch("http://127.0.0.1:5328/api/v1/oauth_connection/login")
-      .then(res => res.json())
-      .then(data => setData(data))
-      .catch(err => console.error(err));
+  let isMounted = true; // Flag to prevent setting state if unmounted
+
+  // Fetch OAuth route
+  fetch("http://127.0.0.1:5328/api/v1/oauth_connection/login")
+    .then(res => res.json())
+    .then(data => {
+      if (isMounted) setData(data); // only update state if still mounted
+    })
+    .catch(err => {
+      if (isMounted) console.error(err);
+    });
+
+  updateCountdown();
+
+  // Cleanup function
+  return () => {
+    isMounted = false;
+    // Add any other cleanup logic here, e.g., clearing timeouts or intervals
+  };
+}, []);
 
 
-    updateCountdown()
-  }, []);
+
 
   interface GlassCardProps {
     item: any;
@@ -130,7 +156,7 @@ export default function Home() {
 
       {/* <!-- 3D CTA Button --> */}
       <button className="btn-3d bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold py-4 px-8 rounded-xl shadow-lg mb-10">
-        Notify Me on Launch
+        <Link href={"/auth"}>Go to Auth Page</Link>
       </button>
 
     </div>
