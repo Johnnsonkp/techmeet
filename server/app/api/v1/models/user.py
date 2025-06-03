@@ -2,9 +2,7 @@
 
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timezone
-from flask_bcrypt import Bcrypt
-
-bcrypt = Bcrypt()
+from app import bcrypt
 
 db = SQLAlchemy()
 
