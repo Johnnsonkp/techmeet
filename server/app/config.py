@@ -1,21 +1,19 @@
 import os
 from dotenv import load_dotenv
 
-load_dotenv()  # for loading .env configuration
+load_dotenv() 
 
 class Config:
-    SECRET_KEY = os.getenv('SECRET_KEY')
-    SQLALCHEMY_DATABASE=f"mysql+pymysql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}\
-      @{os.getenv('DB_HOST')}/{os.getenv('DB_NAME')}"
+    SECRET_KEY = os.getenv('SECRET_KEY', 'default_secret_key')
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
     
 class DevelopmentConfig(Config):
     DEBUG = True
-    # SQLALCHEMY_DATABASE_URI = os.getenv("SQLALCHEMY_DATABASE_URI")
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://hbnb:hbnb_password@localhost/hbnb_db'
+    SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI')
 
 class ProductionConfig(Config):
     DEBUG = False
-    # required explicit settung in production
+    # required explicit setting in production
     if not os.getenv('SECRET_KEY'):
         raise RuntimeError("SECRET_KEY Must set in production")
 

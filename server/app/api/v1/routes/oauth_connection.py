@@ -11,4 +11,12 @@ class Oauth(Resource):
     def get(self):
         """Retreive all oauth_connections"""
 
-        print("oauth_connections route")
+        """Testing the endpoint"""
+        test_user_data = {
+            'username': 'testuser',
+            'email': 'testuser@example.com',
+            'password': 'securepassword123',
+            'date': "2025-06-05"
+        }
+
+        return test_user_data
