@@ -16,9 +16,8 @@ class Oauth(Resource):
         """Retrieve all oauth_connections"""
         print("oauth_connections route")
 
+
 @api.route('/google', methods=['POST'])
-class GoogleOAuth(Resource):
-   @api.route('/google', methods=['POST'])
 class GoogleOAuth(Resource):
     def post(self):
         data = request.get_json()
