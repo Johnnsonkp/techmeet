@@ -1,13 +1,9 @@
-"""User Model"""
-
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timezone
-from app import bcrypt
-
-db = SQLAlchemy()
+from app import db, bcrypt
 
 class User(db.Model):
-    __tablename__ = 'users'
+    __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(50), nullable=True)
     last_name = db.Column(db.String(50), nullable=True)
@@ -18,11 +14,12 @@ class User(db.Model):
     employment_status = db.Column(db.String(50), nullable=True)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
-    oauth_connections = db.relationship('OauthConnection', backref='user', lazy=True)
-
+    profile = db.relationship('Profile', uselist=False, backref='user', cascade='all, delete-orphan')
+    oauth_connections = db.relationship('OauthConnection', backref='user', lazy=True, cascade='all, delete-orphan')
+    
     def __repr__(self):
         return f'<User {self.email}>'
-
+    
     def register_user(data):
         hashed_password = bcrypt.generate_password_hash(data.get('password')).decode('utf-8')
         user = User(
