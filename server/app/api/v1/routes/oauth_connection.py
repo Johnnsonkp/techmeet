@@ -7,6 +7,7 @@ from app import db
 from app.api.v1.models.user import User
 from app.api.v1.models.oauth_connection import OauthConnection
 import requests
+from datetime import datetime
 
 api = Namespace('oauth_connection', description='OAuth connections operations')
 
@@ -30,6 +31,7 @@ class GoogleOAuth(Resource):
         token_data = response.json()
         if token_data.get('email') != email:
             return {"error": "Email mismatch"}, 401
+        expires_at = datetime.fromtimestamp(int(token_data.get('exp', 0)))
         # Query or create User
         user = User.query.filter_by(email=email).first()
         if not user:
@@ -37,7 +39,7 @@ class GoogleOAuth(Resource):
             db.session.add(user)
             db.session.commit()
         # Create OauthConnection
-        oauth = OauthConnection(user_id=user.id, provider="google", access_token=token)
+        oauth = OauthConnection(user_id=user.id, provider="google", access_token=token, expires_at=expires_at)
         db.session.add(oauth)
         db.session.commit()
         # Generate JWT
