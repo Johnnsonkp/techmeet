@@ -1,10 +1,8 @@
+'use client'
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
-import LogoutButton from './logout.jsx/index.js';
-
-
-
+import LogoutButton from './logout.jsx';
 
 export default function Secure() {
   const navigate = useNavigate();
