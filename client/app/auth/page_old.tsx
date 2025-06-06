@@ -1,9 +1,16 @@
-"use client";
+"use client"
 
+import { handleSignIn, handleSignOut } from './auth';
 import { useSession } from 'next-auth/react';
-import { signIn, signOut } from 'next-auth/react';
 
-export default function HomePage() {
+import React from 'react'
+
+function page() {
+//   return (
+//     <div>AUTH page</div>
+//   )
+// }
+
 const { data: session } = useSession();
 
   return (
@@ -11,10 +18,10 @@ const { data: session } = useSession();
       {session ? (
         <div>
           <h2 className="text-lg font-medium text-gray-700">
-            Welcome, {session.user?.name}!
+            Welcome, {session.user.name}!
           </h2>
           <button
-            onClick={() => signOut()}
+            onClick={handleSignOut}
             className="px-4 py-2 mt-4 text-white bg-red-500 rounded-lg hover:bg-red-600"
           >
             Sign Out
@@ -22,7 +29,7 @@ const { data: session } = useSession();
         </div>
       ) : (
         <button
-          onClick={() => signIn('google')}
+          onClick={handleSignIn}
           className="px-6 py-3 text-white bg-blue-600 rounded-lg hover:bg-blue-700"
         >
           Sign in with Google
@@ -31,3 +38,4 @@ const { data: session } = useSession();
     </main>
   );
 }
+export default page
