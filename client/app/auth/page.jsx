@@ -5,6 +5,7 @@ import Login from "./login.jsx";
 import Secure from "./Secure.jsx";
 import "./page.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { GoogleLogin } from '@react-oauth/google';
 
 export default function LoginPage() {
 
