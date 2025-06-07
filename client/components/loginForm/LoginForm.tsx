@@ -1,3 +1,5 @@
+import {doSocialLogin } from "@/app/actions";
+
 export default function LoginForm(){
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 px-6">
@@ -18,23 +20,25 @@ export default function LoginForm(){
 
     <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-            <form>
+            {/* <form> */}
+            <form action = {doSocialLogin}>
                 <div>
-                    <label for="email" className="block text-sm font-medium leading-5  text-gray-700">Email address</label>
+                    <label htmlFor="email" className="block text-sm font-medium leading-5  text-gray-700">Email address</label>
                     <div className="mt-1 relative rounded-md shadow-sm">
                         <input id="email" name="email" placeholder="user@example.com" type="email" required="" value="" className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"/>
                         <div className="hidden absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                             <svg className="h-5 w-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
+                                {/* <path fill-rule="evenodd" */}
+                                <path fillRule="evenodd"
                                     d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                                    clip-rule="evenodd"></path>
+                                    clipRule="evenodd"></path>
                             </svg>
                         </div>
                     </div>
                 </div>
 
                 <div className="mt-6">
-                    <label for="password" className="block text-sm font-medium leading-5 text-gray-700">Password</label>
+                    <label htmlFor="password" className="block text-sm font-medium leading-5 text-gray-700">Password</label>
                     <div className="mt-1 rounded-md shadow-sm">
                         <input id="password" name="password" type="password" required="" className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"/>
                     </div>
@@ -43,7 +47,7 @@ export default function LoginForm(){
                 <div className="mt-6 flex items-center justify-between">
                     <div className="flex items-center">
                         <input id="remember_me" name="remember" type="checkbox" value="1" className="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"/>
-                        <label for="remember_me" className="ml-2 block text-sm leading-5 text-gray-900">Remember me</label>
+                        <label htmlFor="remember_me" className="ml-2 block text-sm leading-5 text-gray-900">Remember me </label>
                     </div>
 
                     <div className="text-sm leading-5">
@@ -62,16 +66,22 @@ export default function LoginForm(){
             </button>
 
             <button className="text-gray-400 bg-white w-full px-4 py-2 border flex gap-2 border-slate-200 dark:border-slate-700 rounded-lg text-slate-400 dark:text-slate-200 hover:border-slate-400 dark:hover:border-slate-500 hover:text-slate-900 dark:hover:text-slate-300 hover:shadow transition duration-150"
-            type="submit"
-            name="action"
-            value="google">
-                <img className="w-6 h-6" src="https://www.svgrepo.com/show/475656/google-color.svg" loading="lazy" alt="google logo" />
-                <span>Login with Google</span>
+            
+            // type="submit"
+            // name="action"
+            // value="google"
+            >
+                {/* <img className="w-6 h-6" src="https://www.svgrepo.com/show/475656/google-color.svg" loading="lazy" alt="google logo" /> */}
+                <span>Login</span>
             </button>
-
 
           </span>
                 </div>
+            <div>
+
+ <button className="text-black-800 bg-white "
+            type="submit" name="action" value="google">Login with Google</button>
+            </div>
             </form>
 
         </div>
