@@ -1,4 +1,4 @@
-export function LoginForm(){
+export default function LoginForm(){
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 px-6">
     <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -61,7 +61,10 @@ export function LoginForm(){
               Sign in
             </button>
 
-            <button className="text-gray-400 bg-white w-full px-4 py-2 border flex gap-2 border-slate-200 dark:border-slate-700 rounded-lg text-slate-400 dark:text-slate-200 hover:border-slate-400 dark:hover:border-slate-500 hover:text-slate-900 dark:hover:text-slate-300 hover:shadow transition duration-150">
+            <button className="text-gray-400 bg-white w-full px-4 py-2 border flex gap-2 border-slate-200 dark:border-slate-700 rounded-lg text-slate-400 dark:text-slate-200 hover:border-slate-400 dark:hover:border-slate-500 hover:text-slate-900 dark:hover:text-slate-300 hover:shadow transition duration-150"
+            type="submit"
+            name="action"
+            value="google">
                 <img className="w-6 h-6" src="https://www.svgrepo.com/show/475656/google-color.svg" loading="lazy" alt="google logo" />
                 <span>Login with Google</span>
             </button>

@@ -1,15 +1,3 @@
-import NextAuth from 'next-auth';
-import GoogleProvider from 'next-auth/providers/google';
+// Here the GET and POST is being imported from the auth.js file before we export fron here 
 
-export const authOptions = {
-  providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    }),
-  ],
-  secret: process.env.NEXTAUTH_SECRET,
-};
-
-const handler = NextAuth(authOptions);
-export { handler as GET, handler as POST };
+export {GET, POST } from "@/app/auth/auth"
