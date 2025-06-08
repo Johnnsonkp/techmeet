@@ -23,11 +23,14 @@ class ProductionConfig(BaseConfig):
     """Production configuration."""
     DEBUG = False
 
-    def __init__(self):
-        if not os.getenv('SECRET_KEY'):
-            raise RuntimeError("SECRET_KEY must be set in production")
+    # def __init__(self):
+    #     if not os.getenv('SECRET_KEY'):
+    #         raise RuntimeError("SECRET_KEY must be set in production")
     
-    SQLALCHEMY_DATABASE_URI = os.getenv("MYSQL_URL")
+    SQLALCHEMY_DATABASE_URI = os.getenv(
+        'DATABASE_URL',
+        "MYSQL_URL"
+    )
 
 
 # Optional: Add TestingConfig if needed
