@@ -1,12 +1,13 @@
 // use server function still experimental in Next.js v14
 // 'use server'  
+'use client'
 
 import { signIn, signOut } from "@/app/auth/auth";
 // import { redirect } from "next/dist/server/api-utils";
 
 export async function doSocialLogin(formData) {
   const action = formData.get('action');
-  await signIn(action, { redirectTo:"/home"});
+  await signIn(action, { redirectTo:"/"});
 }
 
 export async function doLogout() {

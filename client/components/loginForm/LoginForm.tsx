@@ -1,4 +1,4 @@
-import {doSocialLogin } from "@/app/actions";
+import {doSocialLogin } from "@/app/actions/index";
 
 export default function LoginForm(){
     return (
