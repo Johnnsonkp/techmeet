@@ -6,7 +6,6 @@ from flask_jwt_extended import create_access_token
 from app import db
 from app.api.v1.models.user import User
 from app.api.v1.models.oauth_connection import OauthConnection
-import requests
 from datetime import datetime
 
 api = Namespace('oauth_connection', description='OAuth connections operations')
@@ -25,7 +24,7 @@ class GoogleOAuth(Resource):
         email = data.get('email')
         token = data.get('access_token')
         # Validate token
-        response = requests.get(f"https://www.googleapis.com/oauth2/v3/tokeninfo?access_token={token}")
+        response = request.get(f"https://www.googleapis.com/oauth2/v3/tokeninfo?access_token={token}")
         if response.status_code != 200:
             return {"error": "Invalid token"}, 401
         token_data = response.json()

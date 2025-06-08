@@ -2,10 +2,10 @@ from app import db
 from datetime import datetime, timezone
 
 class OauthConnection(db.Model):
-    __tablename__ = 'oauth_connection'
+    __tablename__ = 'oauth_connections'
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
     provider = db.Column(db.String(50))  # e.g. "google", "meetup", "eventbrite"
     access_token = db.Column(db.String(255))
     refresh_token = db.Column(db.String(255))
