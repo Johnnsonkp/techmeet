@@ -27,7 +27,7 @@
 // // Don't export signIn/signOut here - they should be imported directly where needed
 
 
-// added 8th June , uses newer nextJS 15 with NextAuth 5
+// added 8th June , uses newer nextJS 15 synatx with NextAuth 5
 
 // location to be at app/api/auth/[...nextauth]/route.js
 import NextAuth from "next-auth";

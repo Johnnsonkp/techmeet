@@ -1,6 +1,6 @@
 import { GalleryVerticalEnd } from "lucide-react"
-
-import { LoginForm } from "@/components/loginForm/LoginForm"
+import {doNextAuthLogin, doLogout } from "@/app/actions/index";
+// import LoginForm  from "@/components/loginForm/LoginForm"
 
 export default function LoginPage() {
   return (
@@ -11,12 +11,18 @@ export default function LoginPage() {
             <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
               <GalleryVerticalEnd className="size-4" />
             </div>
-            Acme Inc.
+            Holberton School.
           </a>
         </div>
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-xs">
-            <LoginForm />
+            {/* <LoginForm /> */}
+            <button
+                onClick={doLogout}
+                className="text-gray-800 bg-white cursor-pointer border border-solid border-red-500
+                          px-4 py-2 rounded-md hover:bg-red-50 transition-colors duration-200">
+                Logout
+            </button>
           </div>
         </div>
       </div>

@@ -156,6 +156,7 @@ export default function Home() {
 
       {/* <!-- 3D CTA Button --> */}
       <button className="btn-3d bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold py-4 px-8 rounded-xl shadow-lg mb-10">
+        {/* <Link href={"/auth"}>Go to Auth Page</Link> */}
         <Link href={"/auth"}>Go to Auth Page</Link>
       </button>
 
