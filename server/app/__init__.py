@@ -5,16 +5,23 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from app.config import config as config_map
 from flask_migrate import Migrate
+import os
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 jwt = JWTManager()
 migrate = Migrate()
 
-def create_app(config_class="config.DevelopmentConfig"):
+# def create_app(config_class="config.DevelopmentConfig"):
+def create_app(config_class=None):
     """ method used to create an app instance"""
     app = Flask(__name__)
-    app.config.from_object(config_map.get(config_class, config_map['default']))
+
+    # Determine config class: from arg > env var > default
+    config_name = config_class or os.getenv('FLASK_CONFIG', 'default')
+
+    # app.config.from_object(config_map.get(config_class, config_map['default']))
+    app.config.from_object(config_map.get(config_name, config_map['default']))
 
     api = Api(app, version='1.0', title='TechMeet API', description='TechMeet Application API')
     
