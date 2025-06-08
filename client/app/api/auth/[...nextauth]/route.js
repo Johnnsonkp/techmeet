@@ -27,9 +27,9 @@
 // // Don't export signIn/signOut here - they should be imported directly where needed
 
 
-// added 8th June 
+// added 8th June , uses newer nextJS 15 with NextAuth 5
 
-// app/auth.js or app/api/auth/[...nextauth]/route.js
+// location to be at app/api/auth/[...nextauth]/route.js
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
@@ -47,7 +47,7 @@ const authOptions = {
       },
     }),
   ],
-  // Optional: Add callbacks for custom behavior
+  // JWT option: Add callbacks for custom behavior
   callbacks: {
     async jwt({ token, account }) {
       if (account) {
