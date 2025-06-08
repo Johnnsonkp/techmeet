@@ -1,6 +1,7 @@
-'use server'
+// use server function still experimental in Next.js v14
+// 'use server'  
 
-import { signIn, signOut} from "@/app/auth/auth.js";
+import { signIn, signOut } from "@/app/auth/auth";
 // import { redirect } from "next/dist/server/api-utils";
 
 export async function doSocialLogin(formData) {

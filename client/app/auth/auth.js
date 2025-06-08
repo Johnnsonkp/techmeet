@@ -1,37 +1,66 @@
-// src/auth.js (or app/auth/auth.js)
 import NextAuth from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
+import authConfig from "./auth.config"; // split authentication config for security and easy amendment
 
-// 1. Define auth options
-export const authOptions = {
-  providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    }),
-    // Add other providers here
-  ],
-  callbacks: {
-    async jwt({ token, user }) {
-      if (user) token.role = user.role;
-      return token;
-    },
-    async session({ session, token }) {
-      session.user.role = token.role;
-      return session;
-    },
-  },
-  secret: process.env.NEXTAUTH_SECRET,
-  // Other options...
-};
+// Initialize NextAuth
+const handler = NextAuth(authConfig);
 
-// 2. Create the auth handler
-const handler = NextAuth(authOptions);
+// Export HTTP methods directly from the handler
+export const { GET, POST } = handler;
 
-// 3. Export for API routes
-export { handler as GET, handler as POST };
+// Export auth function for server-side usage
+export const auth = handler.auth;
 
-// 4. Export auth functions
-export const auth = () => NextAuth(authOptions);
-export const signIn = (provider) => NextAuth(authOptions).signIn(provider);
-export const signOut = () => NextAuth(authOptions).signOut();
+// Remove signIn/signOut exports if not locally defined
+export { signIn, signOut } from "next-auth/react"; // Only if needed
+
+//-----------------------------------------
+// code below had issues with GET, POST handlers due new Auth,js v5 structure
+
+// import NextAuth from "next-auth";
+// import GoogleProvider from "next-auth/providers/google";
+
+// const { handlers, auth, signIn, signOut } = NextAuth({
+//   providers: [
+//     GoogleProvider({
+//       clientId: process.env.GOOGLE_CLIENT_ID,
+//       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+//       authorization: {
+//         params: {
+//           prompt: "consent",
+//           access_type: "offline",
+//           response_type: "code",
+//         },
+//       },
+//     }),
+//   ],
+// });
+
+// // Export handlers (GET/POST) and auth functions
+// export const { GET, POST } = handlers;
+// export { auth, signIn, signOut };
+
+//---------------------------------------------------
+// below is wrong structure as was using NextAuth.js v4 
+// import NextAuth from "next-auth";
+// import GoogleProvider from "next-auth/providers/google";
+
+// export const {
+//   handlers: { GET, POST },
+//   auth,
+//   signIn,
+//   signOut,
+// } = NextAuth({
+//   providers: [
+//     GoogleProvider({
+//       clientId: process.env.GOOGLE_CLIENT_ID,
+//       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+//       authorization : {
+//         params: {
+//           prompt: "consent",
+//           access_type: "offline",
+//           response_type: "code",
+//         },
+//       },
+//     })
+//   ],
+// });
