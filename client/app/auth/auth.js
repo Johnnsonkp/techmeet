@@ -1,3 +1,5 @@
+// Re-exports Client-Side Functions fron next-auth
+
 import NextAuth from "next-auth";
 import authConfig from "./auth.config"; // split authentication config for security and easy amendment
 

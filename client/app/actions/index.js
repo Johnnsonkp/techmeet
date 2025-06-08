@@ -1,4 +1,4 @@
-// use server function still experimental in Next.js v14
+// use server function still experimental in Next.js v15
 // 'use server'  
 'use client'
 
@@ -7,7 +7,7 @@ import { signIn, signOut } from "@/app/auth/auth";
 
 export async function doNextAuthLogin(formData) {
   const action = formData.get('action');
-  // await signIn(action, { redirectTo:"/login"}); // redirectTo is not used in NextAuth
+  // await signIn(action, { redirectTo:"/login"}); // redirectTo is not used in NextAuth v5
   await signIn(action, { callbackUrl:"/login"});
 
 }
