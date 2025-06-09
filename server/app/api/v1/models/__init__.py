@@ -1,3 +1,7 @@
 from .user import User
 from .profile import Profile
 from .oauth_connection import OauthConnection
+from .event import Event
+from .tag import Tag
+from .event_tag import EventTag
+from .category_tag import CategoryTag

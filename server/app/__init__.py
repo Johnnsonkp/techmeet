@@ -19,15 +19,15 @@ def create_app(config_class=None):
 
     # Determine config class: from arg > env var > default
     config_name = config_class or os.getenv('FLASK_CONFIG', 'default')
-
-    # app.config.from_object(config_map.get(config_class, config_map['default']))
+    
     app.config.from_object(config_map.get(config_name, config_map['default']))
 
     api = Api(app, version='1.0', title='TechMeet API', description='TechMeet Application API')
     
     from app.api.v1.routes.user import api as users_ns
     from app.api.v1.routes.oauth_connection import api as oauth_ns
-    from app.api.v1.routes.profile import api as profiles_ns, events_ns
+    from app.api.v1.routes.profile import api as profiles_ns
+    from app.api.v1.routes.events import api as events_ns
 
     # Register the namespaces
     api.add_namespace(users_ns, path='/api/v1/users')
@@ -43,10 +43,5 @@ def create_app(config_class=None):
     jwt.init_app(app)
     migrate.init_app(app, db)
 
-    from app.api.v1 import models
-
     # Ensure database tables are created before the first request
-    with app.app_context():
-        db.create_all()
-
     return app
