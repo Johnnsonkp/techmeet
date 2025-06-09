@@ -27,12 +27,13 @@ def create_app(config_class=None):
     
     from app.api.v1.routes.user import api as users_ns
     from app.api.v1.routes.oauth_connection import api as oauth_ns
-    from app.api.v1.routes.profile import api as profiles_ns
+    from app.api.v1.routes.profile import api as profiles_ns, events_ns
 
     # Register the namespaces
     api.add_namespace(users_ns, path='/api/v1/users')
     api.add_namespace(oauth_ns, path='/api/v1/oauth_connection')
     api.add_namespace(profiles_ns, path='/api/v1/profiles')
+    api.add_namespace(events_ns, path='/api/v1/events')
 
     app.config['JWT_SECRET_KEY'] = 'your_jwt_secret_key'  # Use a strong and unique key in production
 
