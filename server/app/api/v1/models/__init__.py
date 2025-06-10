@@ -5,3 +5,5 @@ from .event import Event
 from .tag import Tag
 from .event_tag import EventTag
 from .category_tag import CategoryTag
+from .category import Category
+from .source_api import SourceAPI
