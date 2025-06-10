@@ -43,5 +43,11 @@ def create_app(config_class=None):
     jwt.init_app(app)
     migrate.init_app(app, db)
 
+    # Import models
+    from app.api.v1 import models
+
     # Ensure database tables are created before the first request
+    with app.app_context():
+        db.create_all()
+
     return app
