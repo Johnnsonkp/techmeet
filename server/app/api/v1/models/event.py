@@ -4,6 +4,7 @@ from .event_tag import EventTag  # Import the join model
 
 class Event(db.Model):
     __tablename__ = 'events'
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text)
@@ -12,7 +13,8 @@ class Event(db.Model):
     seat_availability = db.Column(db.Integer)
     date = db.Column(db.Date)
     time = db.Column(db.Time)
+    # event_source = 
 
-    source_api_id = db.Column(db.Integer, db.ForeignKey('source_apis.id'))
+    # source_api_id = db.Column(db.Integer, db.ForeignKey('source_apis.id'))
 
-    tags = db.relationship('Tag', secondary='event_tags', backref='events')
+    tags = db.relationship('Tag', secondary='event_tag', backref='events')

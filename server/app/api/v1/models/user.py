@@ -18,8 +18,12 @@ class User(db.Model):
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
     # foreignkey relationships
-    profile = db.relationship('Profiles', uselist=False, backref='users', cascade='all, delete-orphan')
-    oauth_connections = db.relationship('OauthConnections', backref='users', lazy=True, cascade='all, delete-orphan')
+    # profile = db.relationship('Profile', uselist=False, backref='user', cascade='all, delete-orphan')
+
+    # This is the many-to-one end
+    profile_id = db.Column(db.Integer, db.ForeignKey('profiles.id'), nullable=True)
+
+    oauth_connections = db.relationship('OauthConnection', backref='user', lazy=True, cascade='all, delete-orphan')
     
     def __repr__(self):
         return f'<User {self.email}>'
