@@ -3,7 +3,9 @@ from datetime import datetime, timezone
 from app import db, bcrypt
 
 class User(db.Model):
-    __tablename__ = 'user'
+    __tablename__ = 'users'
+
+    # user default attributes
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(50), nullable=True)
     last_name = db.Column(db.String(50), nullable=True)
@@ -12,9 +14,15 @@ class User(db.Model):
     password = db.Column(db.String(128), nullable=True)
     is_admin = db.Column(db.Boolean, default=False, nullable=False)
     employment_status = db.Column(db.String(50), nullable=True)
+    # created at, updated at
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
-    profile = db.relationship('Profile', uselist=False, backref='user', cascade='all, delete-orphan')
+    # foreignkey relationships
+    # profile = db.relationship('Profile', uselist=False, backref='user', cascade='all, delete-orphan')
+
+    # This is the many-to-one end
+    profile_id = db.Column(db.Integer, db.ForeignKey('profiles.id'), nullable=True)
+
     oauth_connections = db.relationship('OauthConnection', backref='user', lazy=True, cascade='all, delete-orphan')
     
     def __repr__(self):
