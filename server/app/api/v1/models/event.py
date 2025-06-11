@@ -17,7 +17,7 @@ class Event(db.Model):
     date = db.Column(db.Date)
     time = db.Column(db.Time)
     
-    source_api_id = db.Column(db.Integer, db.ForeignKey('source_api.id'))
+    # source_api_id = db.Column(db.Integer, db.ForeignKey('source_api.id'))
 
     tags = db.relationship('Tag', secondary='event_tag', backref='events')
 
