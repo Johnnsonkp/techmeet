@@ -1,6 +1,4 @@
 from app import db
-from app.models.tag import Tag  # Ensure Tag is imported
-from app.models.event_tag import EventTag  # Import the join model
 
 class Tag(db.Model):
     __tablename__ = 'tag'
