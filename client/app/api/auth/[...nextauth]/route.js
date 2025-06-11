@@ -48,19 +48,44 @@ const authOptions = {
     }),
   ],
   // JWT option: Add callbacks for custom behavior
-  callbacks: {
-    async jwt({ token, account }) {
-      if (account) {
-        token.accessToken = account.access_token;
-        token.refreshToken = account.refresh_token;
+  // callbacks: {
+  //   async jwt({ token, account }) {
+  //     if (account) {
+  //       token.accessToken = account.access_token;
+  //       token.refreshToken = account.refresh_token;
+  //     }
+  //     return token;
+  //   },
+   
+  //   async session({ session, token, user }) {
+  //     // Corrected callback parameters
+  //     if (token?.name) session.user.name = token.name;
+  //     if (token?.email) session.user.email = token.email;
+  //     if (token?.picture) session.user.image = token.picture;
+      
+  //     return session;
+  //   },
+  // },
+  
+callbacks: {
+    async jwt({ token, user, account, profile }) {
+      // Store profile data in JWT
+      if (profile) {
+        token.name = profile.name;
+        token.email = profile.email;
+        token.image = profile.picture;
       }
       return token;
     },
     async session({ session, token }) {
-      session.accessToken = token.accessToken;
+      // Expose token data to session
+      session.user.name = token.name;
+      session.user.email = token.email;
+      session.user.image = token.image;
       return session;
-    },
+    }
   },
+
 };
 
 const handler = NextAuth(authOptions);

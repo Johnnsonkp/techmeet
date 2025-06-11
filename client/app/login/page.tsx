@@ -1,8 +1,17 @@
+// 'use client'
 import { GalleryVerticalEnd } from "lucide-react"
 import {doNextAuthLogin, doLogout } from "@/app/actions/index";
 // import LoginForm  from "@/components/loginForm/LoginForm"
+// import { useSession } from 'next-auth/react';
+// import auth from "next-auth";
+import { getCurrentUser } from "@/app/auth/currentUser";
 
-export default function LoginPage() {
+export default async function LoginPage() {
+
+  // const session = await auth();  // to extract login user details
+  // const { data: session, status } = useSession();  // to extract OAuth user details
+  // const user = await getCurrentUser();
+
   return (
     // template from tailwindflex.com
     <section className="relative z-10 overflow-hidden bg-indigo-600 py-16 px-8 mt-40">
@@ -20,6 +29,13 @@ export default function LoginPage() {
                     </div>
                 </div>
             </div>
+
+            {/* <div>
+              <h1>Welcome, {session.user?.name}</h1>
+              <p>Email: {session.user?.email}</p>
+            </div> */}
+            
+            
             <div className="w-full px-4 lg:w-1/2">
               
                 <button onClick={doLogout} className="text-center lg:text-right"><a
