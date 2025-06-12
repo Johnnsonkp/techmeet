@@ -1,10 +1,13 @@
 from app import db
-from .tag import Tag  # Ensure Tag is imported
-from .event_tag import EventTag  # Import the join model
+
+class Tag(db.Model):
+    __tablename__ = 'tag'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), unique=True, nullable=False)
+    source = db.Column(db.String(100), nullable=True)
 
 class Event(db.Model):
-    __tablename__ = 'events'
-
+    __tablename__ = 'event'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text)
@@ -13,8 +16,12 @@ class Event(db.Model):
     seat_availability = db.Column(db.Integer)
     date = db.Column(db.Date)
     time = db.Column(db.Time)
-    # event_source = 
-
-    # source_api_id = db.Column(db.Integer, db.ForeignKey('source_apis.id'))
+    
+    # source_api_id = db.Column(db.Integer, db.ForeignKey('source_api.id'))
 
     tags = db.relationship('Tag', secondary='event_tag', backref='events')
+
+class EventTag(db.Model):
+    __tablename__ = 'event_tag'
+    event_id = db.Column(db.Integer, db.ForeignKey('event.id'), primary_key=True)
+    tag_id = db.Column(db.Integer, db.ForeignKey('tag.id'), primary_key=True)
