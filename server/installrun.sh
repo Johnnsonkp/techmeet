@@ -12,7 +12,11 @@ source venv/bin/activate
 # Install requirements
 pip install -r requirements.txt
 
+# Run migrations before starting app
+echo "Running DB migrations..."
+flask db upgrade
+
 # Run the application
-python run.py
+flask run --host='localhost' --port=5328
 
 echo "✅ Virtual environment setup complete and dependencies installed and app running."
