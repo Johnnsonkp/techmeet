@@ -7,7 +7,7 @@ const DashboardPage = async ()  => {
   const user = await currentUser()
 
   return (
-    <div className="border-2 p-5">
+    <div className="border-2 p-5 pt-20">
       <div className="flex justify-between">
         <h1>Dashboard</h1>
         <SignOutButton />

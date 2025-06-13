@@ -11,7 +11,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-gray-900 to-indigo-900 overflow-hidden">
       <FloatingShapes />
-      <NextLogoContainer />
+      {/* <NextLogoContainer /> */}
 
     {/* <!-- Main Content --> */}
     <div className="relative z-10 min-h-screen flex flex-col items-center justify-center p-6 text-center">
