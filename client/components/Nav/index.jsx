@@ -7,8 +7,6 @@ import NavMobile from './NavMobile';
 import React from 'react'
 import { SignOutButton } from '../ui/authButtons/AuthButtons';
 
-// import { useEffect, useState } from "react";
-
 const Nav = async () => {
 
   return (
