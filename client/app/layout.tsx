@@ -23,7 +23,7 @@ export default function RootLayout({
       <Providers>
         <body className={`${inter.className} dark`}>
           <Nav />
-          {children}
+          <main className="pt-18">{children}</main>
         </body>
       </Providers>
     </html>

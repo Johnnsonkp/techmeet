@@ -16,7 +16,7 @@ const Avatar = async () => {
           alt="User avatar"
           width={40}
           height={40}
-          className="h-full w-full object-cover"
+          className="h-full w-full object-cover cursor-pointer"
         />
       ) : (
         <UnAuthAvatar />
