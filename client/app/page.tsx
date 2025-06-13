@@ -1,9 +1,6 @@
 import { FloatingShapes } from '@/components/ui/FloatingShapes';
-import Image from 'next/image'
 import Link from 'next/link';
-import NextLogoContainer from '@/components/ui/NextLogoContainer';
 import React from 'react';
-import { SignInButton } from '@/components/ui/signInButton/sign-in-button';
 import { TimerDisplay } from '@/components/timer/CounterDownTimer';
 
 export default function Home() {
@@ -35,9 +32,6 @@ export default function Home() {
           Go to Auth Page
         </Link>
       </button>
-
-      <SignInButton />
-
     </div>
   </main>
 
