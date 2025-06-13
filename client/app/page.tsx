@@ -1,38 +1,20 @@
+import { FloatingShapes } from '@/components/ui/FloatingShapes';
 import Image from 'next/image'
 import Link from 'next/link';
+import NextLogoContainer from '@/components/ui/NextLogoContainer';
 import React from 'react';
+import { SignInButton } from '@/components/ui/signInButton/sign-in-button';
 import { TimerDisplay } from '@/components/timer/CounterDownTimer';
 
 export default function Home() {
   
   return (
     <main className="min-h-screen bg-gradient-to-br from-gray-900 to-indigo-900 overflow-hidden">
-    {/* <!-- Floating 3D Shapes (Background) --> */}
-    <div className="fixed inset-0 overflow-hidden z-0">
-      <div className="absolute top-1/4 left-1/4 w-32 h-32 rounded-full bg-purple-500/20 blur-xl floating"></div>
-      <div className="absolute top-1/3 right-1/4 w-40 h-40 rounded-full bg-blue-500/20 blur-xl floating-2"></div>
-      <div className="absolute bottom-1/4 right-1/3 w-28 h-28 rounded-full bg-pink-500/20 blur-xl floating-3"></div>
-    </div>
-
-    <a
-      className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-      href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      <Image
-        src="/next.svg"
-        alt="Vercel Logo"
-        className="dark:invert"
-        width={150}
-        height={48}
-        priority
-      />
-    </a>
+      <FloatingShapes />
+      <NextLogoContainer />
 
     {/* <!-- Main Content --> */}
     <div className="relative z-10 min-h-screen flex flex-col items-center justify-center p-6 text-center">
-      {/* <!-- 3D Logo/Brand --> */}
       
       <h1 className="text-5xl md:text-6xl font-bold text-white mb-4 glow-text">
         Techmeet
@@ -53,6 +35,8 @@ export default function Home() {
           Go to Auth Page
         </Link>
       </button>
+
+      <SignInButton />
 
     </div>
   </main>

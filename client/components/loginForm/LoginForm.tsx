@@ -1,4 +1,3 @@
-// import {doSocialLogin } from "@/app/actions/index";
 'use client'
 
 export default function LoginForm(){
@@ -21,10 +20,9 @@ export default function LoginForm(){
         </p>
     </div>
     <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-            <form>
-            {/* <form action = {doSocialLogin}> */}
-                <div>
+      <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+        <form>
+          <div>
                     <label htmlFor="email" className="block text-sm font-medium leading-5  text-gray-700">Email address</label>
                     <div className="mt-1 relative rounded-md shadow-sm">
                         <input id="email" name="email" placeholder="user@example.com" type="email" required={true} value="" className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" onChange={handleInput}/>
@@ -63,22 +61,11 @@ export default function LoginForm(){
             </button>
             <p/>
             <button className="text-gray-400 bg-white w-full px-4 py-2 border flex gap-2 border-slate-200 dark:border-slate-700 rounded-lg text-slate-400 dark:text-slate-200 hover:border-slate-400 dark:hover:border-slate-500 hover:text-slate-900 dark:hover:text-slate-300 hover:shadow transition duration-150"
-            // type="submit"
-            // name="action"
-            // value="google"
             >
-                {/* <img className="w-6 h-6" src="https://www.svgrepo.com/show/475656/google-color.svg" loading="lazy" alt="google logo" /> */}
                 <span>Login</span>
             </button>
           </span>
                 </div>
-            {/* <div> */}
- {/* <button className="text-black-800 bg-white pointer-cursor border-solid-red" */}
-            {/* <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-10 border border-blue-700 rounded"
-            type="submit" name="action" value="google"><img className="w-6 h-6" src="https://www.svgrepo.com/show/475656/google-color.svg" loading="lazy" alt="google logo" />
-            Login with Google
-            </button>
-            </div> */}
             </form>
         </div>
     </div>
