@@ -12,12 +12,13 @@ import { SignOutButton } from '../ui/authButtons/AuthButtons';
 const Nav = async () => {
 
   return (
-    <div className="bg-gray-50 border-2 fixed w-full">
+    <div className="bg-gray-50 border-2 fixed w-full z-60">
       <nav className="bg-white p-3 shadow-lg sticky top-0 z-50 h-[100%]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
-          <div className="flex items-center cursor">
-            <a href="/" className="flex items-center group cursor z-10">
+
+          <div className="flex items-center cursor-pointer z-60">
+            <a href="/" className="flex items-center group cursor-pointer z-10">
                 <div className="bg-blue-600 group-hover:bg-blue-700 p-2 rounded-lg transition-colors duration-300">
                     <i className="fas fa-cube text-white text-xl"></i>
                 </div>
@@ -32,14 +33,14 @@ const Nav = async () => {
             <div className="flex items-center space-x-3">
               <div className="hidden md:block h-6 w-px bg-gray-200"></div>
               <div className="dropdown relative">
-                <button className="flex items-center space-x-2 focus:outline-none group">
+                <div className="flex items-center space-x-2 focus:outline-none group">
                   <div className="relative flex">
                     <div className="h-9 w-9 mx-3 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 overflow-hidden avatar-ring">
                       <Avatar />
                     </div>
                     <SignOutButton />
                   </div>
-                </button>
+                </div>
               </div>
             </div>
           </div>

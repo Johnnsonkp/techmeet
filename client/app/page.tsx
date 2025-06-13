@@ -6,7 +6,7 @@ import { TimerDisplay } from '@/components/timer/CounterDownTimer';
 export default function Home() {
   
   return (
-    <main className="min-h-screen bg-gradient-to-br from-gray-900 to-indigo-900 overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-indigo-900 overflow-hidden">
       <FloatingShapes />
       {/* <NextLogoContainer /> */}
 
@@ -33,7 +33,7 @@ export default function Home() {
         </Link>
       </button>
     </div>
-  </main>
+  </div>
 
   )
 }

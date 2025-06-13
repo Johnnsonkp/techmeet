@@ -16,7 +16,6 @@ const LoginPageUI: React.FC<LoginPageProps> = ({onSubmit}) => {
   return (
     <div className="flex flex-col justify-center items-center m-4">
       <div>
-
         <LoginCard />
 
         <form onSubmit={onSubmit}>
