@@ -1,0 +1,53 @@
+/* [project]/components/Nav/navStyle.css [app-client] (css) */
+.nav-link {
+  transition: all .3s;
+  position: relative;
+}
+
+.nav-link:after {
+  content: "";
+  background-color: currentColor;
+  width: 0;
+  height: 2px;
+  transition: width .3s;
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+}
+
+.nav-link:hover:after {
+  width: 100%;
+}
+
+.dropdown:hover .dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown-menu {
+  box-shadow: 0 10px 25px -5px #0000001a, 0 10px 10px -5px #0000000a;
+}
+
+.mobile-menu {
+  max-height: 0;
+  transition: max-height .3s ease-out;
+  overflow: hidden;
+}
+
+.mobile-menu.open {
+  max-height: 1000px;
+  transition: max-height .5s ease-in;
+}
+
+.badge {
+  font-size: .65rem;
+  top: -.5rem;
+  right: -.5rem;
+}
+
+.avatar-ring {
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #3b82f6;
+}
+
+/*# sourceMappingURL=components_Nav_navStyle_css_f9ee138c._.single.css.map*/

@@ -1,0 +1,17 @@
+/* [project]/components/ui/signInButton/signin-button.css [app-client] (css) */
+.signin-button {
+  color: #fff;
+  background-color: #1181e4;
+  border: none;
+  border-radius: 50px;
+  padding: .75rem 1.25rem;
+  font-size: 1rem;
+}
+
+.signin-button:hover {
+  cursor: pointer;
+  background-color: #389af0;
+}
+
+
+/*# sourceMappingURL=components_ui_signInButton_signin-button_e76e7584.css.map*/
