@@ -1,4 +1,7 @@
 import Link from "next/link";
+import NavAvatar from "./NavAvatar/NavAvatar";
+// import NavAvatar from "./NavAvatar/NavAvatar";
+// import NavDropDown from "./NavAvatar/NavDropDown";
 import { sanityFetch } from "@/sanity/lib/live";
 import { settingsQuery } from "@/sanity/lib/queries";
 
@@ -31,7 +34,6 @@ export default async function Header() {
               <li className="sm:before:w-[1px] sm:before:bg-gray-200 before:block flex sm:gap-4 md:gap-6">
                 <Link
                   className="rounded-full flex gap-4 items-center bg-black hover:bg-blue focus:bg-blue py-2 px-4 justify-center sm:py-3 sm:px-6 text-white transition-colors duration-200"
-                  // href="https://github.com/sanity-io/sanity-template-nextjs-clean"
                   href="https://github.com/Johnnsonkp/techmeet"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -47,6 +49,11 @@ export default async function Header() {
                   </svg>
                 </Link>
               </li>
+              
+              <li className="cursor-pointer sm:before:w-[1px] sm:before:bg-gray-200 before:block sm:gap-4 md:gap-6">
+                <NavAvatar />
+              </li>
+
             </ul>
           </nav>
         </div>

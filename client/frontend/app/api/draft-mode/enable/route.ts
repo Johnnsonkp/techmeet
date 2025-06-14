@@ -1,7 +1,7 @@
-import { defineEnableDraftMode } from "next-sanity/draft-mode";
-
 import { client } from "@/sanity/lib/client";
+import { defineEnableDraftMode } from "next-sanity/draft-mode";
 import { token } from "@/sanity/lib/token";
+// import {GET, POST} from '@/lib/auth/auth'
 
 /**
  * defineEnableDraftMode() is used to enable draft mode. Set the route of this file
@@ -12,3 +12,5 @@ import { token } from "@/sanity/lib/token";
 export const { GET } = defineEnableDraftMode({
   client: client.withConfig({ token }),
 });
+
+// export {GET, POST} from '@/lib/auth/auth'

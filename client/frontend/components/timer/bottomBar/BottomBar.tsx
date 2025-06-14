@@ -12,13 +12,13 @@ export default function BottomBar() {
         className="!text-white flex items-center gap-2 relative cursor-pointer bg-blue md:aspect-square px-4 py-0 md:p-2 rounded-xl md:rounded-full hover:bg-yellow hover:text-black transition-colors duration-300"
         href={'/auth'}
       >
-        Sign in
+        Auth
       </Link>
       <Link
         className="!text-white flex items-center gap-2 relative cursor-pointer bg-blue md:aspect-square px-4 py-0 md:p-2 rounded-xl md:rounded-full hover:bg-yellow hover:text-black transition-colors duration-300"
-        href={'/'}
+        href={'/dashboard'}
       >
-        Sign up
+        Dashboard
       </Link>
     </div>
   );
