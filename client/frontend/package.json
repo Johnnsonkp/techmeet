@@ -4,7 +4,7 @@
   "scripts": {
     "predev": "npm run typegen",
     "dev": "next dev --turbopack",
-    "prebuild": "npm run typegen",
+    "prebuild": "if [ \"$NODE_ENV\" != \"production\" ]; then npm run typegen; else echo 'Skipping extract-types in production'; fi",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
