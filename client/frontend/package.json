@@ -48,7 +48,5 @@
     "@types/react": "^18.3.18",
     "eslint-config-next": "^15.1.6"
   },
-  "overrides": {
-    "@types/react": "19.1.6"
-  }
+  "overrides": {}
 }
