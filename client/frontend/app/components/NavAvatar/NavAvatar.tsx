@@ -2,7 +2,7 @@ import './avatarStyles.css'
 
 import Image from 'next/image'
 import UnAuthAvatar from "@/components/Nav/UnAuthAvatar";
-import { currentUser } from "../../../../lib/auth/user";
+import { currentUser } from "../../../lib/auth/user";
 
 type Props = {
   small?: boolean;

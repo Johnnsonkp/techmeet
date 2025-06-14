@@ -2,7 +2,7 @@
 
 import { signIn, signOut } from 'next-auth/react'
 
-import { logout } from '../../../../lib/auth/user'
+import { logout } from '../../../lib/auth/user'
 
 export const SignInButton: any = () => {
   <button onClick={() => signIn('google')}>Sign in with Google</button>

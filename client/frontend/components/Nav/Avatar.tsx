@@ -2,7 +2,7 @@ export const dynamic = 'force-dynamic'
 
 import Image from 'next/image'
 import UnAuthAvatar from './UnAuthAvatar'
-import { currentUser } from '../../../lib/auth/user'
+import { currentUser } from '../../lib/auth/user'
 
 const Avatar = async () => {
   const user = await currentUser()

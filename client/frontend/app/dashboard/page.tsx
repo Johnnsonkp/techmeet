@@ -1,4 +1,4 @@
-import { currentUser, requireAuth } from '../../../lib/auth/user'
+import { currentUser, requireAuth } from '../../lib/auth/user'
 
 import { SignOutButton } from "@/components/ui/authButtons/AuthButtons";
 

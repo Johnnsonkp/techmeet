@@ -1,6 +1,6 @@
 'use client'
 
-import {handleSignIn} from '../../../lib/auth/signInHandler'
+import {handleSignIn} from '../../lib/auth/signInHandler'
 
 interface AuthButtonProps {
   provider: 'google' | 'github'
