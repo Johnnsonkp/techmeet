@@ -5,7 +5,6 @@ import * as demo from "@/sanity/lib/demo";
 import { SanityLive, sanityFetch } from "@/sanity/lib/live";
 import { VisualEditing, toPlainText } from "next-sanity";
 
-// import CustomHeader from '../components/Nav/index'
 import DraftModeToast from "@/app/components/DraftModeToast";
 import Footer from "@/app/components/Footer";
 import Header from "@/app/components/Header";

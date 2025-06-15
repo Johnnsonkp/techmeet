@@ -2,7 +2,7 @@
  * Demo data used as placeholders and initial values for the blog
  */
 
-export const title = "Sanity + Next.js";
+export const title = "Techmeet | Discover Tech Events Near You";
 
 export const description = [
   {
@@ -13,7 +13,7 @@ export const description = [
         _key: "4a58edd077880",
         _type: "span",
         marks: [],
-        text: "A statically generated blog example using ",
+        text: "Techmeet is your gateway to the world of tech events. Explore upcoming meetups, conferences, and workshops in your area. Sign in with Google, build your profile, and start networking with fellow tech enthusiasts.",
       },
       {
         _key: "4a58edd077881",

@@ -1,7 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useState, useTransition } from "react";
-import { signIn, signOut } from 'next-auth/react'
+import { FormEvent, useEffect, useState } from "react";
 
 import LoginCard from "../../components/auth/LoginCard";
 import React from "react";

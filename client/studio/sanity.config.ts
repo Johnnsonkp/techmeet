@@ -21,7 +21,7 @@ import {assist} from '@sanity/assist'
 // const projectId = process.env.SANITY_STUDIO_PROJECT_ID || 'your-projectID'
 const dataset = process.env.SANITY_STUDIO_DATASET || 'production'
 
-const projectId = process.env.SANITY_STUDIO_PROJECT_ID || process.env.SANITY_STUDIO_PROJECT_ID
+const projectId = process.env.SANITY_STUDIO_PROJECT_ID || process.env.SANITY_STUDIO_PROJECT_ID || "2hjlcqea"
 
 // const dataset = process.env.SANITY_STUDIO_DATASET || 'production'
 
