@@ -75,7 +75,7 @@ function DefaultFooter() {
         </div>
         <div className="py-7 border-t border-gray-200">
           <div className="flex items-center justify-center">
-            <span className="text-gray-400 ">©<a href="https://pagedone.io/">pagedone</a> 2024, All rights reserved.</span>
+            <span className="text-gray-400 ">©<a href="https://pagedone.io/">pagedone</a> 2025, All rights reserved.</span>
           </div>
         </div>
       </div>

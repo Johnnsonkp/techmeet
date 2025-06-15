@@ -38,7 +38,7 @@ export default function Footer() {
 
       <div className="py-7 border-t border-gray-200 bg-white z-[9000] absolute w-[100%]">
        <div className="flex items-center justify-center">
-         <span className="text-gray-400 ">©<Link href="/">Techmeet</Link> 2024, All rights reserved.</span>
+         <span className="text-gray-400 ">©<Link href="/">Techmeet</Link> 2025, All rights reserved.</span>
        </div>
       </div>
     </footer>
