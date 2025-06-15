@@ -64,7 +64,7 @@ export function useCountdownTimer(targetDateString: string) {
     updateCountdown(); // Initial call
 
     return () => clearInterval(intervalRef.current!); // Cleanup
-  }, [targetDateString]);
+  }, [targetDateString, targetDate]);
 
   return timerObj;
 }
@@ -83,13 +83,12 @@ export function TimerDisplay() {
         glassCard: {
           backdropFilter: "blur(12px)",
           background: "rgba(0, 0, 0, 0.15)",
-          // border: "1px solid rgba(255, 255, 255, 0.2)"
         }
       }
   
       return <div style={styles.glassCard} className={`glass-card p-4 rounded-xl text-center transform hover:-translate-y-2 transition-all w-32 h-32 border-white border-4 flex-row justify-center items-center`}>
         <div className="text-4xl font-bold text-white">{item}</div>
-        <div className="text-xl text-white text-sm">{metric}</div>
+        <div className="text-xl text-white">{metric}</div>
       </div>
   }
 

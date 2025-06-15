@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 
 import { AuthButton } from "./AuthButton";
+import Link from "next/link";
 
 const LoginCard: React.FC = () => {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -22,43 +23,42 @@ const LoginCard: React.FC = () => {
                 <input
                   type="text"
                   placeholder="First Name"
-                  className="border p-3 shadow-md placeholder:text-base focus:scale-105 transition duration-300 border-gray-300 rounded-lg w-full"
+                  className="cursor-pointer border p-3 shadow-md placeholder:text-base focus:scale-101 transition duration-300 border-gray-300 rounded-lg w-full"
                 />
                 <input
                   type="text"
                   placeholder="Last Name"
-                  className="border p-3 shadow-md placeholder:text-base focus:scale-105 transition duration-300 border-gray-300 rounded-lg w-full"
+                  className="cursor-pointer border p-3 shadow-md placeholder:text-base focus:scale-101 transition duration-300 border-gray-300 rounded-lg w-full"
                 />
               </>
             )}
-
             <input
               type="email"
               placeholder="Email"
               required
-              className="border p-3 shadow-md placeholder:text-base focus:scale-105 transition duration-300 border-gray-300 rounded-lg w-full"
+              className="cursor-pointer border p-3 shadow-md placeholder:text-base focus:scale-101 transition duration-300 border-gray-300 rounded-lg w-full"
             />
             <input
               type="password"
               placeholder="Password"
               required
-              className="border p-3 shadow-md placeholder:text-base focus:scale-105 transition duration-300 border-gray-300 rounded-lg w-full"
+              className="cursor-pointer border p-3 shadow-md placeholder:text-base focus:scale-101 transition duration-300 border-gray-300 rounded-lg w-full"
             />
 
             {!isSignUp && (
-              <a
+              <Link
                 href="#"
                 className="group text-blue-400 text-sm transition-all duration-100 ease-in-out"
               >
                 <span className="bg-left-bottom bg-gradient-to-r from-blue-400 to-blue-400 bg-[length:0%_2px] bg-no-repeat group-hover:bg-[length:100%_2px] transition-all duration-500 ease-out">
                   Forget your password?
                 </span>
-              </a>
+              </Link>
             )}
 
             <button
               type="submit"
-              className="bg-gradient-to-r from-blue-500 to-purple-500 shadow-lg mt-6 p-2 text-white rounded-lg w-full hover:scale-105 hover:from-purple-500 hover:to-blue-500 transition duration-300"
+              className="cursor-pointer bg-gradient-to-r from-blue-500 to-purple-500 shadow-lg mt-6 p-2 text-white rounded-lg w-full hover:scale-101 hover:from-purple-500 hover:to-blue-500 transition duration-300"
             >
               {isSignUp ? "Sign Up" : "Log In"}
             </button>

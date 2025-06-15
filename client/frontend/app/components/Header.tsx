@@ -1,7 +1,5 @@
 import Link from "next/link";
 import NavAvatar from "./NavAvatar/NavAvatar";
-// import NavAvatar from "./NavAvatar/NavAvatar";
-// import NavDropDown from "./NavAvatar/NavDropDown";
 import { sanityFetch } from "@/sanity/lib/live";
 import { settingsQuery } from "@/sanity/lib/queries";
 

@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import {handleSignIn} from '../../lib/auth/signInHandler'
 
 interface AuthButtonProps {
@@ -14,7 +15,7 @@ export const AuthButton: React.FC<AuthButtonProps> = ({ provider, label, iconSrc
       onClick={() => handleSignIn(provider)}
       className="cursor-pointer my-2 w-full border border-slate-300 rounded px-6 py-3 flex items-center justify-center gap-2 hover:scale-101 transition duration-300 shadow"
     >
-      <img src={iconSrc} alt={`${provider} logo`} width={20} height={20} />
+      <Image src={iconSrc} alt={`${provider} logo`} width={20} height={20} />
       <span>{label}</span>
     </button>
   )

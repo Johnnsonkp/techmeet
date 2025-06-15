@@ -2,7 +2,7 @@
 
 import './navStyle.css';
 
-// import Avatar from './Avatar';
+import Avatar from './Avatar';
 import GithubNavButton from './GithubNavButton'
 import Link from 'next/link';
 import NavMobile from './NavMobile';
@@ -18,12 +18,12 @@ export default async function CustomHeader() {
         <div className="flex justify-between h-16">
 
           <div className="flex items-center cursor-pointer z-60">
-            <a href="/" className="flex items-center group cursor-pointer z-10">
+            <Link href="/" className="flex items-center group cursor-pointer z-10">
                 <div className="bg-blue-600 group-hover:bg-blue-700 p-2 rounded-lg transition-colors duration-300">
                     <i className="fas fa-cube text-white text-xl"></i>
                 </div>
                 <span className="ml-3 text-xl font-bold text-gray-800 group-hover:text-blue-600 transition-colors duration-300">Techmeet</span>
-            </a>
+            </Link>
           </div>
 
           <div className="hidden md:flex items-center space-x-1">                  
