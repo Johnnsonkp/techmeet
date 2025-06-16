@@ -2,6 +2,7 @@ import GoogleProvider from "next-auth/providers/google";
 import type { NextAuthConfig } from 'next-auth'
 
 export const authOptions: NextAuthConfig = {
+  trustHost: true,  // needed for production mode for railway.app
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
