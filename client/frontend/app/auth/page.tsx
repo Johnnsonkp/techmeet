@@ -1,8 +1,8 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
-import ProfileFormCard from "@/components/auth/ProfileFormCard";
 import LoginCard from "../../components/auth/LoginCard";
+import ProfileDetailsCard from "../../components/auth/ProfileDetailsCard";
 import React from "react";
 import { getSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
@@ -23,7 +23,7 @@ const LoginPage: React.FC = () => {
       const session = await getSession()
       if (session) {
         setIsAuthenticated(true)
-        router.push('/dashboard')
+        setStep(2)
       }
     }
     checkSession()
@@ -33,12 +33,16 @@ const LoginPage: React.FC = () => {
     setStep(2)
   }
 
-  if (isAuthenticated) return null
-  return (
-    <>
-      {step === 1 ? <LoginCard onSuccess={handleLoginSuccess} /> : <ProfileFormCard />}
-    </>
-  );
-};
+  if (!isAuthenticated && step === 1) {
+    return <LoginCard onSuccess={handleLoginSuccess} />
+  }
+
+  if (isAuthenticated && step === 2) {
+    return <ProfileDetailsCard />
+  }
+
+  router.push("/dashboard")
+  return null
+}
 
 export default LoginPage;

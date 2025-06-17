@@ -25,7 +25,7 @@ const LoginCard: React.FC<LoginCardProps> = ({ onSuccess }) => {
             {isSignUp ? "Create an Account" : "Log in"}
           </h1>
 
-          <form className="space-y-4">
+          <form className="space-y-4" onSubmit={handleSubmit}>
             {isSignUp && (
               <>
                 <input
