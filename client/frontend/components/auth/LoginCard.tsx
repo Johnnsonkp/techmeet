@@ -1,13 +1,21 @@
 "use client";
 
 import React, { useState } from "react";
-
 import { AuthButton } from "./AuthButton";
 import Link from "next/link";
 
-const LoginCard: React.FC = () => {
+interface LoginCardProps {
+  onSuccess: () => void;
+}
+
+const LoginCard: React.FC<LoginCardProps> = ({ onSuccess }) => {
   const [isSignUp, setIsSignUp] = useState(false);
   const toggleMode = () => setIsSignUp(!isSignUp);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSuccess();
+  }
 
   return (
     <div className="h-screen w-screen flex justify-center items-center font-poppins">
