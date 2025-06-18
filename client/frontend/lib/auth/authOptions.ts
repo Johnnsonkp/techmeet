@@ -1,8 +1,7 @@
+import GithubProvider from 'next-auth/providers/github';
 import GoogleProvider from "next-auth/providers/google";
 import type { NextAuthConfig } from 'next-auth'
-import GithubProvider from 'next-auth/providers/github';
 import { RSC_PREFETCH_SUFFIX } from "next/dist/lib/constants";
-
 
 export const authOptions: NextAuthConfig = {
   trustHost: true,  // needed for production mode for railway.app
