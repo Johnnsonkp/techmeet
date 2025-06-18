@@ -1,8 +1,10 @@
+import GithubProvider from 'next-auth/providers/github';
 import GoogleProvider from "next-auth/providers/google";
 import type { NextAuthConfig } from 'next-auth'
+import { RSC_PREFETCH_SUFFIX } from "next/dist/lib/constants";
 
 export const authOptions: NextAuthConfig = {
-  trustHost: true,
+  trustHost: true,  // needed for production mode for railway.app
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
@@ -15,7 +17,20 @@ export const authOptions: NextAuthConfig = {
         }, // Fixed comma added
       },
     }), // Correctly closed GoogleProvider
+
+  GithubProvider({
+      clientId: process.env.GITHUB_CLIENT_ID,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+      authorization:{
+        params: {
+          prompt: "consent",
+        },
+      },
+  }), // closed GithubProvider
+    
   ],
+
+  
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async jwt({ token, user, session, trigger }) {
