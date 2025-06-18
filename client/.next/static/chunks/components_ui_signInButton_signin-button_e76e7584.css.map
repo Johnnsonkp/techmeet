@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 1, "column": 0}, "map": {"version":3,"sources":["file:///Users/johnnsonkp/holberton-learning/techmeet/client/components/ui/signInButton/signin-button.css"],"sourcesContent":[".signin-button {\n  padding: 0.75rem 1.25rem;\n  border-radius: 50px;\n  font-size: 1rem;\n  border: none;\n  background-color: hsl(208, 86%, 48%);\n  color: white;\n}\n.signin-button:hover{\n  cursor: pointer;\n  background-color: hsl(208, 86%, 58%);\n}"],"names":[],"mappings":"AAAA;;;;;;;;;AAQA","debugId":null}}]
-}
