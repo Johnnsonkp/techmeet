@@ -1,20 +1,21 @@
+# Dockerfile at client/
 FROM node:18-alpine
 
-# Set working directory
 WORKDIR /app
 
+# Copy root package files
+COPY package.json package-lock.json ./
+
 # Install dependencies
-COPY package*.json ./
 RUN npm install
 
-# Copy app code
-COPY . .
+# Copy only frontend code
+COPY frontend ./frontend
 
-# Build app
-# RUN npm run build
+WORKDIR /app/frontend
 
-# Expose port
+RUN npm run build
+
 EXPOSE 3000
 
-# Start Next.js in production
-CMD ["npm", "run", "dev"]
+CMD ["npm", "start"]

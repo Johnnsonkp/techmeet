@@ -1,2 +1,5 @@
 __pycache__/
-*.pycserver/requirements.txt
+*.pyc
+venv/
+node_modules/
+client/studio/
