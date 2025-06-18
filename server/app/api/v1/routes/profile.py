@@ -32,6 +32,8 @@ class ProfileResource(Resource):
         if not profile:
             return jsonify({"error": "Profile not found"}), 404
         return jsonify({
+            "id": profile.id,
+            "user_id": profile.user_id,
             "job_title": profile.job_title,
             "skills": profile.skills,
             "personality": profile.personality,
