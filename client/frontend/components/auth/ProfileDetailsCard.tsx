@@ -30,100 +30,59 @@ const ProfileDetailsCard: React.FC = () => {
   };
 
   return (
-    <div className="h-screen w-screen flex justify-center items-center dark:bg-gray-900 p-4">
-      <div className="bg-white dark:bg-gray-800 shadow-xl rounded-lg max-w-xl w-full p-8 font-poppins">
-        <h2 className="text-2xl font-semibold mb-6 text-center dark:text-white">
-          Step 2: Profile Details
-        </h2>
+    <div className="h-screen w-screen flex justify-center items-center font-poppins">
+      <div className="bg-gradient-to-r from-blue-500 to-purple-500 rounded-[26px] m-4">
+        <div className="border-[20px] border-transparent rounded-[20px] bg-white shadow-lg xl:p-10 lg:p-10 md:p-10 sm:p-6 p-4 m-2 w-full max-w-md">
+          <h1 className="pt-4 pb-6 font-bold text-3xl text-center">
+            Profile Details
+          </h1>
 
-        <form className="space-y-5">
-          {/* Employment Status */}
-          <div>
-            <label className="block mb-1 font-medium dark:text-gray-200">
-              Employment Status
-            </label>
-            <select className="w-full border rounded-md p-2 dark:bg-indigo-700 dark:text-white dark:border-gray-600">
-              <option value="">Select status</option>
-              <option value="employed">Employed</option>
-              <option value="student">Student</option>
-              <option value="seeking">Seeking Opportunities</option>
-              <option value="freelancer">Freelancer</option>
-            </select>
-          </div>
-
-          {/* Current Job Title */}
-          <div>
-            <label className="block mb-1 font-medium dark:text-gray-200">
-              Current Job Title
-            </label>
-            <input
-              type="text"
-              placeholder="e.g. Frontend Developer"
-              className="w-full border rounded-md p-2 dark:bg-indigo-700 dark:text-white dark:border-gray-600"
-            />
-          </div>
-
-          {/* Desired Role */}
-          <div>
-            <label className="block mb-1 font-medium dark:text-gray-200">
-              Desired Role or Career Goal
-            </label>
-            <input
-              type="text"
-              placeholder="e.g. Full Stack Engineer"
-              className="w-full border rounded-md p-2 dark:bg-indigo-700 dark:text-white dark:border-gray-600"
-            />
-          </div>
-
-          {/* Technologies of Interest */}
-          <div>
-            <label className="block mb-1 font-medium dark:text-gray-200">
-              Technologies or Topics of Interest
-            </label>
-            <input
-              type="text"
-              placeholder="Type and press Enter..."
-              className="w-full border rounded-md p-2 dark:bg-indigo-700 dark:text-white dark:border-gray-600"
-              value={techInput}
-              onChange={(e) => setTechInput(e.target.value)}
-              onKeyDown={handleAddTag}
-            />
-
-            {/* Selected Tags */}
-            <div className="mt-2 flex flex-wrap gap-2">
-              {selectedTags.map((tag) => (
-                <span
-                  key={tag}
-                  className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm flex items-center gap-1 dark:bg-blue-800 dark:text-white"
-                >
-                  {tag}
-                  <button
-                    type="button"
-                    onClick={() => removeTag(tag)}
-                    className="text-xs text-red-600 dark:text-red-300 ml-1"
-                  >
-                    ×
-                  </button>
-                </span>
-              ))}
+          <form className="space-y-4">
+            <div>
+              <label className="text-lg text-gray-700">Employment Status</label>
+              <select className="border p-3 shadow-md rounded-lg w-full">
+                <option>Employed</option>
+                <option>Unemployed</option>
+                <option>Student</option>
+              </select>
             </div>
 
-            {/* Suggestions (Optional) */}
-            <div className="text-xs text-gray-500 mt-2 dark:text-gray-400">
-              Suggestions: {dummyTechSuggestions.join(", ")}
+            <div>
+              <label className="text-lg text-gray-700">Current Job Title</label>
+              <input
+                type="text"
+                placeholder="Software Engineer"
+                className="border p-3 shadow-md rounded-lg w-full"
+              />
             </div>
-          </div>
 
-          {/* Continue Button (non-functional for now) */}
-          <div className="text-center mt-6">
+            <div>
+              <label className="text-lg text-gray-700">Desired Role or Goal</label>
+              <input
+                type="text"
+                placeholder="Full Stack Developer"
+                className="border p-3 shadow-md rounded-lg w-full"
+              />
+            </div>
+
+            <div>
+              <label className="text-lg text-gray-700">Technologies of Interest</label>
+              <input
+                type="text"
+                placeholder="TypeScript, Next.js, AI, etc."
+                className="border p-3 shadow-md rounded-lg w-full"
+              />
+              <small className="text-gray-400">Type comma-separated values</small>
+            </div>
+
             <button
               type="submit"
-              className="w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+              className="bg-gradient-to-r from-blue-500 to-purple-500 text-white p-3 rounded-lg w-full hover:scale-105 transition duration-300"
             >
-              Continue to Final Step
+              Continue
             </button>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   );
