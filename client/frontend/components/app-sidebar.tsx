@@ -25,86 +25,76 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar"
+import { useEffect, useState } from "react"
 
 import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
-import { NavUser } from "@/components/nav-user"
-import { SidebarTrigger } from "@/components/ui/sidebar"
-import { TeamSwitcher } from "@/components/team-switcher"
+import { usePathname } from 'next/navigation'
 
-// This is sample data.
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  teams: [
-    {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
-  ],
   navMain: [
     {
       title: "Home",
-      url: "#",
+      url: "/dashboard",
       icon: Home,
-      isActive: true,
+      isActive: false,
     },
     {
       title: "My Events",
-      url: "#",
+      url: "/dashboard/my_events",
       icon: Frame,
+      isActive: false,
     },
     {
       title: "Calendar",
-      url: "#",
+      url: "/dashboard/calendar",
       icon: Calendar,
-
+      isActive: false,
     },
     {
       title: "Roadmap",
-      url: "#",
+      url: "/dashboard/roadmap",
       icon: Map,
+      isActive: false,
     },
     {
       title: "Event Spaces",
-      url: "#",
+      url: "/dashboard/event_spaces",
       icon: SectionIcon,
+      isActive: false,
     },
     {
       title: "User Profile",
-      url: "#",
+      url: "/dashboard/user_profile",
       icon: User,
+      isActive: false,
     },
   ],
 }
 
+
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const [active, setActive] = useState<string>('')
+  const pathname = usePathname()
+
+  useEffect(() => {
+    if(pathname){
+      const segments = pathname.split('/').filter(Boolean);
+      const newActive = segments[1] || segments[0] || ''
+
+      if (newActive !== active) {
+        setActive(newActive)
+      }
+    }
+  }, [pathname, active])
+  
   return (
     <Sidebar collapsible="icon" {...props} className="mt-24 border-t-2">
       <SidebarHeader>
-        {/* <TeamSwitcher teams={data.teams} /> */}
-        {/* <SidebarTrigger /> */}
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain items={data.navMain} active={active}/>
       </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={data.user} />
-      </SidebarFooter>
+      <SidebarFooter></SidebarFooter>
       <SidebarRail />
     </Sidebar>
   )

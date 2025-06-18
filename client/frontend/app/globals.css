@@ -151,3 +151,28 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+.custom-nav-container {
+  margin: 0 auto;
+  padding: 0 2rem /* 32px */;
+}
+
+.custom-nav-container {
+  width: 100%;
+  @media (width >= 40rem /* 640px */) {
+    max-width: 40rem /* 640px */;
+  }
+  @media (width >= 48rem /* 768px */) {
+    max-width: 48rem /* 768px */;
+  }
+  @media (width >= 64rem /* 1024px */) {
+    max-width: 80rem /* 1024px */;
+  }
+  @media (width >= 80rem /* 1280px */) {
+    max-width: 85rem /* 1280px */;
+  }
+  @media (width >= 96rem /* 1536px */) {
+    max-width: 120rem /* 1536px */;
+  }
+}
