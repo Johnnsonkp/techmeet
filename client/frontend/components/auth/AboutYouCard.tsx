@@ -34,9 +34,9 @@ const AboutYouCard: React.FC<Props> = ({ onComplete }) => {
         <div className="border-[20px] border-transparent rounded-[20px] bg-white shadow-lg xl:p-10 lg:p-10 md:p-10 sm:p-6 p-4 m-2 w-full max-w-md">
           <h1 className="pt-4 pb-6 font-bold text-3xl text-center">About You</h1>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="bio" className="block text-lg text-gray-700 mb-2">
+              <label htmlFor="bio" className="text-lg text-gray-700">
                 Short Bio
               </label>
               <textarea
@@ -46,15 +46,15 @@ const AboutYouCard: React.FC<Props> = ({ onComplete }) => {
                 placeholder="Tell us a bit about your background, passions, or goals..."
                 value={bio}
                 onChange={(e) => setBio(e.target.value)}
-                className="w-full border p-3 shadow-md rounded-lg resize-none"
+                className="border p-3 shadow-md rounded-lg w-full resize-none"
               />
-              <div className="text-right text-sm text-gray-400">
+              <div className="text-right text-sm text-gray-400 mt-1">
                 {bio.length}/300
               </div>
             </div>
 
             <div>
-              <label htmlFor="image" className="block text-lg text-gray-700 mb-2">
+              <label htmlFor="image" className="text-lg text-gray-700">
                 Upload an Image <span className="text-sm text-gray-400">(optional)</span>
               </label>
               <input
@@ -62,13 +62,13 @@ const AboutYouCard: React.FC<Props> = ({ onComplete }) => {
                 accept="image/*"
                 id="image"
                 onChange={handleImageChange}
-                className="w-full text-sm border p-2 rounded-lg shadow-sm"
+                className="border p-3 shadow-md rounded-lg w-full mt-1"
               />
               {imagePreview && (
                 <img
                   src={imagePreview}
                   alt="Preview"
-                  className="mt-4 w-32 h-32 object-cover rounded-full mx-auto"
+                  className="w-32 h-32 object-cover rounded-full"
                 />
               )}
             </div>
