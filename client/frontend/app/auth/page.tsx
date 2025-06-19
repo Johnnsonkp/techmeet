@@ -3,46 +3,60 @@
 import { FormEvent, useEffect, useState } from "react";
 import LoginCard from "../../components/auth/LoginCard";
 import ProfileDetailsCard from "../../components/auth/ProfileDetailsCard";
+import AboutYouCard from "../../components/auth/AboutYouCard";
 import React from "react";
-import { getSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
+import { getSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 interface LoginPageProps {
-    onSubmit: (event: FormEvent<HTMLFormElement>) => void
+  onSubmit: (event: FormEvent<HTMLFormElement>) => void;
 }
 
 const LoginPage: React.FC = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [step, setStep] = useState<1 | 2>(1)
-  const router = useRouter()
-
-  console.log("isAuthenticated", isAuthenticated)
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [step, setStep] = useState<1 | 2 | 3>(1);
+  const router = useRouter();
 
   useEffect(() => {
     const checkSession = async () => {
-      const session = await getSession()
+      const session = await getSession();
       if (session) {
-        setIsAuthenticated(true)
-        setStep(2)
+        setIsAuthenticated(true);
+        setStep(2); // Resume at Profile step if session exists
       }
-    }
-    checkSession()
-  }, [router])
+    };
+    checkSession();
+  }, [router]);
 
   const handleLoginSuccess = () => {
-    setStep(2)
-  }
+    setIsAuthenticated(true);
+    setStep(2);
+  };
 
+  const handleProfileSubmit = () => {
+    setStep(3);
+  };
+
+  const handleAboutYouSubmit = () => {
+    router.push("/dashboard"); // Redirect after all 3 steps
+  };
+
+  // Step 1: Login
   if (!isAuthenticated && step === 1) {
-    return <LoginCard onSuccess={handleLoginSuccess} />
+    return <LoginCard onSuccess={handleLoginSuccess} />;
   }
 
-  if (isAuthenticated && step === 2) {
-    return <ProfileDetailsCard />
+  // Step 2: Profile Details
+  if (step === 2) {
+    return <ProfileDetailsCard onNext={handleProfileSubmit} />;
   }
 
-  router.push("/dashboard")
-  return null
-}
+  // Step 3: About You
+  if (step === 3) {
+    return <AboutYouCard onComplete={handleAboutYouSubmit} />;
+  }
+
+  return null;
+};
 
 export default LoginPage;
