@@ -176,3 +176,30 @@
     max-width: 120rem /* 1536px */;
   }
 }
+
+body {
+  transition-property: opacity, transform, filter;
+  transition-timing-function: ease-in-out;
+  transition: "opacity 0.2s ease, transform 0.5s ease",
+}
+
+.dashboardHidden {
+  transition-property: opacity, transform, filter;
+  transition-timing-function: ease-in-out;
+  transition-duration: 200ms;
+  transition: "opacity 0.5s ease-in-out, transform 0.5s ease-in-out";
+  transform: translateY(10px);
+  /* opacity: 0; */
+}
+.page-transition {
+  opacity: 0;
+  transform: translateY(0px);
+  transition-timing-function: ease-in-out;
+  filter: blur(12px);
+  transition: "opacity 0.5s ease-in-out, transform 0.5s ease-in-out translateY 0.5s ease-in-out",
+}
+
+.nav-item-select{
+  color: #0152FF;
+  background-color: #F9F9F9;
+}

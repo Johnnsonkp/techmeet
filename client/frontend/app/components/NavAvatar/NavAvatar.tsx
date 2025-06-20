@@ -2,6 +2,7 @@ import './avatarStyles.css'
 
 // import { ChevronsUpDown } from 'lucide-react';
 import Image from 'next/image'
+import NavDropDown from './NavDropDown';
 import UnAuthAvatar from "@/components/Nav/UnAuthAvatar";
 import { currentUser } from "../../../lib/auth/user";
 
@@ -38,6 +39,8 @@ export default async function NavAvatar ({ small = false }: Props) {
         <i className="fas fa-chevron-down text-xs text-gray-500 hidden lg:inline transition-transform duration-200 group-hover:text-blue-600"></i>
         {/* <ChevronsUpDown className="ml-auto border-2" /> */}
       </button>
+
+      <NavDropDown user={user}/>
     </div>
   );
 }

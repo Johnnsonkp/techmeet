@@ -3,20 +3,12 @@
 import * as React from "react"
 
 import {
-  AudioWaveform,
-  BookOpen,
-  Bot,
   Calendar,
-  Command,
   Frame,
-  GalleryVerticalEnd,
   Home,
   Map,
-  PieChart,
   SectionIcon,
-  Settings2,
-  SquareTerminal,
-  User
+  User,
 } from "lucide-react"
 import {
   Sidebar,
@@ -32,69 +24,46 @@ import { usePathname } from 'next/navigation'
 
 const data = {
   navMain: [
-    {
-      title: "Home",
-      url: "/dashboard",
-      icon: Home,
-      isActive: false,
-    },
-    {
-      title: "My Events",
-      url: "/dashboard/my_events",
-      icon: Frame,
-      isActive: false,
-    },
-    {
-      title: "Calendar",
-      url: "/dashboard/calendar",
-      icon: Calendar,
-      isActive: false,
-    },
-    {
-      title: "Roadmap",
-      url: "/dashboard/roadmap",
-      icon: Map,
-      isActive: false,
-    },
-    {
-      title: "Event Spaces",
-      url: "/dashboard/event_spaces",
-      icon: SectionIcon,
-      isActive: false,
-    },
-    {
-      title: "User Profile",
-      url: "/dashboard/user_profile",
-      icon: User,
-      isActive: false,
-    },
-  ],
+    { title: "Home", url: "/dashboard", icon: Home },
+    { title: "My Events", url: "/dashboard/my_events", icon: Frame },
+    { title: "Calendar", url: "/dashboard/calendar", icon: Calendar },
+    { title: "Roadmap", url: "/dashboard/roadmap", icon: Map },
+    { title: "Event Spaces", url: "/dashboard/event_spaces", icon: SectionIcon },
+    { title: "User Profile", url: "/dashboard/user_profile", icon: User },
+  ]
 }
-
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const [active, setActive] = useState<string>('')
   const pathname = usePathname()
 
   useEffect(() => {
-    if(pathname){
-      const segments = pathname.split('/').filter(Boolean);
+    if (pathname) {
+      const segments = pathname.split('/').filter(Boolean)
       const newActive = segments[1] || segments[0] || ''
-
       if (newActive !== active) {
         setActive(newActive)
       }
     }
   }, [pathname, active])
-  
+
+  const processedItems = data.navMain.map((item) => {
+    const segments = item.url.split('/').filter(Boolean)
+    const pathSegment = segments[1] || segments[0]
+    return {
+      ...item,
+      pathSegment,
+      isActive: active === pathSegment,
+    }
+  })
+
   return (
-    <Sidebar collapsible="icon" {...props} className="mt-24 border-t-2">
-      <SidebarHeader>
-      </SidebarHeader>
+    <Sidebar collapsible="icon" {...props} className="mt-15">
+      <SidebarHeader />
       <SidebarContent>
-        <NavMain items={data.navMain} active={active}/>
+        <NavMain items={processedItems} />
       </SidebarContent>
-      <SidebarFooter></SidebarFooter>
+      <SidebarFooter />
       <SidebarRail />
     </Sidebar>
   )

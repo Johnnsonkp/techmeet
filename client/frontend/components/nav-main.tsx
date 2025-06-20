@@ -1,8 +1,5 @@
 "use client"
 
-import { ChevronRight, type LucideIcon } from "lucide-react"
-import { useRouter } from 'next/navigation'
-
 import {
   SidebarGroup,
   SidebarMenu,
@@ -10,70 +7,60 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 
+import Link from "next/link"
+import type { LucideIcon } from "lucide-react"
+import { useRouter } from 'next/navigation'
+
 type NavItem = {
   title: string
   url: string
   icon?: LucideIcon
   isActive?: boolean
-  items?: {
-    title: string
-    url: string
-  }[]
+  pathSegment?: string
 }
 
-export function NavMain({items, active}: {
-  items: {
-    title: string
-    url: string
-    icon?: LucideIcon
-    isActive?: boolean
-    items?: {
-      title: string
-      url: string
-    }[]
-  }[]
-  active: string
-}) {
-  const router = useRouter()
+export function NavMain({ items }: { items: NavItem[] }) {
+  
+  const handleNavigation = (e: any) => {
+    const body = document.getElementById("userdDashboard")
 
-  const seperatePaths = (item: NavItem) => {
-    const segmentedPath = item.url.split('/').filter(Boolean);
-    const segment = segmentedPath[1] ||  segmentedPath[0];
-
-    return segment
+    e.target.classList.add('nav-item-select')     
+     if(body){
+      body.classList.add('page-transition')
+     }
   }
 
-  const handleNavigation = (item: NavItem) => {
-    const segmentedPath = seperatePaths(item)
-
-    if(active !== segmentedPath){
-      if(segmentedPath !== 'dashboard'){
-        return router.push(`/dashboard/${segmentedPath}`)
-      }
-      return router.push(`/dashboard/`)
-    }
+  const NavButton = ({item}: {item: NavItem}) => {
+    return (
+      <Link
+        onClick={(e) => handleNavigation(e)}
+        href={item.url}
+        className={
+          item.isActive ? 
+          'flex align-middle item-title text-[#0152FF] bg-[#F5F5F5] w-[100%] py-3 rounded-lg z-20 ' : 
+          'flex align-middle text-[#777] w-[100%] py-3 rounded-lg z-20 '
+        } 
+      >
+        <span className={`item-icon w-[30px] mr-1 ${item.isActive ? "opacity-100" : "opacity-65"}`}>
+        {/* <span className={`item-icon w-[30px] mr-1`}> */}
+          {item.icon && <item.icon/>}
+        </span>
+        {item.title}
+      </Link>
+    )
   }
 
   return (
-    <SidebarGroup className="">
+    <SidebarGroup>
       <SidebarMenu>
         {items.map((item, index) => (
           <SidebarMenuItem key={index}>
-            <SidebarMenuButton
-              onClick={(e) => handleNavigation(item)} 
-              tooltip={item.title}
-              size={'lg'}
-              isActive={active == seperatePaths(item)}
-              className={'cursor-pointer'}
-            >
-              <span className={`w-[30px] ${active == seperatePaths(item)? 'text-[#0152FF]' : 'text-[#777777a6]'}`}>
-                {item.icon && <item.icon />}
-              </span>
-              <span className={`${active == seperatePaths(item)? 'text-[#0152FF]': 'text-[#777]' }`}>{item.title}</span>
-            </SidebarMenuButton>
+            <SidebarMenuButton className="cursor-pointer my-1"  size="default" tooltip={item.title}>
+              <NavButton item={item} />
+            </SidebarMenuButton> 
           </SidebarMenuItem>
         ))}
-        </SidebarMenu>
+      </SidebarMenu>
     </SidebarGroup>
-  )  
+  )
 }
