@@ -53,3 +53,30 @@ class ProfileResource(Resource):
         profile.bio = data.get("bio", profile.bio)
         db.session.commit()
         return jsonify({"message": "Profile updated"}), 200
+    
+    @api.expect(profile_model)
+    @api.marshal_with(profile_model)
+    @jwt_required()
+    def post(self):
+        """Create a new profile"""
+        user_id = get_jwt_identity()
+        data = api.payload
+        profile = Profile.query.filter_by(user_id=user_id).first()
+        if profile:
+            api.abort(400, "Profile already exists")
+        profile = Profile(user_id=user_id, job_title=data.get('job_title'), skills=data.get('skills'))
+        db.session.add(profile)
+        db.session.commit()
+        return profile, 201
+    
+    @api.marshal_with(profile_model)
+    @jwt_required()
+    def delete(self):
+        """Delete a profile"""
+        user_id = get_jwt_identity()
+        profile = Profile.query.filter_by(user_id=user_id).first()
+        if not profile:
+            api.abort(404, "Profile not found")
+        db.session.delete(profile)
+        db.session.commit()
+        return {"message": "Profile deleted"}, 200
