@@ -54,7 +54,6 @@ export default async function Page() {
           </div>
         </div>
         <div className=" flex flex-col items-center">
-          {/* <SideBySideIcons /> */}
           <TimerDisplay />
           <div className="container relative mx-auto max-w-2xl pb-20 pt-10 space-y-6 lg:max-w-4xl lg:px-12 flex flex-col items-center">
             <div className="prose sm:prose-lg md:prose-xl xl:prose-2xl text-gray-700 prose-a:text-gray-700 font-light text-center">

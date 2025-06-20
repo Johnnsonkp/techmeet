@@ -6,7 +6,7 @@ import React from 'react'
 async function page() {
 
   return (
-    <div className="flex flex-1 flex-col gap-4 p-15 pt-0">
+    <div id="userdDashboard" className="dashboardHidden flex flex-1 flex-col gap-4 p-15 pt-0">
       <CustomCalendar />
     </div>
   )
