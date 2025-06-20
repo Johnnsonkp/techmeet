@@ -1,5 +1,5 @@
 'use client'
 
 export const getCurrentURL = () => {
-  return window.location;
+  return window.location.pathname
 }

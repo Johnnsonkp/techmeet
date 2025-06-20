@@ -17,7 +17,6 @@ import { AppSidebar } from "@/components/app-sidebar"
 import PathDisplay from "@/components/ui/ServerCompBreadCrumb"
 import { Separator } from "@/components/ui/separator"
 import { SignOutButton } from "@/components/ui/authButtons/AuthButtons";
-import useTransitionCustom from '@/components/utils/useTransition'
 
 export default async function DashboardPage({children}: {children: React.ReactNode}) {
   await requireAuth()
@@ -28,7 +27,7 @@ export default async function DashboardPage({children}: {children: React.ReactNo
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        <header className="border-t-2 flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1 cursor-pointer" />
             <Separator
@@ -51,13 +50,7 @@ export default async function DashboardPage({children}: {children: React.ReactNo
             </Breadcrumb>
           </div>
         </header>
-        <main 
-          // style={{
-          //   opacity: smoothTransition.opacity,
-          //   transform: smoothTransition.transform,
-          //   transition: "opacity 0.2s ease, transform 0.5s ease",
-          // }}
-          className="">{children}</main>
+        <main className="">{children}</main>
       </SidebarInset>
      
     </SidebarProvider>

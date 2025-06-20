@@ -1,5 +1,4 @@
-import { AllPosts, AllPostsCustom } from "@/app/components/Posts";
-
+import { AllPostsCustom } from "@/app/components/Posts";
 import BottomBar from "@/components/timer/bottomBar/BottomBar";
 import DefaultFooter from "@/components/footer/Footer";
 import GetStartedCode from "@/app/components/GetStartedCode";
