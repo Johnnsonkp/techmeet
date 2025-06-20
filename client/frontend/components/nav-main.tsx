@@ -38,7 +38,7 @@ export function NavMain({ items }: { items: NavItem[] }) {
         className={
           item.isActive ? 
           'flex align-middle item-title text-[#0152FF] bg-[#F5F5F5] w-[100%] py-3 rounded-lg' : 
-          'flex align-middle text-[#777]'
+          'flex align-middle text-[#777] w-[100%] py-3 rounded-lg'
         } 
       >
         <span className={`item-icon w-[30px] mr-1`}>
