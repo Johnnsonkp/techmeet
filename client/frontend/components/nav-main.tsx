@@ -37,11 +37,12 @@ export function NavMain({ items }: { items: NavItem[] }) {
         href={item.url}
         className={
           item.isActive ? 
-          'flex align-middle item-title text-[#0152FF] bg-[#F5F5F5] w-[100%] py-3 rounded-lg' : 
-          'flex align-middle text-[#777] w-[100%] py-3 rounded-lg'
+          'flex align-middle item-title text-[#0152FF] bg-[#F5F5F5] w-[100%] py-3 rounded-lg z-20 ' : 
+          'flex align-middle text-[#777] w-[100%] py-3 rounded-lg z-20 '
         } 
       >
-        <span className={`item-icon w-[30px] mr-1`}>
+        <span className={`item-icon w-[30px] mr-1 ${item.isActive ? "opacity-100" : "opacity-65"}`}>
+        {/* <span className={`item-icon w-[30px] mr-1`}> */}
           {item.icon && <item.icon/>}
         </span>
         {item.title}

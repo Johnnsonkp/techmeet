@@ -53,6 +53,7 @@ export default async function Header() {
               
               <li className="cursor-pointer sm:before:w-[1px] sm:before:bg-gray-200 before:block sm:gap-4 md:gap-6">
                 <NavAvatar />
+                {/* <NavDropDown /> */}
               </li>
 
             </ul>
