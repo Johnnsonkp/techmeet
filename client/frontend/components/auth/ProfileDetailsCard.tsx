@@ -11,7 +11,11 @@ const dummyTechSuggestions = [
   "TypeScript",
 ];
 
-const ProfileDetailsCard: React.FC = () => {
+interface Props {
+  onNext: () => void;
+}
+
+const ProfileDetailsCard: React.FC<Props> = ({ onNext }) => {
   const [techInput, setTechInput] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
@@ -29,6 +33,12 @@ const ProfileDetailsCard: React.FC = () => {
     setSelectedTags(selectedTags.filter((t) => t !== tag));
   };
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // TODO: handle collected form data here
+    onNext(); // Move to Step 3
+  };
+
   return (
     <div className="h-screen w-screen flex justify-center items-center font-poppins">
       <div className="bg-gradient-to-r from-blue-500 to-purple-500 rounded-[26px] m-4">
@@ -37,7 +47,7 @@ const ProfileDetailsCard: React.FC = () => {
             Profile Details
           </h1>
 
-          <form className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="text-lg text-gray-700">Employment Status</label>
               <select className="border p-3 shadow-md rounded-lg w-full">
@@ -69,10 +79,24 @@ const ProfileDetailsCard: React.FC = () => {
               <label className="text-lg text-gray-700">Technologies of Interest</label>
               <input
                 type="text"
-                placeholder="TypeScript, Next.js, AI, etc."
+                value={techInput}
+                onChange={(e) => setTechInput(e.target.value)}
+                onKeyDown={handleAddTag}
+                placeholder="Type and press Enter to add"
                 className="border p-3 shadow-md rounded-lg w-full"
               />
-              <small className="text-gray-400">Type comma-separated values</small>
+              <small className="text-gray-400">Press Enter to add tags</small>
+              <div className="flex flex-wrap gap-2 mt-2">
+                {selectedTags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm cursor-pointer"
+                    onClick={() => removeTag(tag)}
+                  >
+                    {tag} &times;
+                  </span>
+                ))}
+              </div>
             </div>
 
             <button
