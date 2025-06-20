@@ -60,16 +60,24 @@ const AboutYouCard: React.FC<Props> = ({ onComplete }) => {
               <input
                 type="file"
                 accept="image/*"
-                id="image"
+                id="imageUpload"
                 onChange={handleImageChange}
-                className="border p-3 shadow-md rounded-lg w-full mt-1"
+                className="hidden"
               />
+              <label 
+                htmlFor="imageUpload"
+                className="inline-block cursor-pointer bg-gradient-to-r from-blue-500 to-purple-500 text-white py-2 px-4 rounded-lg shadow-md hover:scale-105 transition duration-300 text-center"
+              >
+                Upload Image
+              </label>
               {imagePreview && (
-                <img
-                  src={imagePreview}
-                  alt="Preview"
-                  className="w-32 h-32 object-cover rounded-full"
-                />
+                <div>
+                  <img
+                    src={imagePreview}
+                    alt="Preview"
+                    className="w-32 h-32 object-cover rounded-full"
+                  />
+                </div>
               )}
             </div>
 
