@@ -5,8 +5,19 @@ from flask import request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app import db
 from app.api.v1.models.profile import Profile
+from flask_restx import fields   # added by Mao 21/6/2025
 
 api = Namespace('profile', description='Profile operations')
+
+
+#  added by Mao 21/6/2025 needed for swagger
+profile_model = api.model('Profile', {
+    'user_id': fields.Integer(required=True, description='User ID'),
+    'job_title': fields.String(required=True, description='Job title'),
+    'skills': fields.String(required=True, description='Skills'),
+    'personality': fields.String(description='Personality type'),
+    'bio': fields.String(description='Profile bio')
+})
 
 @api.route('/profiles')
 class ProfileList(Resource):
