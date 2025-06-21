@@ -17,8 +17,7 @@ export const authOptions: NextAuthConfig = {
         }, // Fixed comma added
       },
     }), // Correctly closed GoogleProvider
-
-  GithubProvider({
+    GithubProvider({
       clientId: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
       authorization:{
@@ -26,43 +25,35 @@ export const authOptions: NextAuthConfig = {
           prompt: "consent",
         },
       },
-  }), // closed GithubProvider
-    
+    }), // closed GithubProvider
   ],
-
-  
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
-    async jwt({ token, user, session, trigger }) {
-      if (trigger === "update" && session?.name !== token.name) {
-        token.name = session.name;
-        try {
-          // await setName(token.name);
-          await token.name
-        } catch (error) {
-          console.error("Failed to set user name:", error);
-        }
+    async jwt({ token, user, account }) {
+      if (account) {
+        token.access_token = account.access_token;
+        token.provider = account.provider;
       }
 
       if (user) {
-        // await clearStaleTokens(); // Clear stale verification tokens from database after a successful sign in
-        return {
-          ...token,
-          id: user.id,
-        };
+        token.id = user.id;
+        token.email = user.email;
       }
+
       return token;
     },
     async session({ session, token }) {
-      console.log("session callback", { session, token });
+      // You’ll use this in your React app to send data to Flask
       return {
         ...session,
         user: {
           ...session.user,
           id: token.id as string,
+          email: token.email,
         },
+        access_token: token.access_token,
+        provider: token.provider,
       };
     },
-  },
-}; // Correctly closed export
-//--------------------------------
+  }
+};
