@@ -1,29 +1,36 @@
 """Profile Model Route"""
 
-from flask_restx import Namespace, Resource
+from flask_restx import Namespace, Resource, fields
 from flask import request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app import db
 from app.api.v1.models.profile import Profile
 
-api = Namespace('profile', description='Profile operations')
+api = Namespace('profiles', description='Profile operations')
 
-@api.route('/profiles')
-class ProfileList(Resource):
-    def get(self):
-        profiles = Profile.query.all()
-        return [
-            {
-                "id": profile.id,
-                "user_id": profile.user_id,
-                "job_title": profile.job_title,
-                "skills": profile.skills,
-                "personality": profile.personality,
-                "bio": profile.bio
-            } for profile in profiles
-        ], 200
+profile_model = api.model("Profile", {
+    'job_title': fields.String(required=True),
+    'skills': fields.Raw(description='takes skills data as json a object'),
+    'personality': fields.Raw(description='takes personality data as json a object'),
+    'bio': fields.String(required=True)
+})
 
-@api.route('/profile')
+# @api.route('/profiles')
+# class ProfileList(Resource):
+#     def get(self):
+#         profiles = Profile.query.all()
+#         return [
+#             {
+#                 "id": profile.id,
+#                 "user_id": profile.user_id,
+#                 "job_title": profile.job_title,
+#                 "skills": profile.skills,
+#                 "personality": profile.personality,
+#                 "bio": profile.bio
+#             } for profile in profiles
+#         ], 200
+
+@api.route('/')
 class ProfileResource(Resource):
     @jwt_required()
     def get(self):
@@ -54,9 +61,9 @@ class ProfileResource(Resource):
         db.session.commit()
         return jsonify({"message": "Profile updated"}), 200
     
-    @api.expect(profile_model)
-    @api.marshal_with(profile_model)
-    @jwt_required()
+    # @api.expect(profile_model)
+    # @api.marshal_with(profile_model)
+    # @jwt_required()
     def post(self):
         """Create a new profile"""
         user_id = get_jwt_identity()

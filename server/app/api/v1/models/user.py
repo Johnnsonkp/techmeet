@@ -22,12 +22,12 @@ class User(db.Model):
 
     # This is the many-to-one end
     profile_id = db.Column(db.Integer, db.ForeignKey('profiles.id'), nullable=True)
-
     oauth_connections = db.relationship('OauthConnection', backref='user', lazy=True, cascade='all, delete-orphan')
     
     def __repr__(self):
         return f'<User {self.email}>'
     
+    @classmethod
     def register_user(data):
         hashed_password = bcrypt.generate_password_hash(data.get('password')).decode('utf-8')
         user = User(
