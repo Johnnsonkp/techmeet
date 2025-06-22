@@ -8,7 +8,7 @@ import {
   Home,
   Map,
   SectionIcon,
-  User,
+  User
 } from "lucide-react"
 import {
   Sidebar,
@@ -20,6 +20,7 @@ import {
 import { useEffect, useState } from "react"
 
 import { NavMain } from "@/components/nav-main"
+import { connectionIcon } from "./icons/ConnectionIcon"
 import { usePathname } from 'next/navigation'
 
 const data = {
@@ -27,8 +28,9 @@ const data = {
     { title: "Home", url: "/dashboard", icon: Home },
     { title: "My Events", url: "/dashboard/my_events", icon: Frame },
     { title: "Calendar", url: "/dashboard/calendar", icon: Calendar },
-    { title: "Roadmap", url: "/dashboard/roadmap", icon: Map },
     { title: "Event Spaces", url: "/dashboard/event_spaces", icon: SectionIcon },
+    { title: "Roadmap", url: "/dashboard/roadmap", icon: Map },
+    { title: "Connections", url: "/dashboard/connections", icon: connectionIcon },
     { title: "User Profile", url: "/dashboard/user_profile", icon: User },
   ]
 }

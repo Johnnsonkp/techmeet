@@ -84,6 +84,8 @@
   --popover-foreground: oklch(0.145 0 0);
   --primary: oklch(0.205 0 0);
   --primary-foreground: oklch(0.985 0 0);
+  --primary-custom: #4361ee;
+  --secondary-custom: #3f37c9;
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
@@ -143,6 +145,17 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+:root {
+    --primary-custom: #4361ee;
+    --secondary-custom: #3f37c9;
+    --dark: #212529;
+    --light: #f8f9fa;
+    --success: #4cc9f0;
+    --warning: #f8961e;
+    --danger: #f72585;
+    --gray: #adb5bd;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -189,7 +202,6 @@ body {
   transition-duration: 200ms;
   transition: "opacity 0.5s ease-in-out, transform 0.5s ease-in-out";
   transform: translateY(10px);
-  /* opacity: 0; */
 }
 .page-transition {
   opacity: 0;
@@ -200,6 +212,6 @@ body {
 }
 
 .nav-item-select{
-  color: #0152FF;
-  background-color: #F9F9F9;
+  color: var(--primary-custom);
+  background-color: #e6ebff;
 }
