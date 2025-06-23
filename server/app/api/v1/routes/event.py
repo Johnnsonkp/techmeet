@@ -14,8 +14,9 @@ event_model = api.model('Event', {
 
 @api.route('/')
 class EventList(Resource):
+    @api.marshal_with(event_model)
     @api.doc('list_events') # Unique identifier route in the Swagger/OpenAPI documentation.
-    def get_events(self):
+    def get(self):
         events = Event.query.all()
         return [{
             "id": e.id, "name": e.name, "location": e.location,
@@ -24,7 +25,7 @@ class EventList(Resource):
 
     @api.expect(event_model)
     @api.doc('create_event') # Unique identifier route in the Swagger/OpenAPI documentation.
-    def create_event(self):
+    def post(self):
         data = request.get_json()
         event = Event(**data)
         db.session.add(event)

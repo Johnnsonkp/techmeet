@@ -15,14 +15,15 @@ class DevelopmentConfig(BaseConfig):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.getenv(
         'DATABASE_URL',
-        'mysql+pymysql://root:@localhost:3306/techmeet'
+        # 'mysql+pymysql://root:@localhost:3306/techmeet'
     )
 
 
 class ProductionConfig(BaseConfig):
     """Production configuration."""
     DEBUG = False
-    SQLALCHEMY_DATABASE_URI = os.getenv('MYSQL_URL')
+    # SQLALCHEMY_DATABASE_URI = os.getenv('MYSQL_URL')
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')  # added by Mao 20/6/25
 
     def __init__(self):
         if not os.getenv('SECRET_KEY'):

@@ -8,7 +8,7 @@ from app.api.v1.models.user import User
 from app.api.v1.models.oauth_connection import OauthConnection
 from datetime import datetime
 
-api = Namespace('oauth_connection', description='OAuth connections operations')
+api = Namespace('oauth_connections', description='OAuth connections operations')
 
 @api.route('/login', methods=['GET', 'POST', 'OPTIONS'])
 class Oauth(Resource):
