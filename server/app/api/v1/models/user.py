@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timezone
 from app import db, bcrypt
+from app.utils.name_parser import extract_names
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -28,17 +29,28 @@ class User(db.Model):
         return f'<User {self.email}>'
     
     @classmethod
-    def register_user(data):
-        hashed_password = bcrypt.generate_password_hash(data.get('password')).decode('utf-8')
-        user = User(
-            email = data.get('email'),
-            first_name = data.get('first_name'),
-            last_name = data.get('last_name'),
-            address = data.get('address'),
-            password = hashed_password,
-            is_admin = data.get('is_admin'),
-            employment_status = data.get('employment_status')
+    def register_user(cls, data, is_oauth=False):
+        password = data.get('password')
+        hashed_password = (
+            bcrypt.generate_password_hash(password).decode('utf-8') if password else None
         )
-        db.session.add(user)
-        db.session.commit()
+
+        # Fallback for OAuth name parsing
+        first_name = data.get('first_name')
+        last_name = data.get('last_name')
+
+        if is_oauth and not first_name and not last_name:
+            full_name = data.get('name')
+            first_name, last_name = extract_names(full_name)
+
+        user = cls(
+            email=data.get('email'),
+            first_name=first_name,
+            last_name=last_name,
+            address=data.get('address'),
+            password=hashed_password,
+            is_admin=data.get('is_admin', False),
+            employment_status=data.get('employment_status')
+        )
+
         return user

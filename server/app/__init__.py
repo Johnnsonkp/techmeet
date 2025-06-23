@@ -5,6 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from app.config import config as config_map
 from flask_migrate import Migrate
+from flask_cors import CORS
 import os
 
 db = SQLAlchemy()
@@ -16,6 +17,7 @@ migrate = Migrate()
 def create_app(config_class=None):
     """ method used to create an app instance"""
     app = Flask(__name__)
+    CORS(app, origins=["http://localhost:3000"], supports_credentials=True)
 
     # Determine config class: from arg > env var > default
     config_name = config_class or os.getenv('FLASK_CONFIG', 'default')
@@ -32,7 +34,7 @@ def create_app(config_class=None):
 
     # Register the namespaces
     api.add_namespace(users_ns, path='/api/v1/users')
-    api.add_namespace(oauth_ns, path='/api/v1/oauth_connections')
+    api.add_namespace(oauth_ns, path='/api/v1/oauth')
     api.add_namespace(profiles_ns, path='/api/v1/profiles')
     api.add_namespace(events_ns, path='/api/v1/events')
     api.add_namespace(connection_ns, path='/api/v1/connections')
