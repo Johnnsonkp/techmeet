@@ -10,5 +10,5 @@ class UserEvent(db.Model):
     # e.g event1 = Event(name = 'Python Melbourne', description = 'Python fest', price=0.00,
     #  location='MCG', 'seat_availability = 80, date=20/7/2025, time=19:00 )
     # user = db.relationship('User', backref='event_associations')
-    attendee_list= db.relationship('Event', backref='attentee')
+    # attendee_list= db.relationship('Event', backref='attentee')
     # accessing example event1 = Event(attendee=user.name or user.id)
