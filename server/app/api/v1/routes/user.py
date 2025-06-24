@@ -20,3 +20,6 @@ class UserList(Resource):
                 "email": user.email,
             } for user in users
         ], 200
+
+
+        

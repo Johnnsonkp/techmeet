@@ -8,18 +8,10 @@ from app.api.v1.models.profile import Profile
 from flask_restx import fields   # added by Mao 21/6/2025
 
 api = Namespace('profiles', description='Profile operations')
-api = Namespace('profile', description='Profile operations')
+#api = Namespace('profile', description='Profile operations')
 
 
 #  added by Mao 21/6/2025 needed for swagger
-profile_model = api.model('Profile', {
-    'user_id': fields.Integer(required=True, description='User ID'),
-    'job_title': fields.String(required=True, description='Job title'),
-    'skills': fields.String(required=True, description='Skills'),
-    'personality': fields.String(description='Personality type'),
-    'bio': fields.String(description='Profile bio')
-})
-
 profile_model = api.model("Profiles", {
     'job_title': fields.String(required=True),
     'skills': fields.Raw(description='takes skills data as json a object'),
