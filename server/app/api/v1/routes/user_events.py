@@ -42,26 +42,39 @@ class UserEventsList(Resource):
 @api.route('/<int:user_id>/<int:event_id>')
 class UserEvents(Resource):
     def post(self, user_id, event_id):
-        "Post an event to user_events that a specific user attended"
+        # "Post an event to user_events that a specific user attended"
         current_user_id = get_jwt_identity()
 
         # Authorization check
         if current_user_id != user_id:
             return {"error": "Unauthorized access"}, 403
         
-        user = User.query.filter_by(user_id=user_id).first()
-        if not user:
-            return {"error": "User not found"}, 404
+        # user = User.query.filter_by(user_id=user_id).first()
+        # if not user:
+        #     return {"error": "User not found"}, 404
         
-        user_event = UserEvent(user_id=user_id, event_id=event_id)
+        # user_event = UserEvent(user_id=user_id, event_id=event_id)
 
-        db.session.add(user_event)
+        # db.session.add(user_event)
+        # db.session.commit()
+
+        # return (f'Successfully added\n user_id: {user_event.user_id}\n event_id:{user_event.event_id})                 
+
+       
+
+        # Check if attendance already exists
+        if UserEvent.query.filter_by(user_id=user_id, event_id=event_id).first():
+            return {"error": "Already attending"}, 409
+
+        attendee = UserEvent(user_id=user_id, event_id=event_id)
+        db.session.add(attendee)
         db.session.commit()
 
-        return (f'Successfully added\n user_id: {user_event.user_id}\n event_id:{user_event.event_id}'
-                    
-
-        )
+        return {
+            "message": "Attendance recorded",
+            "user_id": attendee.user_id,
+            "event_id": attendee.event_id
+        }, 201
 
 
         
