@@ -8,45 +8,83 @@ interface AuthStep2Props {
 }
 
 export const AuthStep2: React.FC<AuthStep2Props> = ({ formData, updateFormData, onNext, onBack }) => {
+  const employmentOptions = [
+    'Employed full-time',
+    'Employed part-time',
+    'Freelancing',
+    'Seeking opportunities'
+  ];
+
   return (
-    <div className="space-y-6">
-      <input
-        type="text"
-        placeholder="Job Title"
-        value={formData.jobTitle}
-        onChange={(e) => updateFormData({ jobTitle: e.target.value })}
-        className="w-full border p-3 rounded-md"
-      />
+    <div className="space-y-6 w-full max-w-lg mx-auto text-gray-800">
+      {/* Step Indicator */}
+      <div className="flex justify-center space-x-2 mb-4">
+        <div className="w-4 h-4 rounded-full bg-indigo-500" />
+        <div className="w-4 h-4 rounded-full bg-indigo-500" />
+        <div className="w-4 h-4 rounded-full bg-gray-300" />
+      </div>
 
-      <select
-        value={formData.employmentStatus}
-        onChange={(e) => updateFormData({ employmentStatus: e.target.value })}
-        className="w-full border p-3 rounded-md"
-      >
-        <option value="">Employment Status</option>
-        <option value="employed">Employed</option>
-        <option value="student">Student</option>
-        <option value="freelancer">Freelancer</option>
-        <option value="looking">Looking for work</option>
-      </select>
+      {/* Header */}
+      <div className="text-center">
+        <h2 className="text-2xl font-bold text-indigo-700">Personal Details for Profile Creation</h2>
+        <p className="text-sm text-gray-500 mt-1">STEP 2 OF 3</p>
+      </div>
 
-      <input
-        type="text"
-        placeholder="Technical Skills (comma-separated)"
-        value={formData.technicalSkills.join(', ')}
-        onChange={(e) =>
-          updateFormData({ technicalSkills: e.target.value.split(',').map((s) => s.trim()) })
-        }
-        className="w-full border p-3 rounded-md"
-      />
+      {/* Job Title */}
+      <div>
+        <label className="block text-sm font-medium mb-1">What is your current job title?</label>
+        <input
+          type="text"
+          value={formData.jobTitle}
+          onChange={(e) => updateFormData({ jobTitle: e.target.value })}
+          placeholder="Software Engineer"
+          className="w-full border rounded-md p-3 text-sm shadow-sm"
+        />
+      </div>
 
-      <div className="flex justify-between mt-6">
-        <button onClick={onBack} className="text-blue-600 font-medium">
+      {/* Employment Status */}
+      <div>
+        <label className="block text-sm font-medium mb-2">What is your current employment status?</label>
+        <div className="space-y-2">
+          {employmentOptions.map((option) => (
+            <label key={option} className="flex items-center gap-2 text-sm cursor-pointer">
+              <input
+                type="radio"
+                name="employmentStatus"
+                value={option}
+                checked={formData.employmentStatus === option}
+                onChange={() => updateFormData({ employmentStatus: option })}
+                className="accent-indigo-500"
+              />
+              {option}
+            </label>
+          ))}
+        </div>
+      </div>
+
+      {/* Skills Input (Single-line for now, can be changed to a tag input later) */}
+      <div>
+        <label className="block text-sm font-medium mb-1">List your top technical skills</label>
+        <input
+          type="text"
+          placeholder="Add a skill..."
+          value={formData.skills}
+          onChange={(e) => updateFormData({ skills: e.target.value })}
+          className="w-full border rounded-md p-3 text-sm shadow-sm"
+        />
+      </div>
+
+      {/* Navigation Buttons */}
+      <div className="flex justify-between items-center pt-4">
+        <button
+          onClick={onBack}
+          className="px-6 py-2 border rounded-md text-gray-700 bg-white hover:bg-gray-100 transition"
+        >
           Back
         </button>
         <button
           onClick={onNext}
-          className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-md font-medium"
+          className="px-6 py-2 text-white rounded-md bg-gradient-to-r from-indigo-500 to-purple-500 hover:opacity-90 transition"
         >
           Next
         </button>

@@ -40,7 +40,7 @@ export const AuthStep1: React.FC<AuthStep1Props> = ({ formData, updateFormData, 
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-gray-900">
+        <h2 className="text-2xl font-bold text-indigo-700">
           {formData.mode === 'signup' ? 'Create Account' : 'Sign In'}
         </h2>
         <p className="text-sm text-gray-500 mt-1">STEP 1 OF 3</p>
