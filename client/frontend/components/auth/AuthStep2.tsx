@@ -17,13 +17,6 @@ export const AuthStep2: React.FC<AuthStep2Props> = ({ formData, updateFormData, 
 
   return (
     <div className="space-y-6 w-full max-w-lg mx-auto text-gray-800">
-      {/* Step Indicator */}
-      <div className="flex justify-center space-x-2 mb-4">
-        <div className="w-4 h-4 rounded-full bg-indigo-500" />
-        <div className="w-4 h-4 rounded-full bg-indigo-500" />
-        <div className="w-4 h-4 rounded-full bg-gray-300" />
-      </div>
-
       {/* Header */}
       <div className="text-center">
         <h2 className="text-2xl font-bold text-indigo-700">Personal Details for Profile Creation</h2>
