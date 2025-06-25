@@ -157,7 +157,7 @@ class UserEvents(Resource):
         }, 201
 
     def delete(self, user_id, event_id):
-        # delete a specific event which attached to a specific user
+        """ Delete a specific event which registered to a specific user """
         
         current_user_id = get_jwt_identity()
         # Authorization check as only the login current user can attached his/her own event
