@@ -39,13 +39,16 @@ class UserEventsList(Resource):
             'event_id': user_event.event_id
         } for user_event in user_events]
     
+
+    
 @api.route('/<int:user_id>/<int:event_id>')
 class UserEvents(Resource):
+    # "Post an event to user_events that a specific user attended"
     def post(self, user_id, event_id):
-        # "Post an event to user_events that a specific user attended"
+       
         current_user_id = get_jwt_identity()
 
-        # Authorization check
+        # Authorization check as only the login current user can attached his/her own event
         if current_user_id != user_id:
             return {"error": "Unauthorized access"}, 403
         
@@ -71,11 +74,32 @@ class UserEvents(Resource):
         db.session.commit()
 
         return {
-            "message": "Attendance recorded",
+            "message": "Added successfully",
             "user_id": attendee.user_id,
             "event_id": attendee.event_id
         }, 201
 
+    def delete(self, user_id, event_id):
+        # delete a specific event which attached to a specific user
+        
+        current_user_id = get_jwt_identity()
+        # Authorization check as only the login current user can attached his/her own event
+        if current_user_id != user_id:
+            return {"error": "Unauthorized access"}, 403
+        attendee = UserEvent.query.filter_by(user_id=user_id, event_id=event_id).first()
+        
+        # search if the event exists and assigned to the current user
+        if not attendee:
+        # if not UserEvent.query.filter_by(user_id=user_id, event_id=event_id).first():
+            return {"error": "Event not found thus can't be deleted, please check the event detail"}, 409
+        db.session.delete(attendee)
+        db.session.commit()
+        return {
+            "message": "Delete successfully",
+            "user_id": attendee.user_id,
+            "event_id": attendee.event_id
+        }, 201
+        
 
         
 
