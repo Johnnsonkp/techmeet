@@ -1,9 +1,42 @@
 import React from 'react';
+import Image from 'next/image';
 
 export const AuthImageSection = () => {
   return (
-    <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-600 to-purple-700 relative overflow-hidden">
-      <div className="absolute inset-0 bg-black/20" />
+    <div className="hidden lg:flex lg:w-1/2 relative bg-black">
+      {/* Grid of event images in the background */}
+      <div className="absolute inset-0 grid grid-cols-2 gap-2 p-4 opacity-30">
+        <Image
+          src="/images/event1.jpg"
+          alt="Event 1"
+          width={200}
+          height={200}
+          className="w-full h-full object-cover rounded-lg"
+        />
+        <Image
+          src="/images/event2.jpg"
+          alt="Event 2"
+          width={200}
+          height={200}
+          className="w-full h-full object-cover rounded-lg"
+        />
+        <Image
+          src="/images/event3.jpg"
+          alt="Event 3"
+          width={200}
+          height={200}
+          className="w-full h-full object-cover rounded-lg"
+        />
+        <Image
+          src="/images/event4.jpg"
+          alt="Event 4"
+          width={200}
+          height={200}
+          className="w-full h-full object-cover rounded-lg"
+        />
+      </div>
+
+      {/* Foreground content */}
       <div className="relative z-10 flex flex-col justify-center items-center text-white p-12">
         <div className="max-w-lg text-center">
           <h1 className="text-4xl font-bold mb-6">Join TechMeet</h1>
@@ -25,17 +58,6 @@ export const AuthImageSection = () => {
             </div>
           </div>
         </div>
-      </div>
-      {/* Background Pattern */}
-      <div className="absolute bottom-0 right-0 opacity-10">
-        <svg width="404" height="404" fill="none" viewBox="0 0 404 404">
-          <defs>
-            <pattern id="85737c0e-0916-41d7-917f-596dc7edfa27" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
-              <rect x="0" y="0" width="4" height="4" fill="currentColor" />
-            </pattern>
-          </defs>
-          <rect width="404" height="404" fill="url(#85737c0e-0916-41d7-917f-596dc7edfa27)" />
-        </svg>
       </div>
     </div>
   );
