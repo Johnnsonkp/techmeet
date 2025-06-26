@@ -6,9 +6,11 @@ import {
   Calendar,
   Frame,
   Home,
+  ListIcon,
   Map,
   SectionIcon,
-  User
+  User,
+  UserPlus2,
 } from "lucide-react"
 import {
   Sidebar,
@@ -26,11 +28,11 @@ import { usePathname } from 'next/navigation'
 const data = {
   navMain: [
     { title: "Home", url: "/dashboard", icon: Home },
-    { title: "My Events", url: "/dashboard/my_events", icon: Frame },
+    { title: "My Events", url: "/dashboard/my_events", icon: ListIcon },
     { title: "Calendar", url: "/dashboard/calendar", icon: Calendar },
-    { title: "Event Spaces", url: "/dashboard/event_spaces", icon: SectionIcon },
+    { title: "Event Spaces", url: "/dashboard/event_spaces", icon: Frame },
     { title: "Roadmap", url: "/dashboard/roadmap", icon: Map },
-    { title: "Connections", url: "/dashboard/connections", icon: connectionIcon },
+    { title: "Connections", url: "/dashboard/connections", icon: UserPlus2 },
     { title: "User Profile", url: "/dashboard/user_profile", icon: User },
   ]
 }

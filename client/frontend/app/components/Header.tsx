@@ -17,7 +17,7 @@ export default async function Header() {
         <div className="flex items-center justify-between gap-5">
           <Link className="flex items-center gap-2" href="/">
             <span className="text-lg sm:text-2xl pl-2 font-semibold">
-              {settings?.title || "Techmeet"}
+              {settings?.title || "techmeet."}
             </span>
           </Link>
 
@@ -29,6 +29,12 @@ export default async function Header() {
               <li>
                 <Link href="/about" className="hover:underline">
                   About
+                </Link>
+              </li>
+
+              <li className="sm:before:w-[1px] sm:before:bg-gray-200 before:block flex sm:gap-4 md:gap-6">
+                <Link href="/blog" className="hover:underline py-2 px-4 ">
+                  Blog
                 </Link>
               </li>
 
