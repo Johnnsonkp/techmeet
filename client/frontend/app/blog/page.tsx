@@ -84,46 +84,6 @@ const page = () => {
 
   return (
     <div className="min-h-screen ">
-      {/* Header */}
-      {/* <div className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-4">
-              <h1 className="text-2xl font-bold text-gray-900">TechMeet Blog</h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <input 
-                  placeholder="Search articles..." 
-                  className="pl-10 w-64"
-                />
-              </div>
-              <Button>Subscribe</Button>
-            </div>
-          </div>
-        </div>
-      </div> */}
-
-      {/* Categories */}
-      {/* <div className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center space-x-8 py-4 overflow-x-auto">
-            {categories.map((category) => (
-              <button
-                key={category}
-                className={`whitespace-nowrap px-3 py-2 text-sm font-medium rounded-md transition-colors ${
-                  category === "All" 
-                    ? "bg-blue-100 text-blue-700" 
-                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
-                }`}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div> */}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Featured Posts Section */}
@@ -268,7 +228,7 @@ const page = () => {
                   <CardContent className="p-6">
                     <div className="flex items-start justify-between mb-3">
                       {/* <Badge variant="outline">{post.category}</Badge> */}
-                      <div variant="outline">{post.category}</div>
+                      <div>{post.category}</div>
                       <div className="flex items-center text-sm text-gray-500 space-x-3">
                         <span>{post.date}</span>
                         <span>{post.readTime}</span>
