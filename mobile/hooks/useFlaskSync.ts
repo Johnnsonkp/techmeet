@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useEffect } from 'react';
 
 export function useFlaskSync(response: any) {
     useEffect(() => {
@@ -18,7 +18,6 @@ export function useFlaskSync(response: any) {
                         access_token,
                     }),
                 });
-
                 const data = await flaskRes.json();
                 if (data.token) await AsyncStorage.setItem('tm_jwt', data.token);
             }
