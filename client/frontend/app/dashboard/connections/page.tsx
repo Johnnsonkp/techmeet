@@ -21,13 +21,13 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LargeText, MediumText } from '@/components/ui/textDisplay/LargeText'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useEffect, useState } from "react";
 
 // import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ConnectionForm } from "@/components/forms/ConnectionsForm";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import { useState } from "react";
 
 const Connections = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -119,6 +119,12 @@ const Connections = () => {
     { label: "Active Goals", value: "3", icon: Target },
     { label: "This Month", value: "+5", icon: Plus }
   ];
+
+  useEffect(() => {
+    fetch("http://api.dataatwork.org/v1/spec/skills-api.json")
+    .then(response => response.json())
+    .then(data => console.log("occupations skills", data));
+  }, [])
 
   return (
     <div id="userdDashboard" className="min-h-screen bg-white">
