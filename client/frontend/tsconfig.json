@@ -20,6 +20,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/auth/page.tsx", "lib/flask/syncFlask.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/auth/page.tsx", "lib/flask/syncFlask.js", "app/hooks/useSyncFlask.js"],
   "exclude": ["node_modules"]
 }

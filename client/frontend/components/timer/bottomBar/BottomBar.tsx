@@ -21,7 +21,7 @@ export default function BottomBar() {
         href={'/auth'}
         onClick={(e) => setStatus({
           loading: true,
-          action: e.target?.innerText
+          action: (e.target as HTMLElement)?.innerText
         })}
       >
         {status.loading && status.action == "Auth"? <Loader2Icon className="animate-spin" /> : "Auth"}
@@ -31,7 +31,7 @@ export default function BottomBar() {
         href={'/dashboard'}
         onClick={(e) => setStatus({
           loading: true,
-          action: e.target?.innerText
+          action: (e.target as HTMLElement)?.innerText
         })}
       >
         {status.loading && status.action == 'Dashboard'? <Loader2Icon className="animate-spin" /> : 'Dashboard'}
