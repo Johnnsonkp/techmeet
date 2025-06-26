@@ -32,4 +32,3 @@ class EventList(Resource):
         db.session.commit()
         return {"message": "Event created", "id": event.id}, 201
 
-@

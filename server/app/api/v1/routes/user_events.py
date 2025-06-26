@@ -15,7 +15,7 @@ user_event_model = api.model('UserEvent', {
 })
 
 # get the events of specific user
-@api.route('/users/<int:user_id>')
+@api.route('/<int:user_id>')
 class UserEventsList(Resource):
     # @api.doc(security='Bearer Auth')
     # @api.marshal_list_with(user_event_model)  # for development phase
@@ -69,7 +69,7 @@ class UserEventsList(Resource):
         return response, 200
 
 # get registered users of the specific event    
-@api.route('/events/<int:event_id>')
+@api.route('/<int:event_id>')
 #@api.route('/events/<int:event_id>/users')
 class EventUsersList(Resource):
     def get(self, event_id):
