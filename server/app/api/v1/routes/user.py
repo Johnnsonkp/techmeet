@@ -5,6 +5,7 @@ from flask import request
 from app.api.v1.models.user import User
 from app.api.v1.models.profile import Profile
 from app import db
+from flask_jwt_extended import create_access_token
 from app.api.v1.services.user_facade import UserFacade
 from app.api.v1.services.profile_facade import ProfileFacade
 
@@ -51,7 +52,6 @@ class NewUserAuth(Resource):
         if User.query.filter_by(email=email).first():
             return {'message': 'Email already exists'}, 400
             
-
         # Attempt to find an existing profile for the job
         profile = Profile.query.filter_by(job_title=desired_job).first()
 
@@ -73,7 +73,10 @@ class NewUserAuth(Resource):
         db.session.add(new_user)
         db.session.commit()
 
-        return UserFacade.to_dict(new_user), 201
+        jwt_token = create_access_token(identity=new_user.id)
+        created_user = UserFacade.to_dict(new_user)
+
+        return {"token": jwt_token, "created_user": created_user}, 201
 
 
 @api.route('/login', methods=['GET', 'POST', 'OPTIONS'])
