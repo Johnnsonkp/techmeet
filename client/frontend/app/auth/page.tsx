@@ -8,6 +8,7 @@ import ProfileDetailsCard from "../../components/auth/ProfileDetailsCard";
 import React from "react";
 import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { useSyncFlask } from "../hooks/useSyncFlask";
 
 const LoginPage: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
