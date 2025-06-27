@@ -2,7 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timezone
 from app import db, bcrypt
 from app.utils.name_parser import extract_names
-
+from werkzeug.security import generate_password_hash, check_password_hash
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -70,3 +70,14 @@ class User(db.Model):
         )
 
         return user
+    
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
+
+    def verify_password(self, password):
+        """Verifies if the provided password matches the hashed password."""
+
+        if not self.password:
+            raise ValueError("Password hash is missing from user record.")
+        return bcrypt.check_password_hash(self.password, password)

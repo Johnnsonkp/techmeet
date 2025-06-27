@@ -23,6 +23,11 @@ user_model = api.model('User', {
     'profile_photo_url': fields.String(required=False, description='Profile photo URL (Cloudinary or other)'),
 })
 
+user_login_model = api.model('User', {
+    'email': fields.String(required=True),
+    'password': fields.String(required=True),
+})
+
 @api.route('/', methods=['GET', 'POST', 'OPTIONS'])
 class UserList(Resource):
     def get(self):
@@ -76,25 +81,33 @@ class NewUserAuth(Resource):
         jwt_token = create_access_token(identity=new_user.id)
         created_user = UserFacade.to_dict(new_user)
 
-        return {"token": jwt_token, "created_user": created_user}, 201
+        return {"token": jwt_token, "user": created_user}, 201
 
 
 @api.route('/login', methods=['GET', 'POST', 'OPTIONS'])
-@api.expect(user_model)
-@api.doc('create_user')
+@api.expect(user_login_model)
+@api.doc('sign_in')
 class ExistingUserAuth(Resource):
-    def get(self):
-        """Creates a user"""
+    def post(self):
+        """Authenticate a user by email and password"""
         data = request.get_json()
 
-        if User.query.filter_by(email=data['email']).first():
-            return {'message': 'Email already exists'}, 400
+        print(f"login data {data}")
+
+        email = data.get('email')
+        password = data.get('password')
+
+        user = User.query.filter_by(email=email).first()
         
-        print(f"data {data}")
 
-        new_user = User.register_user(data, is_oauth=False)
+        # if not user or not user.check_password(password):
+        if not user or not user.verify_password(password):
+            return {'message': 'Invalid email or password'}, 401
+        
+        print(f" user: {user}")
 
-        db.session.add(new_user)
-        db.session.commit()
+        jwt_token = create_access_token(identity=user.id)
+        parsed_user_data = UserFacade.to_dict(user)
 
-        return UserFacade.to_dict(new_user)
+        print(f" token: {jwt_token} user: {parsed_user_data}")
+        return {"token": jwt_token, "user": parsed_user_data}
