@@ -40,14 +40,14 @@ export const AuthStep2: React.FC<AuthStep2Props> = ({ formData, updateFormData, 
         <label className="block text-sm font-medium mb-2">What is your current employment status?</label>
         <div className="space-y-2">
           {employmentOptions.map((option) => (
-            <label key={option} className="flex items-center gap-2 text-sm cursor-pointer">
+            <label key={option} className="flex items-center gap-2 text-sm">
               <input
                 type="radio"
                 name="employmentStatus"
                 value={option}
                 checked={formData.employmentStatus === option}
                 onChange={() => updateFormData({ employmentStatus: option })}
-                className="accent-indigo-500"
+                className="cursor-pointer accent-indigo-500"
               />
               {option}
             </label>
@@ -71,13 +71,13 @@ export const AuthStep2: React.FC<AuthStep2Props> = ({ formData, updateFormData, 
       <div className="flex justify-between items-center pt-4">
         <button
           onClick={onBack}
-          className="px-6 py-2 border rounded-md text-gray-700 bg-white hover:bg-gray-100 transition"
+          className="cursor-pointer px-6 py-2 border rounded-md text-gray-700 bg-white hover:bg-gray-100 transition"
         >
           Back
         </button>
         <button
           onClick={onNext}
-          className="px-6 py-2 text-white rounded-md bg-gradient-to-r from-indigo-500 to-purple-500 hover:opacity-90 transition"
+          className="cursor-pointer px-6 py-2 text-white rounded-md bg-gradient-to-r from-indigo-500 to-purple-500 hover:opacity-90 transition"
         >
           Next
         </button>

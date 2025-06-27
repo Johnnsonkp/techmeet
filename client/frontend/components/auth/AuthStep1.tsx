@@ -51,14 +51,14 @@ export const AuthStep1: React.FC<AuthStep1Props> = ({ formData, updateFormData, 
         {formData.mode === 'signup' ? (
           <>
             Already have an account?{' '}
-            <button onClick={toggleMode} className="text-blue-600 font-medium hover:underline">
+            <button onClick={toggleMode} className="cursor-pointer text-blue-600 font-medium hover:underline">
               Sign In
             </button>
           </>
         ) : (
           <>
             Don’t have an account?{' '}
-            <button onClick={toggleMode} className="text-blue-600 font-medium hover:underline">
+            <button onClick={toggleMode} className="cursor-pointer text-blue-600 font-medium hover:underline">
               Create one
             </button>
           </>
@@ -127,11 +127,11 @@ export const AuthStep1: React.FC<AuthStep1Props> = ({ formData, updateFormData, 
             type="checkbox"
             checked={formData.agreeToTerms}
             onChange={(e) => updateFormData({ agreeToTerms: e.target.checked })}
-            className="mt-1"
+            className="cursor-pointer mt-1"
           />
           <label>
             I agree to the{' '}
-            <span className="text-blue-600 hover:underline">Terms and Privacy Policy</span>
+            <span className="cursor-pointer text-blue-600 hover:underline">Terms and Privacy Policy</span>
           </label>
         </div>
       )}
@@ -139,7 +139,7 @@ export const AuthStep1: React.FC<AuthStep1Props> = ({ formData, updateFormData, 
       {/* Continue Button */}
       <button
         onClick={handleContinue}
-        className="w-full py-3 rounded-md text-white font-medium bg-gradient-to-r from-indigo-500 to-purple-500 hover:opacity-90 transition"
+        className="cursor-pointer w-full py-3 rounded-md text-white font-medium bg-gradient-to-r from-indigo-500 to-purple-500 hover:opacity-90 transition"
       >
         {formData.mode === 'signup' ? 'Continue' : 'Sign In'}
       </button>

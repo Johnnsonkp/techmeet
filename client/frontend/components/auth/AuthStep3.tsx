@@ -33,17 +33,32 @@ export const AuthStep3: React.FC<AuthStep3Props> = ({ formData, updateFormData, 
       {/* Profile Photo Upload */}
       <div>
         <label className="block text-sm font-medium mb-1">Upload a profile photo</label>
+
+        <div className="flex items-center gap-4">
+          <label
+            htmlFor="profilePhotoUpload"
+            className="cursor-pointer inline-block px-4 py-2 bg-gray-100 text-gray-700 rounded-md shadow-sm hover:bg-gray-200 transition"
+          >
+            Choose File
+          </label>
+
+          {/* Display selected file name */}
+          {formData.profilePhoto && (
+            <span className="text-sm text-gray-600">{formData.profilePhoto.name}</span>
+          )}
+        </div>
+
         <input
+          id="profilePhotoUpload"
           type="file"
           accept="image/*"
           onChange={(e) =>
             updateFormData({ profilePhoto: e.target.files?.[0] || null })
           }
-          className="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4
-                     file:rounded-md file:border-0 file:text-sm file:font-semibold
-                     file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200"
+          className="hidden"
         />
       </div>
+
 
       {/* Recommendations */}
       <div>
@@ -52,14 +67,14 @@ export const AuthStep3: React.FC<AuthStep3Props> = ({ formData, updateFormData, 
         </p>
         <div className="flex gap-4">
           {['Yes', 'No'].map((val) => (
-            <label key={val} className="flex items-center gap-2 text-sm cursor-pointer">
+            <label key={val} className="flex items-center gap-2 text-sm">
               <input
                 type="radio"
                 name="recommendations"
                 value={val}
                 checked={formData.recommendations === val}
                 onChange={() => updateFormData({ recommendations: val })}
-                className="accent-indigo-500"
+                className="cursor-pointer accent-indigo-500"
               />
               {val}
             </label>
@@ -74,14 +89,14 @@ export const AuthStep3: React.FC<AuthStep3Props> = ({ formData, updateFormData, 
         </p>
         <div className="flex gap-4">
           {['Yes', 'No'].map((val) => (
-            <label key={val} className="flex items-center gap-2 text-sm cursor-pointer">
+            <label key={val} className="flex items-center gap-2 text-sm">
               <input
                 type="radio"
                 name="connect"
                 value={val}
                 checked={formData.connectWithOthers === val}
                 onChange={() => updateFormData({ connectWithOthers: val })}
-                className="accent-indigo-500"
+                className="cursor-pointer accent-indigo-500"
               />
               {val}
             </label>
@@ -93,13 +108,13 @@ export const AuthStep3: React.FC<AuthStep3Props> = ({ formData, updateFormData, 
       <div className="flex justify-between items-center pt-4">
         <button
           onClick={onBack}
-          className="px-6 py-2 border rounded-md text-gray-700 bg-white hover:bg-gray-100 transition"
+          className="cursor-pointer px-6 py-2 border rounded-md text-gray-700 bg-white hover:bg-gray-100 transition"
         >
           Back
         </button>
         <button
           onClick={onSubmit}
-          className="px-6 py-2 text-white rounded-md bg-gradient-to-r from-indigo-500 to-purple-500 hover:opacity-90 transition"
+          className="cursor-pointer px-6 py-2 text-white rounded-md bg-gradient-to-r from-indigo-500 to-purple-500 hover:opacity-90 transition"
         >
           Complete Registration
         </button>
