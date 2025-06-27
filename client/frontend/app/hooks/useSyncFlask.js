@@ -8,6 +8,8 @@ export function useSyncFlask() {
   const base_url = process.env.NEXT_PUBLIC_FLASK_BASE_URL
 
   useEffect(() => {
+    console.log("base_url", base_url)
+
     const sync = async () => {
       const jwt = localStorage.getItem("tm_jwt");
       if (jwt) return; // Already synced
