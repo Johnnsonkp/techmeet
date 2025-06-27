@@ -24,9 +24,9 @@ export function NavMain({ items }: { items: NavItem[] }) {
     const body = document.getElementById("userdDashboard")
 
     e.target.classList.add('nav-item-select')     
-     if(body){
+    if(body){
       body.classList.add('page-transition')
-     }
+    }
   }
 
   const NavButton = ({item}: {item: NavItem}) => {
@@ -40,8 +40,8 @@ export function NavMain({ items }: { items: NavItem[] }) {
           'flex align-middle w-[100%] text-[#333] py-12 rounded-lg z-20 '
         }
       >
-        <span className={`item-icon min-w-5  mr-3 ${!item.isActive && 'opacity-70'}`}>
-          {item.icon && <item.icon/>}
+        <span className={`pt-[0.7] item-icon min-w-0 px-2 mr-2 ${!item.isActive && 'opacity-70'}`}>
+          {item.icon && <item.icon className="size-[18px]"/>}
         </span>
         {item.title}
       </Link>
@@ -53,7 +53,7 @@ export function NavMain({ items }: { items: NavItem[] }) {
       <SidebarMenu>
         {items.map((item, index) => (
           <SidebarMenuItem key={index}>
-            <SidebarMenuButton className="cursor-pointer my-1"  size="default" tooltip={item.title}>
+            <SidebarMenuButton className="my-[0.5] cursor-pointer p-0" size="default" tooltip={item.title}>
               <NavButton item={item} />
             </SidebarMenuButton> 
           </SidebarMenuItem>

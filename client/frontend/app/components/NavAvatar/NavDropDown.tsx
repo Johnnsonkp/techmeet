@@ -42,12 +42,11 @@ function NavDropDown({user}: any) {
 
         <div className="border-t border-gray-100 my-1"></div>
         
-        <a onClick={() => logout()} 
-          href="#" 
-          className="cursor-pointer px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-red-600 flex items-center transition-colors duration-200">
+        <button onClick={() => logout()} 
+          className="cursor-pointer w-full px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-red-600 flex items-center transition-colors duration-200">
             <LogOutIcon size={15}/>
             <span className='ml-2 text-xs'>Sign out</span>
-        </a>
+        </button>
 
       </div>
       

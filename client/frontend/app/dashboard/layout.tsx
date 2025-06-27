@@ -46,9 +46,8 @@ export default async function DashboardPage({children}: {children: React.ReactNo
             </Breadcrumb>
           </div>
         </header>
-        <main className="min-h-[100vh]">{children}</main>
+        <main className="min-h-[100vh] pb-30">{children}</main>
       </SidebarInset>
-     
     </SidebarProvider>
   )
 }
