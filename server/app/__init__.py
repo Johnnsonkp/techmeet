@@ -17,11 +17,10 @@ bcrypt = Bcrypt()
 jwt = JWTManager()
 migrate = Migrate()
 
-# def create_app(config_class="config.DevelopmentConfig"):
 def create_app(config_class=None):
     """ method used to create an app instance"""
     app = Flask(__name__)
-    CORS(app, origins=["http://localhost:3000"], supports_credentials=True)
+    CORS(app, origins=["http://localhost:3000", "https://techmeet-production.up.railway.app"], supports_credentials=True)
 
     cloudinary.config(
       # cloud_name=app.config['CLOUD_NAME'],
