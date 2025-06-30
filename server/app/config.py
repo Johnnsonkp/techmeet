@@ -9,6 +9,12 @@ class BaseConfig:
     SECRET_KEY = os.getenv('SECRET_KEY', 'insecure-default-key')  # Fallback for dev only
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+     # Cloudinary-specific variables
+    CLOUDINARY_URL = os.getenv('CLOUDINARY_URL')
+    CLOUD_NAME = os.getenv('CLOUD_NAME')
+    CLOUD_API_KEY = os.getenv('CLOUD_API_KEY')
+    CLOUD_API_SECRET = os.getenv('CLOUD_API_SECRET')
+
 
 class DevelopmentConfig(BaseConfig):
     """Development configuration."""

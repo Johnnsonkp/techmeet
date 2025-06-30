@@ -5,6 +5,7 @@ from flask import request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app import db
 from app.api.v1.models.profile import Profile
+from app.api.v1.services.profile_facade import ProfileFacade
 from flask_restx import fields   # added by Mao 21/6/2025
 
 api = Namespace('profiles', description='Profile operations')
@@ -16,23 +17,8 @@ profile_model = api.model("Profiles", {
     'job_title': fields.String(required=True),
     'skills': fields.Raw(description='takes skills data as json a object'),
     'personality': fields.Raw(description='takes personality data as json a object'),
-    'bio': fields.String(required=True)
+    'description': fields.String(required=True)
 })
-
-# @api.route('/profiles')
-# class ProfileList(Resource):
-#     def get(self):
-#         profiles = Profile.query.all()
-#         return [
-#             {
-#                 "id": profile.id,
-#                 "user_id": profile.user_id,
-#                 "job_title": profile.job_title,
-#                 "skills": profile.skills,
-#                 "personality": profile.personality,
-#                 "bio": profile.bio
-#             } for profile in profiles
-#         ], 200
 
 @api.route('/')
 class ProfileResource(Resource):
