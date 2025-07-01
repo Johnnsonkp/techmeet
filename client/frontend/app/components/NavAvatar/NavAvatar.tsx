@@ -1,3 +1,5 @@
+'use client';
+
 import './avatarStyles.css'
 
 // import { ChevronsUpDown } from 'lucide-react';
@@ -5,14 +7,18 @@ import Image from 'next/image'
 import NavDropDown from './NavDropDown';
 import UnAuthAvatar from "@/components/Nav/UnAuthAvatar";
 import { currentUser } from "../../../lib/auth/user";
+import { useAuthStore } from '@/store/authStore';
 
 type Props = {
   small?: boolean;
 };
 
-export default async function NavAvatar ({ small = false }: Props) {
+export default function NavAvatar ({ small = false }: Props) {
   const fallbackSrc = "https://www.svgrepo.com/show/382106/avatar-boy.svg"
-  const user = await currentUser()
+  // const user = await currentUser()
+  const user = useAuthStore((s) => s.user);
+
+  console.log("user zustland", user)
 
   return (
     <div className="dropdown relative cursor-pointer">
