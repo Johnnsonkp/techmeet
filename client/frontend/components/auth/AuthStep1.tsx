@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
+
 import { AuthButton } from './AuthButton';
 
 interface AuthStep1Props {
   formData: any;
   updateFormData: (data: Partial<any>) => void;
   onNext: () => void;
+  loading?: boolean;
 }
 
-export const AuthStep1: React.FC<AuthStep1Props> = ({ formData, updateFormData, onNext }) => {
+export const AuthStep1: React.FC<AuthStep1Props> = ({ formData, updateFormData, onNext, loading }) => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const toggleMode = () => {
@@ -139,9 +141,10 @@ export const AuthStep1: React.FC<AuthStep1Props> = ({ formData, updateFormData, 
       {/* Continue Button */}
       <button
         onClick={handleContinue}
-        className="cursor-pointer w-full py-3 rounded-md text-white font-medium bg-gradient-to-r from-indigo-500 to-purple-500 hover:opacity-90 transition"
+        disabled={loading}
+        className="w-full mt-4 cursor-pointer py-3 rounded-md text-white font-medium bg-gradient-to-r from-indigo-500 to-purple-500 hover:opacity-90 transition"
       >
-        {formData.mode === 'signup' ? 'Continue' : 'Sign In'}
+        {loading ? 'Loading...' : (formData.mode === 'signup' ? 'Continue' : 'Sign In')}
       </button>
 
       {/* Errors */}

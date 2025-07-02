@@ -1,6 +1,3 @@
-'use client';
-
-import { AchievementsCard, ActivityCard, UserBio } from "@/components/profile/Cards"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Building,
@@ -20,90 +17,13 @@ import {
   Users
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { GithubStandAloneBtn, LinkedInStandAloneBtn } from "@/components/ui/buttons/Buttons";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
+// import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { MediumText } from '@/components/ui/textDisplay/LargeText'
-import { NeutralButton } from "@/components/ui/buttons/Buttons"
-import Profile from "./page_2"
-import React from 'react'
-import { SkillTags } from "@/components/profile/Cards"
-import { Tag } from "@/components/profile/Tag";
-import UserProfileCard from "@/components/user/UserProfileCard"
-import { currentUser } from "@/lib/auth/user"
-import { useAuthStore } from "@/store/authStore";
 
-interface UserI {
-  image: string | null,
-  first_name?: string | null,
-  last_name?: string | null,
-  name?: string | null,
-  job_tile?: string | null,
-  desired_job?: string | null
-}
-
-type Props = {
-  user: UserI | any;
-};
-
-function page() {
-  const user = useAuthStore((s) => s.user);
-
-  const fallbackSrc = "https://www.svgrepo.com/show/382106/avatar-boy.svg"
-  const userName = !user? "John Doe" : user?.name
-  const userImage = !user? fallbackSrc : user?.image || fallbackSrc
-  const currentOccupation = !user? "Occupation" : null
-  const desiredOccupation = !user? "Desired Occupation" : null
-  const userEmail = user?.email || ""
-  
-
-  // return (
-    // <div id="userdDashboard" className="dashboardHidden">
-    //   <Profile />
-    // </div>
-    // <div id="userdDashboard" className="dashboardHidden flex flex-1 flex-col gap-4 p-15 pt-0">
-    //   <div className="grid auto-rows-min gap-3 md:grid-cols-2">
-    //     <UserProfileCard user={user}/>
-    //     <div className="flex-row h-8 justify-end">  
-    //       <NeutralButton title="Edit" href="/" Icon={Edit} />
-    //       <div className="flex items-center space-x-4 mt-1">
-    //         <div className="flex text-sm font-medium text-gray-900">
-    //           <span>542</span> 
-    //           <span>Events Attended</span>
-    //         </div>
-    //         <span className="flex text-sm font-medium text-gray-900">12 Connections</span>
-    //         <span className="flex text-sm font-medium text-gray-900">0 Created Events</span>
-    //       </div>
-    //     </div>
-    //   </div>
-      
-    //   <hr className="mt-5"></hr>
-    //   <div className="flex justify-between mt-2">
-    //     <Tabs defaultValue="profile" className="w-[100%]">
-    //       <TabsList>
-    //         <TabsTrigger className="cursor-pointer px-7" value="profile">Profile</TabsTrigger>
-    //         <TabsTrigger className="cursor-pointer px-7" value="activity">Activity</TabsTrigger>
-    //         <TabsTrigger className="cursor-pointer px-7" value="achievements">Achievements</TabsTrigger>
-    //       </TabsList>
-    //       <TabsContent className="p-2" value="profile">
-    //         <div className="flex justify-between">
-    //           <UserBio />
-    //           <SkillTags />
-    //         </div>
-    //       </TabsContent>
-    //       <TabsContent className="p-2" value="activity">
-    //         <ActivityCard />
-    //       </TabsContent> 
-    //       <TabsContent className="p-2" value="achievements">
-    //         <AchievementsCard />
-    //       </TabsContent>
-    //     </Tabs>
-    //   </div>
-    // </div>
-  // )
-  // const Profile = () => {
+const Profile = () => {
   const userProfile = {
     id: "irene-brooks",
     firstName: "Irene",
@@ -189,16 +109,32 @@ function page() {
   };
 
   return (
-    <div className="min-h-screen ">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
+      <header className="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-end items-center h-0">
-
+          <div className="flex justify-between items-center h-16">
+            <Link href="/" className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                <Code className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                TechMeet
+              </span>
+            </Link>
+            
             <div className="flex items-center space-x-4">
+              <Link href="/dashboard">
+                <Button variant="ghost" size="sm">
+                  Dashboard
+                </Button>
+              </Link>
               <Button variant="outline" size="sm">
                 <Edit className="w-4 h-4 mr-2" />
                 Edit Profile
+              </Button>
+              <Button variant="ghost" size="sm">
+                <Settings className="w-4 h-4" />
               </Button>
             </div>
           </div>
@@ -208,15 +144,15 @@ function page() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Profile Header */}
         <div className="mb-8">
-          <Card className="h-80 overflow-hidden border-0 shadow-lg">
-            <div className="h-35 bg-gradient-to-br from-purple-400 via-blue-500 to-indigo-600 relative">
+          <Card className="overflow-hidden border-0 shadow-lg">
+            <div className="h-40 bg-gradient-to-br from-purple-400 via-blue-500 to-indigo-600 relative">
               <div className="absolute inset-0 bg-black/10"></div>
             </div>
             <CardContent className="relative px-8 pb-8">
-              <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between -mt-5">
+              <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between -mt-20">
                 <div className="flex flex-col lg:flex-row lg:items-end lg:space-x-6">
-                  <Avatar className="w-36 h-36 border-4 border-white shadow-xl">
-                    <AvatarImage src={userImage} />
+                  <Avatar className="w-32 h-32 border-4 border-white shadow-xl">
+                    <AvatarImage src={userProfile.avatar} />
                     <AvatarFallback className="text-2xl bg-gradient-to-br from-blue-500 to-purple-600 text-white">
                       {userProfile.firstName[0]}{userProfile.lastName[0]}
                     </AvatarFallback>
@@ -225,64 +161,74 @@ function page() {
                   <div className="mt-4 lg:mt-0">
                     <div className="flex items-center space-x-3">
                       <h1 className="text-3xl font-bold text-gray-900">
-                        {userName}
+                        {userProfile.firstName} {userProfile.lastName}
                       </h1>
-                      {/* <div className="bg-blue-100 text-blue-700 border-blue-200 font-medium">
+                      <div className="bg-blue-100 text-blue-700 border-blue-200 font-medium">
                         PRO
-                      </div> */}
+                      </div>
                     </div>
-                    <p className="text-lg text-gray-600 mt-1 font-medium">{currentOccupation} | {desiredOccupation}</p>
-                    {/* <p className="text-sm text-gray-500 mt-1">based in {userProfile.location}</p> */}
+                    <p className="text-lg text-gray-600 mt-1 font-medium">{userProfile.jobTitle}</p>
+                    <p className="text-sm text-gray-500 mt-1">based in {userProfile.location}</p>
                     
                     <div className="flex items-center space-x-4 mt-4">
-                      <GithubStandAloneBtn />
-                      <LinkedInStandAloneBtn />
+                      <Button className="bg-black text-white hover:bg-gray-800 px-6">
+                        Follow
+                      </Button>
+                      <Button variant="outline" className="px-6">
+                        Get in touch
+                      </Button>
                     </div>
                   </div>
                 </div>
-
+                
                 <div className="flex items-center space-x-8 mt-6 lg:mt-0">
                   <div className="text-center">
                     <div className="text-2xl font-bold text-gray-900">{userProfile.stats.followers.toLocaleString()}</div>
-                    <div className="text-sm text-gray-600">Events Attended</div>
+                    <div className="text-sm text-gray-600">Followers</div>
                   </div>
                   <div className="text-center">
                     <div className="text-2xl font-bold text-gray-900">{userProfile.stats.following}</div>
-                    <div className="text-sm text-gray-600">Connections</div>
+                    <div className="text-sm text-gray-600">Following</div>
                   </div>
                   <div className="text-center">
                     <div className="text-2xl font-bold text-gray-900">{userProfile.stats.likes}</div>
-                    <div className="text-sm text-gray-600">Created Events</div>
+                    <div className="text-sm text-gray-600">Likes</div>
                   </div>
                 </div>
               </div>
             </CardContent>
           </Card>
         </div>
-
+J
         {/* Navigation Tabs */}
-        <Tabs defaultValue="about" className="space-y-8">
+        <Tabs defaultValue="work" className="space-y-8">
           <div className="border-b border-gray-200">
             <TabsList className="grid w-full max-w-md grid-cols-4 bg-transparent h-auto p-0">
               <TabsTrigger 
+                value="work" 
+                className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-black data-[state=active]:shadow-none rounded-none pb-4 font-semibold"
+              >
+                Work
+                <sup className="ml-1 text-xs">{userProfile.stats.projects}</sup>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="moodboards" 
+                className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-black data-[state=active]:shadow-none rounded-none pb-4 font-semibold"
+              >
+                Moodboards
+              </TabsTrigger>
+              <TabsTrigger 
+                value="likes" 
+                className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-black data-[state=active]:shadow-none rounded-none pb-4 font-semibold"
+              >
+                Likes
+              </TabsTrigger>
+              <TabsTrigger 
                 value="about" 
-                className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-b-black data-[state=active]:shadow-none rounded-none pb-4 font-semibold cursor-pointer"
+                className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-black data-[state=active]:shadow-none rounded-none pb-4 font-semibold"
               >
                 About
               </TabsTrigger>
-              <TabsTrigger 
-                value="activity" 
-                className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-b-black data-[state=active]:shadow-none rounded-none pb-4 font-semibold cursor-pointer"
-              >
-                Activity
-                {/* <sup className="ml-1 text-xs">{userProfile.stats.projects}</sup> */}
-              </TabsTrigger>
-              <TabsTrigger 
-                value="achievements" 
-                className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-b-black data-[state=active]:shadow-none rounded-none pb-4 font-semibold cursor-pointer"
-              >
-                Achievements
-              </TabsTrigger>              
             </TabsList>
           </div>
 
@@ -369,10 +315,9 @@ function page() {
                     <h3 className="font-semibold text-gray-900 mb-3">Skills</h3>
                     <div className="flex flex-wrap gap-2">
                       {userProfile.skills.map((skill, index) => (
-                        <Tag key={index} name={skill}/>
-                        // <div key={index} className="px-3 py-1 text-sm">
-                        //   {skill}
-                        // </div>
+                        <div key={index} className="px-3 py-1 text-sm">
+                          {skill}
+                        </div>
                       ))}
                     </div>
                   </CardContent>
@@ -387,16 +332,16 @@ function page() {
                   <CardContent className="space-y-3">
                     <div className="flex items-center space-x-2 text-sm">
                       <Mail className="w-4 h-4 text-gray-500" />
-                      <span className="text-gray-700">{userEmail}</span>
+                      <span className="text-gray-700">{userProfile.email}</span>
                     </div>
-                    {/* <div className="flex items-center space-x-2 text-sm">
+                    <div className="flex items-center space-x-2 text-sm">
                       <MapPin className="w-4 h-4 text-gray-500" />
                       <span className="text-gray-700">{userProfile.location}</span>
                     </div>
                     <div className="flex items-center space-x-2 text-sm">
                       <Building className="w-4 h-4 text-gray-500" />
                       <span className="text-gray-700">{userProfile.company}</span>
-                    </div> */}
+                    </div>
                   </CardContent>
                 </Card>
 
@@ -405,20 +350,18 @@ function page() {
                     <CardTitle>Social Links</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3">
-                    {/* <Button variant="outline" size="sm" className="w-full justify-start">
+                    <Button variant="outline" size="sm" className="w-full justify-start">
                       <Github className="w-4 h-4 mr-2" />
                       {userProfile.socialLinks.github}
-                    </Button> */}
-                    <GithubStandAloneBtn />
-                    <LinkedInStandAloneBtn />
-                    {/* <Button variant="outline" size="sm" className="w-full justify-start">
+                    </Button>
+                    <Button variant="outline" size="sm" className="w-full justify-start">
                       <Linkedin className="w-4 h-4 mr-2" />
                       LinkedIn
                     </Button>
                     <Button variant="outline" size="sm" className="w-full justify-start">
                       <Twitter className="w-4 h-4 mr-2" />
                       Twitter
-                    </Button> */}
+                    </Button>
                   </CardContent>
                 </Card>
               </div>
@@ -428,6 +371,6 @@ function page() {
       </div>
     </div>
   );
-}
+};
 
-export default page
+export default Profile;

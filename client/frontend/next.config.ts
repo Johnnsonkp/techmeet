@@ -19,6 +19,10 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "avatars.githubusercontent.com",
+      },
+      {
+        protocol: "https",
+        hostname: "example.com",
       }
     ],
     dangerouslyAllowSVG: true, // See issue #2

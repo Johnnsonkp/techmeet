@@ -32,3 +32,6 @@ flask-migrate==4.0.5
 flask-cors==5.0.1
 cloudinary==1.44.0
 openai
+gspread
+oauth2client
+pandas
