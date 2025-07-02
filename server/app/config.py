@@ -28,8 +28,8 @@ class DevelopmentConfig(BaseConfig):
 class ProductionConfig(BaseConfig):
     """Production configuration."""
     DEBUG = False
-    # SQLALCHEMY_DATABASE_URI = os.getenv('MYSQL_URL')
-    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')  # added by Mao 20/6/25
+    SQLALCHEMY_DATABASE_URI = os.getenv('MYSQL_URL')
+    #SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')  # added by Mao 20/6/25
 
     def __init__(self):
         if not os.getenv('SECRET_KEY'):
