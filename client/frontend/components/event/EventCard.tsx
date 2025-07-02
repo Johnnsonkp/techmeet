@@ -17,29 +17,28 @@ interface Organiser {
   followers?: string
 }
 
-interface EventI {
-  id?: number,
-  position?: number,
-  name: string,
-  date?: string,
-  time?: string,
-  datetime: string,
-  location?: string,
-  price?: string,
-  organiser?: Organiser,
-  organizer?: Organiser,
-  followers?: number,
-  eventLink?: string,
-  image?: string,
-  imageDescription?: string,
-  image_description?: string,
-  category?: string,
-  rating?: number,
-  progress?: number
+interface Event {
+  id?: number;
+  position?: number;
+  name: string;
+  date?: string;
+  time?: string;
+  datetime?: string;
+  location: string;
+  price: string;
+  organiser?: Organiser;
+  organizer: Organiser;
+  event_link?: string;
+  image: string;
+  imageDescription?: string;
+  image_description: string;
+  category?: string;
+  rating?: number;
+  progress?: number;
 }
 
 interface EventCardProps {
-  event: EventI;
+  event: Event;
 }
 
 interface Props {

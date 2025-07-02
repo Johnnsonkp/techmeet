@@ -13,7 +13,7 @@ export interface Event {
   name: string;
   date?: string;
   time?: string;
-  datetime: string;
+  datetime?: string;
   location: string;
   price: string;
   organiser?: Organiser;
