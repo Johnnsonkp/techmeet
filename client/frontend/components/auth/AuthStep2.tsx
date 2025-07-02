@@ -1,7 +1,11 @@
 import React from 'react';
 
 interface AuthStep2Props {
-  formData: any;
+  formData: {
+    jobTitle: string;
+    employmentStatus: string;
+    technicalSkills: string[];
+  };
   updateFormData: (data: Partial<any>) => void;
   onNext: () => void;
   onBack: () => void;
@@ -12,7 +16,7 @@ export const AuthStep2: React.FC<AuthStep2Props> = ({ formData, updateFormData, 
     'Employed full-time',
     'Employed part-time',
     'Freelancing',
-    'Seeking opportunities'
+    'Seeking opportunities',
   ];
 
   return (
@@ -28,7 +32,7 @@ export const AuthStep2: React.FC<AuthStep2Props> = ({ formData, updateFormData, 
         <label className="block text-sm font-medium mb-1">What is your current job title?</label>
         <input
           type="text"
-          value={formData.jobTitle}
+          value={formData.jobTitle || ''}
           onChange={(e) => updateFormData({ jobTitle: e.target.value })}
           placeholder="Software Engineer"
           className="w-full border rounded-md p-3 text-sm shadow-sm"
@@ -55,14 +59,18 @@ export const AuthStep2: React.FC<AuthStep2Props> = ({ formData, updateFormData, 
         </div>
       </div>
 
-      {/* Skills Input (Single-line for now, can be changed to a tag input later) */}
+      {/* Skills Input (Comma-separated) */}
       <div>
         <label className="block text-sm font-medium mb-1">List your top technical skills</label>
         <input
           type="text"
-          placeholder="Add a skill..."
-          value={formData.skills}
-          onChange={(e) => updateFormData({ skills: e.target.value })}
+          placeholder="e.g. React, Python, AWS"
+          value={formData.technicalSkills?.join(', ') || ''}
+          onChange={(e) =>
+            updateFormData({
+              technicalSkills: e.target.value.split(',').map((skill) => skill.trim()),
+            })
+          }
           className="w-full border rounded-md p-3 text-sm shadow-sm"
         />
       </div>
