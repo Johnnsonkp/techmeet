@@ -17,4 +17,4 @@ RUN chmod +x entrypoint.sh
 EXPOSE 8080
 
 # Use entrypoint to switch between dev and prod
-CMD ["./entrypoint.sh"]
+CMD ["./run_deploy.sh"]
