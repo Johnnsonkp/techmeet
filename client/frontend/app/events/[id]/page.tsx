@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 // import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import React from 'react';
 import { use } from 'react';
 import { useEventStore } from "@/store/eventStore";
 
@@ -14,103 +15,36 @@ const page = ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = use(params);
   const selectedEvent = useEventStore((s) => s.selectedEvent)
 
-  // Mock event data - in a real app, this would be fetched based on the ID
-  const events = [
-    {
-      id: 1,
-      name: "Echo Beats Festival",
-      date: "2024-05-20",
-      time: "6:00 PM",
-      location: "Sunset Park, Los Angeles, CA",
-      price: "$60",
-      organiser: {
-        name: "Echo Events",
-        avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face",
-        verified: true
-      },
-      followers: 21000,
-      eventLink: "https://echobeats2024.com",
-      image: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=800&h=400&fit=crop",
-      imageDescription: "Electronic music festival with vibrant lights and crowd",
-      category: "Music",
-      rating: 4.8,
-      maxAttendees: 25000,
-      description: "The Echo Beats Festival brings together a stellar lineup of artists across EDM, pop, and hip-hop genres. Prepare to experience a night of electrifying music, vibrant light shows, and unforgettable performances under the stars. Explore food trucks, art installations, and VIP lounges for an elevated experience.",
-      about: "The Echo Beats Festival brings together a stellar lineup of artists across EDM, pop, and hip-hop genres. Prepare to experience a night of electrifying music, vibrant light shows, and unforgettable performances under the stars. Explore food trucks, art installations, and VIP lounges for an elevated experience.",
-      speakers: [
-        {
-          name: "DJ Stellar",
-          role: "Headliner",
-          avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b353?w=100&h=100&fit=crop&crop=face"
-        },
-        {
-          name: "Bass Drop",
-          role: "Featured Artist",
-          avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face"
-        }
-      ],
-      packages: [
-        {
-          name: "General Admission Package",
-          price: "$50",
-          features: ["Standing", "Access to Festival Area"]
-        },
-        {
-          name: "Silver Package",
-          price: "$70",
-          features: ["Seating", "Mid-tier View"]
-        },
-        {
-          name: "Gold Package",
-          price: "$85",
-          features: ["Seating", "Prime View"]
-        },
-        {
-          name: "Platinum Package",
-          price: "$100",
-          features: ["Seating", "Near Stage"]
-        },
-        {
-          name: "Diamond Package",
-          price: "$120",
-          features: ["Seating", "Front-Row View"]
-        },
-        {
-          name: "VIP Lounge Package",
-          price: "$150",
-          features: ["Seating", "Exclusive Lounge"]
-        }
-      ],
-      merchandise: [
-        {
-          name: "Echo Beats Cap",
-          price: "USD $20",
-          image: "https://images.unsplash.com/photo-1588850259026-5f2d0c1b32e0?w=200&h=200&fit=crop"
-        },
-        {
-          name: "Festival T-Shirt",
-          price: "USD $25",
-          image: "https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=200&h=200&fit=crop"
-        },
-        {
-          name: "Light-Up Wristband",
-          price: "USD $15",
-          image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200&h=200&fit=crop"
-        }
-      ],
-      tags: ["Music", "Electronic", "Festival", "Live Performance"],
-      notes: [
-        "Enjoy and unfold VIP area reserved seating with an unobstructed stage view.",
-        "Standing categories include access to open floor areas near the stage."
-      ],
-      ticketBenefits: {
-        vipLounge: ["Premium seating", "Complimentary drinks", "Fast-track entry"],
-        backstageAccess: ["Standing access to the backstage area", "Artist meet-and-greet", "Exclusive merchandise"]
-      }
-    }
-  ];
+  // Add loading and error state
+  const [loading, setLoading] = React.useState(!selectedEvent);
+  const [error, setError] = React.useState<string | null>(null);
 
-  const event = selectedEvent || events.find(e => e.id === parseInt(id || "1")) || events[0];
+  React.useEffect(() => {
+    if (!selectedEvent) {
+      // Simulate fetch or show error if not found
+      setLoading(true);
+      // You could fetch event here if you have a fetchEventById action
+      // For now, just simulate not found after a short delay
+      const timeout = setTimeout(() => {
+        setLoading(false);
+        if (!useEventStore.getState().selectedEvent) {
+          setError('Event not found.');
+        }
+      }, 1000);
+      return () => clearTimeout(timeout);
+    } else {
+      setLoading(false);
+    }
+  }, [selectedEvent]);
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center text-lg">Loading event...</div>;
+  }
+  if (error) {
+    return <div className="min-h-screen flex items-center justify-center text-red-600 text-lg">{error}</div>;
+  }
+
+  const event = selectedEvent
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -130,8 +64,8 @@ const page = ({ params }: { params: Promise<{ id: string }> }) => {
             <Card className="bg-white overflow-hidden">
               <div className="relative">
                 <img
-                  src={event.image}
-                  alt={event.imageDescription}
+                  src={event?.image}
+                  alt={event?.imageDescription}
                   className="w-full h-80 object-cover"
                 />
                 <div className="absolute top-4 left-4 flex space-x-2">
@@ -145,7 +79,7 @@ const page = ({ params }: { params: Promise<{ id: string }> }) => {
                 </div>
                 <div className="absolute bottom-4 right-4 bg-black/70 text-white px-3 py-1 rounded-lg">
                   <div className="text-sm">Starts from</div>
-                  <div className="text-lg font-bold">{event.price}</div>
+                  <div className="text-lg font-bold">{event?.price}</div>
                 </div>
               </div>
               
@@ -153,7 +87,7 @@ const page = ({ params }: { params: Promise<{ id: string }> }) => {
                 <div className="flex items-start justify-between mb-6">
                   <div className="flex-1">
                     <h1 className="text-3xl font-bold text-gray-900 mb-4">
-                      {event.name}
+                      {event?.name}
                     </h1>
                     
                     <div className="flex items-center text-gray-600 mb-2">
@@ -170,7 +104,7 @@ const page = ({ params }: { params: Promise<{ id: string }> }) => {
                     
                     <div className="flex items-center text-gray-600">
                       <MapPin className="w-5 h-5 mr-3 text-purple-600" />
-                      <span>{event.location}</span>
+                      <span>{event?.location}</span>
                     </div>
                   </div>
                   
