@@ -1,5 +1,5 @@
 export const loginUser = async ({ email, password }: { email: string; password: string }) => {
-  const res = await fetch('http://localhost:3000/login', {
+  const res = await fetch('http://localhost:5000/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password }),
@@ -21,7 +21,7 @@ export const signUpUser = async (data: {
   employment_status: string;
   technical_skills: string[];
 }) => {
-  const res = await fetch('http://localhost:3000/sign_up', {
+  const res = await fetch('http://localhost:5000/sign_up', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
