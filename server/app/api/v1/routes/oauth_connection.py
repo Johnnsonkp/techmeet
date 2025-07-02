@@ -60,4 +60,4 @@ class GoogleOAuth(Resource):
         print(f"user_facade.to_dict(user) {UserFacade.to_dict(user)}")
 
         jwt_token = create_access_token(identity=user.id)
-        return jsonify({"token": jwt_token, "user": UserFacade.to_dict(user)})
+        return jsonify({"token": jwt_token, "user": UserFacade.to_dict(user), "provider": "google"})
