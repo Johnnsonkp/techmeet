@@ -21,7 +21,7 @@ class DevelopmentConfig(BaseConfig):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.getenv(
         'DATABASE_URL',
-        # 'mysql+pymysql://root:@localhost:3306/techmeet'
+        'mysql+pymysql://root:@localhost:3306/techmeet'
     )
 
 
