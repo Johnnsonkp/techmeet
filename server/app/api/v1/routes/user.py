@@ -3,7 +3,6 @@
 from flask_restx import Namespace, Resource, fields
 from flask import request
 import requests
-from flask_cors import CORS
 from app.api.v1.models.user import User
 from app.api.v1.models.profile import Profile
 from app import db

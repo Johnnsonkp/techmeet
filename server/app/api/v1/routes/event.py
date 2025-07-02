@@ -16,7 +16,7 @@ event_model = api.model('Event', {
     'date': fields.String(required=True), 
 })
 
-@api.route('/', methods=['GET', 'POST', 'OPTIONS'])
+@api.route('/', methods=['GET', 'POST'])
 class EventList(Resource):
     # @api.marshal_with(event_model)
     @api.doc('list_events') # Unique identifier route in the Swagger/OpenAPI documentation.
