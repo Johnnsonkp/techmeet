@@ -116,7 +116,7 @@ const EventsSidebar = ({ onFiltersChange, selectedFilters }: EventsSidebarProps)
             <SlidersHorizontal className="w-5 h-5 text-purple-600" />
             <h2 className="text-lg font-semibold text-gray-900">Filters</h2>
             {activeFiltersCount > 0 && (
-              <div variant="secondary" className="bg-purple-100 text-purple-700">
+              <div className="bg-purple-100 text-purple-700">
                 {activeFiltersCount}
               </div>
             )}
