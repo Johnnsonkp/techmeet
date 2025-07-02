@@ -26,7 +26,7 @@ function RotatingWheel() {
   return (
      <div className="absolute bottom-12 right-12 z-20">
 
-      <div className="w-32 h-32 rounded-full border-4 border-gray-400 relative">
+      <div className="w-40 h-40 rounded-full border-4 border-gray-400 relative">
         <div
           // animate={{ rotate: 360 }}
           // transition={{ repeat: Infinity, duration: 6, ease: "linear" }}
@@ -38,8 +38,8 @@ function RotatingWheel() {
 
        <div className="flex-1 text-white font-mono">
         <div className="flex items-center gap-2 text-xl font-semibold">
-          <span className="bg-white text-black px-2 py-1 rounded">▶</span>
-          <span className="uppercase tracking-widest">Music Lab</span>
+          {/* <span className="bg-white text-black px-2 py-1 rounded">▶</span>
+          <span className="uppercase tracking-widest">Music Lab</span> */}
         </div>
 
         {/* <div className="flex justify-between mt-2 text-sm">
@@ -63,7 +63,7 @@ function RotatingWheel() {
         {/* Track Title */}
         <h2 className="mt-2 text-lg font-bold text-gray-200">
           {/* {track.title} */}
-          TestTitle
+          
         </h2>
       </div>
       </div>

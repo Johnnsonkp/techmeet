@@ -1,14 +1,13 @@
 import { LargeText, MediumText } from '@/components/ui/textDisplay/LargeText'
 
+import LargeAuthUserName from '@/components/auth/LargeAuthUserName';
 import React from 'react'
-import { currentUser } from '@/lib/auth/user'
 
 async function page() {
-  const user = await currentUser()
 
   return (
     <div id="userdDashboard" className="dashboardHidden flex flex-1 flex-col gap-4 p-15 pt-0">
-      <LargeText text={`Welcome, ${user?.name || ""}`}/>
+      <LargeAuthUserName />
 
       <MediumText text={"Upcoming Events"}/>
       <div className="grid auto-rows-min gap-4 md:grid-cols-3">

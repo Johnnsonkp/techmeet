@@ -15,12 +15,14 @@ import { currentUser, requireAuth } from '../../lib/auth/user'
 
 import { AppSidebar } from "@/components/app-sidebar"
 import PathDisplay from "@/components/ui/ServerCompBreadCrumb"
+import RequireAuth from "@/components/RequireAuth"
 import { Separator } from "@/components/ui/separator"
 
 export default async function DashboardPage({children}: {children: React.ReactNode}) {
-  await requireAuth()
+  // await requireAuth()
 
   return (
+    <RequireAuth>
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
@@ -49,5 +51,6 @@ export default async function DashboardPage({children}: {children: React.ReactNo
         <main className="min-h-[100vh] pb-30">{children}</main>
       </SidebarInset>
     </SidebarProvider>
+    </RequireAuth>
   )
 }

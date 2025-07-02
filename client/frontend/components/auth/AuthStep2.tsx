@@ -9,9 +9,10 @@ interface AuthStep2Props {
   updateFormData: (data: Partial<any>) => void;
   onNext: () => void;
   onBack: () => void;
+  loading?: boolean;
 }
 
-export const AuthStep2: React.FC<AuthStep2Props> = ({ formData, updateFormData, onNext, onBack }) => {
+export const AuthStep2: React.FC<AuthStep2Props> = ({ formData, updateFormData, onNext, onBack, loading }) => {
   const employmentOptions = [
     'Employed full-time',
     'Employed part-time',
@@ -29,7 +30,7 @@ export const AuthStep2: React.FC<AuthStep2Props> = ({ formData, updateFormData, 
 
       {/* Job Title */}
       <div>
-        <label className="block text-sm font-medium mb-1">What is your current job title?</label>
+        <label className="block text-sm font-medium mb-1">What is your current or desired job title?</label>
         <input
           type="text"
           value={formData.jobTitle || ''}
@@ -85,9 +86,10 @@ export const AuthStep2: React.FC<AuthStep2Props> = ({ formData, updateFormData, 
         </button>
         <button
           onClick={onNext}
+          disabled={loading}
           className="cursor-pointer px-6 py-2 text-white rounded-md bg-gradient-to-r from-indigo-500 to-purple-500 hover:opacity-90 transition"
         >
-          Next
+          {loading ? 'Loading...' : 'Continue'}
         </button>
       </div>
     </div>

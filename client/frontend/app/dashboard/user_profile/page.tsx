@@ -1,3 +1,5 @@
+'use client';
+
 import { AchievementsCard, ActivityCard, UserBio } from "@/components/profile/Cards"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -31,6 +33,7 @@ import { SkillTags } from "@/components/profile/Cards"
 import { Tag } from "@/components/profile/Tag";
 import UserProfileCard from "@/components/user/UserProfileCard"
 import { currentUser } from "@/lib/auth/user"
+import { useAuthStore } from "@/store/authStore";
 
 interface UserI {
   image: string | null,
@@ -45,13 +48,14 @@ type Props = {
   user: UserI | any;
 };
 
-async function page() {
-  const user = await currentUser()
+function page() {
+  const user = useAuthStore((s) => s.user);
+
   const fallbackSrc = "https://www.svgrepo.com/show/382106/avatar-boy.svg"
-  const userName = !user? "John Doe" : user?.first_name && user.last_name || user?.first_name || user?.name
+  const userName = !user? "John Doe" : user?.name
   const userImage = !user? fallbackSrc : user?.image || fallbackSrc
-  const currentOccupation = !user? "Occupation" : user?.job_tile || "Occupation"
-  const desiredOccupation = !user? "Desired Occupation" : user?.desired_job || "Desired Occupation"
+  const currentOccupation = !user? "Occupation" : null
+  const desiredOccupation = !user? "Desired Occupation" : null
   const userEmail = user?.email || ""
   
 
@@ -427,6 +431,3 @@ async function page() {
 }
 
 export default page
-
-{/* <GithubStandAloneBtn /> */}
-                      // <LinkedInStandAloneBtn />

@@ -21,7 +21,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-// import { Link } from "react-router-dom";
 import Link from "next/link";
 
 const Profile = () => {

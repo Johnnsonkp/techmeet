@@ -5,12 +5,10 @@ import { logout } from '@/lib/auth/user';
 export function LogoutButton({children}:{children?: React.ReactNode}) {
 
   const handleLogout = async () => {
-    // Optional: Clear zustand
     const zustand = await import('@/store/authStore');
     zustand.useAuthStore.getState().logout();
     localStorage.removeItem('tm_jwt');
 
-    // Trigger server logout
     logout()
   };
 
