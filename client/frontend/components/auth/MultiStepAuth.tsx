@@ -3,6 +3,7 @@ import { AuthImageSection } from '../auth/AuthImageSection';
 import { AuthStep1 } from '../auth/AuthStep1';
 import { AuthStep2 } from '../auth/AuthStep2';
 import { AuthStep3 } from '../auth/AuthStep3';
+import { loginUser, signUpUser } from '@/lib/flask/api'; // <-- import these
 
 interface FormData {
   // Step 1
@@ -12,12 +13,12 @@ interface FormData {
   email: string;
   password: string;
   agreeToTerms: boolean;
-  
+
   // Step 2
   jobTitle: string;
   employmentStatus: string;
   technicalSkills: string[];
-  
+
   // Step 3
   bio: string;
   profilePhoto: File | null;
@@ -61,9 +62,47 @@ export const MultiStepAuth = () => {
     }
   };
 
-  const handleSubmit = () => {
-    console.log('Form submitted:', formData);
-    // Handle form submission here
+  const handleSubmit = async () => {
+    try {
+      if (formData.mode === 'signin') {
+        const result = await loginUser({
+          email: formData.email,
+          password: formData.password,
+        });
+        alert('Login successful');
+        console.log(result);
+      } else {
+        // Simulated photo upload step
+        const profilePhotoURL = formData.profilePhoto
+          ? await fakeUpload(formData.profilePhoto)
+          : 'https://example.com/default-profile.png';
+
+        const result = await signUpUser({
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          email: formData.email,
+          password: formData.password,
+          bio: formData.bio,
+          profile_photo_url: profilePhotoURL,
+          job_title: formData.jobTitle,
+          address: '123 Tech Avenue, Melbourne', // Static or from user
+          is_admin: false,
+          employment_status: formData.employmentStatus,
+          technical_skills: formData.technicalSkills,
+        });
+
+        alert('Sign-up successful');
+        console.log(result);
+      }
+    } catch (error) {
+      console.error(error);
+      alert('Something went wrong. Please try again.');
+    }
+  };
+
+  const fakeUpload = async (file: File): Promise<string> => {
+    console.log('Uploading file:', file.name);
+    return Promise.resolve(`https://example.com/uploaded/${file.name}`);
   };
 
   return (
@@ -93,28 +132,28 @@ export const MultiStepAuth = () => {
               </div>
             </div>
 
-            {/* Form Steps ADD YOUR OWN FORM LOGIC / COMPONENTS HERE */}
+            {/* Step Components */}
             {currentStep === 1 && (
-              <AuthStep1 
-                formData={formData} 
-                updateFormData={updateFormData} 
-                onNext={handleNext} 
+              <AuthStep1
+                formData={formData}
+                updateFormData={updateFormData}
+                onNext={handleNext}
               />
             )}
             {currentStep === 2 && (
-              <AuthStep2 
-                formData={formData} 
-                updateFormData={updateFormData} 
+              <AuthStep2
+                formData={formData}
+                updateFormData={updateFormData}
                 onNext={handleNext}
                 onBack={handleBack}
               />
             )}
             {currentStep === 3 && (
-              <AuthStep3 
-                formData={formData} 
-                updateFormData={updateFormData} 
-                onSubmit={handleSubmit}
+              <AuthStep3
+                formData={formData}
+                updateFormData={updateFormData}
                 onBack={handleBack}
+                onSubmit={handleSubmit}
               />
             )}
           </div>
@@ -123,3 +162,4 @@ export const MultiStepAuth = () => {
     </div>
   );
 };
+6
