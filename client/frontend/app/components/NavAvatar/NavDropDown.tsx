@@ -5,7 +5,7 @@ import './avatarStyles.css'
 import { LogOutIcon, User2Icon, UserCogIcon } from 'lucide-react'
 
 import Image from 'next/image'
-import {logout} from '../../../lib/auth/user'
+import { LogoutButton } from '@/components/buttons/LogOutButton'
 
 function NavDropDown({user}: any) {
   const fallbackSrc = "https://www.svgrepo.com/show/382106/avatar-boy.svg"
@@ -42,11 +42,9 @@ function NavDropDown({user}: any) {
 
         <div className="border-t border-gray-100 my-1"></div>
         
-        <button onClick={() => logout()} 
-          className="cursor-pointer w-full px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-red-600 flex items-center transition-colors duration-200">
-            <LogOutIcon size={15}/>
-            <span className='ml-2 text-xs'>Sign out</span>
-        </button>
+        <LogoutButton>
+          <LogOutIcon size={15}/> <span className='ml-2 text-xs'>Sign out</span>
+        </LogoutButton>
 
       </div>
       

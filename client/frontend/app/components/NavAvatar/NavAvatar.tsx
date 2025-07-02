@@ -18,8 +18,6 @@ export default function NavAvatar ({ small = false }: Props) {
   // const user = await currentUser()
   const user = useAuthStore((s) => s.user);
 
-  console.log("user zustland", user)
-
   return (
     <div className="dropdown relative cursor-pointer">
       <button className="flex items-center space-x-1 focus:outline-none group cursor-pointer">
