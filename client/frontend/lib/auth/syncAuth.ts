@@ -6,6 +6,8 @@ interface AuthData {
     id: string;
     email: string;
     name: string;
+    first_name?: string;
+    last_name?: string;
     profile_photo_url?: string | null;
   };
   provider?: 'google' | 'github' | 'credentials';
@@ -23,7 +25,7 @@ export function syncAuthToLocal(authData: AuthData, setAuth: any) {
     user: {
       id: user.id,
       email: user.email,
-      name: user?.name || null, 
+      name: user?.name || user?.first_name, 
       image: user.profile_photo_url || null,
     },
     access_token: token,
