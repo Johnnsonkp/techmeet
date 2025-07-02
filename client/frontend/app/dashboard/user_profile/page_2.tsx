@@ -200,7 +200,7 @@ const Profile = () => {
             </CardContent>
           </Card>
         </div>
-
+J
         {/* Navigation Tabs */}
         <Tabs defaultValue="work" className="space-y-8">
           <div className="border-b border-gray-200">
