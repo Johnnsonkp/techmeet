@@ -11,7 +11,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Make the entrypoint script executable
-RUN chmod +x entrypoint.sh
+RUN chmod +x run_deploy.sh
 
 # Expose production port
 EXPOSE 8080
