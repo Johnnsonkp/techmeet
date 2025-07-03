@@ -33,7 +33,7 @@ const base_url = process.env.NEXT_PUBLIC_FLASK_BASE_URL;
 //   return { fetchEvents, loading, error };
 // };
 
-export const useFetchEvents = async () => {
+export const useFetchEvents = () => {
   const setEvents = useEventStore((s) => s.setEvents);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
