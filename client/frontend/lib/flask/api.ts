@@ -1,5 +1,8 @@
+const BASE_URL = process.env.NEXT_PUBLIC_FLASK_BASE_URL || 'http://localhost:5328';
+
+
 export const loginUser = async ({ email, password }: { email: string; password: string }) => {
-  const res = await fetch('http://localhost:5328/api/v1/users/login', {
+  const res = await fetch(`${BASE_URL}api/v1/users/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password }),
@@ -22,7 +25,7 @@ export const signUpUser = async (data: {
   address: string;
   profile_photo_url: string;
 }) => {
-  const res = await fetch('http://localhost:5328/api/v1/users/sign_up', {
+  const res = await fetch(`${BASE_URL}/api/v1/users/sign_up`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
