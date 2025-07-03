@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { Event } from '@/store/eventStore';
+import { connection } from 'next/server'
 import { useEventStore } from '@/store/eventStore'; // adjust path as needed
 
 const base_url = process.env.NEXT_PUBLIC_FLASK_BASE_URL;
@@ -33,10 +34,12 @@ const base_url = process.env.NEXT_PUBLIC_FLASK_BASE_URL;
 //   return { fetchEvents, loading, error };
 // };
 
-export const useFetchEvents = () => {
+export const useFetchEvents = async () => {
   const setEvents = useEventStore((s) => s.setEvents);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  await connection()
 
   console.log("base_url", base_url);
   console.log("process.env.NEXT_PUBLIC_FLASK_BASE_URL", process.env.NEXT_PUBLIC_FLASK_BASE_URL);
