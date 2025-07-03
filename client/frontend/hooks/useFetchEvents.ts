@@ -38,11 +38,14 @@ export const useFetchEvents = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  console.log("base_url", base_url);
+  console.log("process.env.NEXT_PUBLIC_FLASK_BASE_URL", process.env.NEXT_PUBLIC_FLASK_BASE_URL);
+
   const fetchEvents = async (page: number, limit: number) => {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`${base_url}/api/v1/events?page=${page}&limit=${limit}`);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_FLASK_BASE_URL}/api/v1/events?page=${page}&limit=${limit}`);
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
