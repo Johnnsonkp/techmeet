@@ -9,7 +9,7 @@ from flask_cors import CORS
 import cloudinary
 import os
 import openai
-
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 db = SQLAlchemy()
@@ -21,6 +21,9 @@ def create_app(config_class=None):
     """ method used to create an app instance"""
     app = Flask(__name__)
     CORS(app, origins=["http://localhost:3000", "https://techmeet-production.up.railway.app"], supports_credentials=True)
+
+     # Add this line to trust Railway's proxy
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
     cloudinary.config(
       # cloud_name=app.config['CLOUD_NAME'],
