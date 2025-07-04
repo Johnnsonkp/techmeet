@@ -5,9 +5,10 @@ interface AuthStep3Props {
   updateFormData: (data: Partial<any>) => void;
   onBack: () => void;
   onSubmit: () => void;
+  loading?: boolean;
 }
 
-export const AuthStep3: React.FC<AuthStep3Props> = ({ formData, updateFormData, onBack, onSubmit }) => {
+export const AuthStep3: React.FC<AuthStep3Props> = ({ formData, updateFormData, onBack, onSubmit, loading }) => {
   return (
     <div className="space-y-6 w-full max-w-lg mx-auto text-gray-800">
       {/* Header */}
@@ -114,9 +115,10 @@ export const AuthStep3: React.FC<AuthStep3Props> = ({ formData, updateFormData, 
         </button>
         <button
           onClick={onSubmit}
+          disabled={loading}
           className="cursor-pointer px-6 py-2 text-white rounded-md bg-gradient-to-r from-indigo-500 to-purple-500 hover:opacity-90 transition"
         >
-          Complete Registration
+          {loading ? 'Submitting...' : 'Complete Registration'}
         </button>
       </div>
     </div>

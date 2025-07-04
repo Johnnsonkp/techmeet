@@ -14,13 +14,9 @@ services:
       - backend
 
   backend:
-    build:
-      context: ./server
-    volumes:
-      - ./server:/app
-    ports:
-      - "5328:5328"
-    environment:
-      - FLASK_APP=run.py
-      - FLASK_ENV=development
-    command: python3 run.py --host=0.0.0.0 --port=5328
+  build:
+    context: ./server
+  ports:
+    - "8080:8080"
+  environment:
+    - FLASK_ENV=production

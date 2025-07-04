@@ -120,12 +120,6 @@ const Connections = () => {
     { label: "This Month", value: "+5", icon: Plus }
   ];
 
-  useEffect(() => {
-    fetch("http://api.dataatwork.org/v1/spec/skills-api.json")
-    .then(response => response.json())
-    .then(data => console.log("occupations skills", data));
-  }, [])
-
   return (
     <div id="userdDashboard" className="min-h-screen bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

@@ -9,6 +9,7 @@ from app.api.v1.models.user import User
 from app.api.v1.models.oauth_connection import OauthConnection
 from datetime import datetime
 from app.utils.name_parser import extract_names
+from app.api.v1.services.user_facade import UserFacade
 
 api = Namespace('oauth_connections', description='OAuth connections operations')
 
@@ -55,5 +56,8 @@ class GoogleOAuth(Resource):
         oauth.expires_at = expires_at
         db.session.commit()
 
+        print(f"oauth_user {oauth}")
+        print(f"user_facade.to_dict(user) {UserFacade.to_dict(user)}")
+
         jwt_token = create_access_token(identity=user.id)
-        return {"token": jwt_token}, 200
+        return jsonify({"token": jwt_token, "user": UserFacade.to_dict(user), "provider": "google"})

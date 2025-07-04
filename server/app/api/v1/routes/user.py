@@ -2,6 +2,7 @@
 
 from flask_restx import Namespace, Resource, fields
 from flask import request
+import requests
 from app.api.v1.models.user import User
 from app.api.v1.models.profile import Profile
 from app import db
@@ -43,7 +44,7 @@ class UserList(Resource):
         ], 200
 
 
-@api.route('/sign_up', methods=['GET', 'POST', 'OPTIONS'])
+@api.route('/sign_up', methods=['GET', 'POST'])
 @api.expect(user_model)
 @api.doc('create_user')
 class NewUserAuth(Resource):
@@ -84,7 +85,7 @@ class NewUserAuth(Resource):
         return {"token": jwt_token, "user": created_user}, 201
 
 
-@api.route('/login', methods=['GET', 'POST', 'OPTIONS'])
+@api.route('/login', methods=['GET', 'POST'])
 @api.expect(user_login_model)
 @api.doc('sign_in')
 class ExistingUserAuth(Resource):
