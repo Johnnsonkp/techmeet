@@ -31,6 +31,9 @@ class EventList(Resource):
         try:
             events = EventFacade.get_events()
 
+            # events = EventFacade.get_events_from_sheet()
+            print(f"events: {events}");
+            
             if(events):
                 paginated_events = events[start:end]
                 sanitised_data = EventFacade.safe_json(paginated_events)

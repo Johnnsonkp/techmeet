@@ -6,7 +6,7 @@ import requests
 from app.api.v1.models.user import User
 from app.api.v1.models.profile import Profile
 from app import db
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from app.api.v1.services.user_facade import UserFacade
 from app.api.v1.services.profile_facade import ProfileFacade
 
@@ -79,7 +79,7 @@ class NewUserAuth(Resource):
         db.session.add(new_user)
         db.session.commit()
 
-        jwt_token = create_access_token(identity=new_user.id)
+        jwt_token = create_access_token(identity=str(new_user.id))
         created_user = UserFacade.to_dict(new_user)
 
         return {"token": jwt_token, "user": created_user}, 201
@@ -107,8 +107,68 @@ class ExistingUserAuth(Resource):
         
         print(f" user: {user}")
 
-        jwt_token = create_access_token(identity=user.id)
+        jwt_token = create_access_token(identity=str(user.id))
         parsed_user_data = UserFacade.to_dict(user)
 
         print(f" token: {jwt_token} user: {parsed_user_data}")
         return {"token": jwt_token, "user": parsed_user_data}
+
+
+@api.route('/profile', methods=['GET', 'PUT'])
+class UserProfileResource(Resource):
+    @jwt_required()
+    def get(self):
+        """Get the profile of the currently authenticated user"""
+        user_id = get_jwt_identity()
+        user = User.query.get(user_id)
+        if not user:
+            return {'message': 'User not found'}, 404
+        if not user.profile:
+            return {'message': 'Profile not found'}, 404
+        profile = user.profile
+
+        print(f" profile: {profile}")
+
+        return {
+            'id': profile.id,
+            'job_title': profile.job_title,
+            'skills': profile.skills,
+            'description': profile.description,
+            'personality': profile.personality,
+            'tags': profile.tags,
+        }, 200
+
+    @jwt_required()
+    def put(self):
+        """Edit user profile"""
+        user_id = get_jwt_identity()
+        user = User.query.get(user_id)
+        if not user:
+            return {'message': 'User not found'}, 404
+        if not user.profile:
+            return {'message': 'Profile not found'}, 404
+        profile = user.profile
+
+        data = request.get_json()
+        # Update profile fields if present in request
+        if 'job_title' in data:
+            profile.job_title = data['job_title']
+        if 'skills' in data:
+            profile.skills = data['skills']
+        if 'description' in data:
+            profile.description = data['description']
+        if 'personality' in data:
+            profile.personality = data['personality']
+        if 'tags' in data:
+            profile.tags = data['tags']
+
+        db.session.commit()
+
+        return {
+            'id': profile.id,
+            'job_title': profile.job_title,
+            'skills': profile.skills,
+            'description': profile.description,
+            'personality': profile.personality,
+            'tags': profile.tags,
+        }, 200
