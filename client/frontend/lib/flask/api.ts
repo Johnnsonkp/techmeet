@@ -2,13 +2,12 @@ const BASE_URL = process.env.NEXT_PUBLIC_FLASK_BASE_URL || 'http://localhost:532
 
 
 export const loginUser = async ({ email, password }: { email: string; password: string }) => {
-  const res = await fetch(`${BASE_URL}api/v1/users/login`, {
+  const res = await fetch(`${BASE_URL}/api/v1/users/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password }),
   });
   if (!res.ok) throw new Error((await res.json()).message);
-  console.log(res.json());
   return res.json();
 };
 

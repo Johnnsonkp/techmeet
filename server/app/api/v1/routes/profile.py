@@ -12,25 +12,27 @@ api = Namespace('profiles', description='Profile operations')
 profile_model = api.model("Profile", {
     'job_title': fields.String(required=True),
     'skills': fields.Raw(description='takes skills data as json a object'),
+    'description': fields.String(required=True),
     'personality': fields.Raw(description='takes personality data as json a object'),
-    'description': fields.String(required=True)
+    'tags': fields.Raw(description='takes tags data as json a object'),
 })
 
-@api.route('/')
+@api.route('/', methods=['GET', 'PUT'])
 class ProfileResource(Resource):
     @jwt_required()
     def get(self):
         user_id = get_jwt_identity()
+        # user = User.query.get(user_id)
         profile = Profile.query.filter_by(user_id=user_id).first()
         if not profile:
             return jsonify({"error": "Profile not found"}), 404
         return jsonify({
             "id": profile.id,
-            "user_id": profile.user_id,
             "job_title": profile.job_title,
             "skills": profile.skills,
+            "description": profile.description,
             "personality": profile.personality,
-            "bio": profile.bio
+            "tags": profile.tags
         }), 200
 
     @jwt_required()
@@ -42,14 +44,12 @@ class ProfileResource(Resource):
             return jsonify({"error": "Profile not found"}), 404
         profile.job_title = data.get("job_title", profile.job_title)
         profile.skills = data.get("skills", profile.skills)
+        profile.description = data.get("description", profile.description)
         profile.personality = data.get("personality", profile.personality)
-        profile.bio = data.get("bio", profile.bio)
+        profile.tags = data.get("tags", profile.tags)
         db.session.commit()
         return jsonify({"message": "Profile updated"}), 200
-    
-    # @api.expect(profile_model)
-    # @api.marshal_with(profile_model)
-    # @jwt_required()
+
     def post(self):
         """Create a new profile"""
         user_id = get_jwt_identity()
@@ -57,11 +57,18 @@ class ProfileResource(Resource):
         profile = Profile.query.filter_by(user_id=user_id).first()
         if profile:
             api.abort(400, "Profile already exists")
-        profile = Profile(user_id=user_id, job_title=data.get('job_title'), skills=data.get('skills'))
+        profile = Profile(
+            user_id=user_id,
+            job_title=data.get('job_title'),
+            skills=data.get('skills'),
+            description=data.get('description'),
+            personality=data.get('personality'),
+            tags=data.get('tags')
+        )
         db.session.add(profile)
         db.session.commit()
         return profile, 201
-    
+
     @api.marshal_with(profile_model)
     @jwt_required()
     def delete(self):

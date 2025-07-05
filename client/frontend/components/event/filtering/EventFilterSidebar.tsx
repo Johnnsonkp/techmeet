@@ -40,7 +40,7 @@ export default function EventFilterSidebar({
   setSelectedRating: (value: string) => void;
 }) {
   return (
-    <aside className="w-full md:w-64 p-4 bg-white shadow-xs space-y-4 fixed border-2 rounded-lg pb-20">
+    <aside className="w-full md:w-64 p-4 bg-white shadow-xs space-y-4 border-2 rounded-lg pb-20">
       {/* <div>
         <label className="block font-semibold mb-1">Search</label>
         <input

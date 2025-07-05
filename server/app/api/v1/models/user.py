@@ -39,6 +39,8 @@ class User(db.Model):
     
     oauth_connections = db.relationship('OauthConnection', backref='user', lazy=True, cascade='all, delete-orphan')
     
+    connections = db.relationship('Connection', back_populates='user', cascade='all, delete-orphan')
+    
     def __repr__(self):
         return f'<User {self.email}>'
     

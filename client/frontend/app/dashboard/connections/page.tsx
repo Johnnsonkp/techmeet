@@ -8,7 +8,9 @@ import {
   Facebook,
   Filter,
   Github,
+  LayoutGrid,
   Linkedin,
+  List,
   Mail,
   MapPin,
   Plus,
@@ -16,112 +18,190 @@ import {
   Settings,
   StickyNote,
   Target,
+  Trash,
   Users
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { LargeText, MediumText } from '@/components/ui/textDisplay/LargeText'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useEffect, useState } from "react";
 
-// import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ConnectionForm } from "@/components/forms/ConnectionsForm";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
+import { toast } from "sonner";
+import { useAuthStore } from "@/store/authStore";
+import { useUserConnections } from "@/hooks/useUserConnections";
 
 const Connections = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  
-  const connections = [
-    {
-      id: 1,
-      name: "Sarah Johnson",
-      email: "sarah.johnson@techcorp.com",
-      avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face",
-      company: "TechCorp Inc.",
-      jobTitle: "Senior React Developer",
-      eventMet: "React Summit 2024",
-      eventDate: "Dec 15, 2024",
-      goal: "Learn advanced React patterns",
-      notes: "Shared insights on React performance optimization. Interested in collaborating on open source projects.",
-      social: {
-        linkedin: "sarah-johnson-dev",
-        github: "sarahj-dev",
-        facebook: "sarah.johnson.dev"
-      },
-      tags: ["React", "TypeScript", "GraphQL"]
-    },
-    {
-      id: 2,
-      name: "Mike Chen",
-      email: "mike.chen@startupxyz.com",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
-      company: "StartupXYZ",
-      jobTitle: "Full Stack Engineer",
-      eventMet: "AI Hackathon Weekend",
-      eventDate: "Nov 20, 2024",
-      goal: "Transition to AI/ML development",
-      notes: "Expert in Node.js and Python. Building AI-powered applications. Offered to mentor on ML projects.",
-      social: {
-        linkedin: "mike-chen-fullstack",
-        github: "mikechen-ai",
-        facebook: ""
-      },
-      tags: ["Node.js", "Python", "AI/ML", "Docker"]
-    },
-    {
-      id: 3,
-      name: "Emily Rodriguez",
-      email: "emily.rodriguez@designstudio.com",
-      avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face",
-      company: "Design Studio Co.",
-      jobTitle: "UX/UI Designer",
-      eventMet: "UX Design Workshop",
-      eventDate: "Oct 10, 2024",
-      goal: "Improve UI/UX design skills",
-      notes: "Incredible designer with 8 years experience. Shared Figma templates and design system best practices.",
-      social: {
-        linkedin: "emily-rodriguez-ux",
-        github: "emily-designs",
-        facebook: "emily.rodriguez.design"
-      },
-      tags: ["UI/UX", "Figma", "Design Systems"]
-    },
-    {
-      id: 4,
-      name: "David Kim",
-      email: "david.kim@cloudtech.io",
-      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face",
-      company: "CloudTech Solutions",
-      jobTitle: "DevOps Engineer",
-      eventMet: "DevOps Conference",
-      eventDate: "Sep 25, 2024",
-      goal: "Learn cloud architecture",
-      notes: "AWS certified architect. Helped with containerization strategies. Great resource for cloud migration.",
-      social: {
-        linkedin: "david-kim-devops",
-        github: "davidkim-cloud",
-        facebook: ""
-      },
-      tags: ["AWS", "Kubernetes", "Docker", "CI/CD"]
-    }
-  ];
+  const token = useAuthStore((s) => s.access_token);
+  const [viewMode, setViewMode] = useState<'row' | 'column'>('row');
+  const [showAddDialog, setShowAddDialog] = useState(false);
+  const { fetchedConnection, loading, connectionError } = useUserConnections();
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    company: "",
+    jobTitle: "",
+    eventMet: "",
+    eventDate: "",
+    goal: "",
+    notes: "",
+    tags: "",
+    linkedin: "",
+    github: "",
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const BASE_URL = process.env.NEXT_PUBLIC_FLASK_BASE_URL || 'http://localhost:5328';
 
-  const filteredConnections = connections.filter(connection =>
-    connection.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    connection.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    connection.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+  const [connections, setConnections] = useState<any[]>([]);
+
+  // Sync local state with fetchedConnection
+  useEffect(() => {
+    if (Array.isArray(fetchedConnection)) {
+      setConnections(fetchedConnection);
+    }
+  }, [fetchedConnection]);
+
+  // Filtered connections from fetched data
+  const filteredConnections = (connections || []).filter((connection: any) =>
+    connection?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    connection?.company?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (Array.isArray(connection?.tags) && (connection.tags as any[]).some((tag: any) => tag.toLowerCase().includes(searchTerm.toLowerCase())))
   );
 
+  // Stats (example, can be improved to use fetchedConnection)
   const stats = [
-    { label: "Total Connections", value: connections.length, icon: Users },
-    { label: "Events Attended", value: "8", icon: Calendar },
-    { label: "Active Goals", value: "3", icon: Target },
-    { label: "This Month", value: "+5", icon: Plus }
+    { label: "Total Connections", value: fetchedConnection?.length || 0, icon: Users },
+    { label: "Events Attended", value: "-", icon: Calendar },
+    { label: "Active Goals", value: "-", icon: Target },
+    { label: "This Month", value: "-", icon: Plus }
   ];
+
+  // Add Connection handler (integrated with backend)
+  const handleAddConnection = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setError(null);
+    setSuccess(null);
+    try {
+      // Prepare payload
+      const payload = {
+        name: form.name,
+        email: form.email,
+        company: form.company,
+        job_title: form.jobTitle,
+        event_met: form.eventMet,
+        event_date: form.eventDate,
+        goal: form.goal,
+        notes: form.notes,
+        tags: form.tags.split(",").map(t => t.trim()).filter(Boolean),
+        linkedin: form.linkedin,
+        github: form.github,
+      };
+      const res = await fetch(`${BASE_URL}/api/v1/connections/`, {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.message || "Failed to add connection");
+      }
+      const newConnection = await res.json();
+      setConnections(prev => [newConnection, ...prev]);
+      setSuccess("Connection added!");
+      setShowAddDialog(false);
+      setForm({
+        name: "",
+        email: "",
+        company: "",
+        jobTitle: "",
+        eventMet: "",
+        eventDate: "",
+        goal: "",
+        notes: "",
+        tags: "",
+        linkedin: "",
+        github: "",
+      });
+      toast.success("Connection added.");
+    } catch (err: any) {
+      setError(err.message || `Failed to add connection ${BASE_URL}/api/v1/connections token:${token}`);
+      toast.error(err.message || "Failed to add connection");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div id="userdDashboard" className="min-h-screen bg-white">
+      <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add Connection</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleAddConnection} className="space-y-4">
+            <div className="flex gap-4">
+              <Input required placeholder="Full Name" value={form.name} onChange={e => setForm(f => ({...f, name: e.target.value}))} />
+              <Input required placeholder="Email" value={form.email} onChange={e => setForm(f => ({...f, email: e.target.value}))} />
+            </div>
+            <div className="flex gap-4">
+              <Input placeholder="Company" value={form.company} onChange={e => setForm(f => ({...f, company: e.target.value}))} />
+              <Input placeholder="Job Title" value={form.jobTitle} onChange={e => setForm(f => ({...f, jobTitle: e.target.value}))} />
+            </div>
+            <div className="flex gap-4">
+              <Select value={form.eventMet} onValueChange={val => setForm(f => ({...f, eventMet: val}))}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Event Met" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="React Summit 2024">React Summit 2024</SelectItem>
+                  <SelectItem value="AI Hackathon Weekend">AI Hackathon Weekend</SelectItem>
+                  <SelectItem value="UX Design Workshop">UX Design Workshop</SelectItem>
+                  <SelectItem value="DevOps Conference">DevOps Conference</SelectItem>
+                  <SelectItem value="Other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+              <Input placeholder="Event Date" value={form.eventDate} onChange={e => setForm(f => ({...f, eventDate: e.target.value}))} />
+            </div>
+            <Select value={form.goal} onValueChange={val => setForm(f => ({...f, goal: val}))}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Goal" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Learn advanced React patterns">Learn advanced React patterns</SelectItem>
+                <SelectItem value="Transition to AI/ML development">Transition to AI/ML development</SelectItem>
+                <SelectItem value="Improve UI/UX design skills">Improve UI/UX design skills</SelectItem>
+                <SelectItem value="Learn cloud architecture">Learn cloud architecture</SelectItem>
+                <SelectItem value="Other">Other</SelectItem>
+              </SelectContent>
+            </Select>
+            <Input placeholder="Notes" value={form.notes} onChange={e => setForm(f => ({...f, notes: e.target.value}))} />
+            <Input placeholder="Tags (comma separated)" value={form.tags} onChange={e => setForm(f => ({...f, tags: e.target.value}))} />
+            <div className="flex gap-4">
+              <Input placeholder="LinkedIn" value={form.linkedin} onChange={e => setForm(f => ({...f, linkedin: e.target.value}))} />
+              <Input placeholder="GitHub" value={form.github} onChange={e => setForm(f => ({...f, github: e.target.value}))} />
+            </div>
+            <DialogFooter>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Adding..." : "Add Connection"}
+              </Button>
+            </DialogFooter>
+            {error && <div className="text-red-500 text-sm pt-2">{error}</div>}
+            {success && <div className="text-green-600 text-sm pt-2">{success}</div>}
+          </form>
+        </DialogContent>
+      </Dialog>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Page Header */}
         <div className="mb-8">
@@ -129,29 +209,33 @@ const Connections = () => {
             <div>
               <MediumText text="My Connections"/>
             </div>
-            <Button className="cursor-pointer bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
-              <Plus className="w-4 h-4 mr-2" />
-              <ConnectionForm />
-            </Button>
-          </div>
 
-          {/* Stats Cards */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            {stats.map((stat, index) => (
-              <Card key={index} className="hover:shadow-md transition-shadow">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-600 mb-1">{stat.label}</p>
-                      <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-                    </div>
-                    <div className="w-12 h-12 rounded-lg flex items-center justify-center bg-blue-100">
-                      <stat.icon className="w-6 h-6 text-blue-600" />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+            <div className="flex rounded-lg p-1 cursor-pointer">
+
+              <div className="border border-gray-200 rounded-lg p-1">
+                <Button
+                  variant={viewMode === 'row' ? 'default' : 'ghost'}
+                  size="sm"
+                  onClick={() => setViewMode("row")}
+                  className={viewMode === 'row' ? 'bg-purple-600 text-white cursor-pointer' : 'cursor-pointer'}
+                >
+                  <List className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant={viewMode === 'column' ? 'default' : 'ghost'}
+                  size="sm"
+                  onClick={() => setViewMode("column")}
+                  className={viewMode === 'column' ? 'bg-purple-600 text-white mx-1 cursor-pointer' : 'mx-1 cursor-pointer'}
+                >
+                  <LayoutGrid className="w-4 h-4" />
+                </Button>
+              </div>
+            
+              <Button className="mt-1 mx-2 cursor-pointer bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700" onClick={() => setShowAddDialog(true)}>
+                <Plus className="w-4 h-4 mr-2" />
+                Add Connection
+              </Button>
+            </div> 
           </div>
 
           {/* Search and Filter */}
@@ -172,134 +256,233 @@ const Connections = () => {
           </div>
         </div>
 
-        {/* Connections Grid */}
-        <div className="grid lg:grid-cols-2 gap-6">
-          {filteredConnections.map((connection) => (
-            <Card key={connection.id} className="hover:shadow-lg transition-shadow">
-              <CardHeader className="pb-4">
-                <div className="flex items-start space-x-4">
-                  <Avatar className="w-16 h-16">
-                    <AvatarImage src={connection.avatar} />
-                    <AvatarFallback>
-                      {connection.name.split(' ').map(n => n[0]).join('')}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1">
-                    <CardTitle className="text-xl mb-1">{connection.name}</CardTitle>
-                    <p className="text-gray-600 mb-2">{connection.jobTitle}</p>
-                    <div className="flex items-center space-x-4 text-sm text-gray-500">
-                      <div className="flex items-center">
-                        <Building className="w-3 h-3 mr-1" />
-                        {connection.company}
+        {/* Connections List/Grid */}
+        {loading ? (
+          <div className="text-center py-12">Loading connections...</div>
+        ) : connectionError ? (
+          <div className="text-center py-12 text-red-500">{connectionError}</div>
+        ) : fetchedConnection && fetchedConnection.length > 0 ? (
+          <div
+            className={
+              viewMode === 'row'
+                ? 'flex flex-col gap-6'
+                : 'grid lg:grid-cols-2 gap-6'
+            }
+          >
+            {filteredConnections.map((connection: any) => (
+              <Card key={connection?.id} className="hover:shadow-md transition-shadow p-4 cursor-pointer relative">
+                {/* Edit & Delete Buttons */}
+                <div className="absolute top-2 right-2 flex gap-2 z-10">
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    aria-label="Edit"
+                    onClick={e => {
+                      e.stopPropagation();
+                      setForm({
+                        name: connection.name || '',
+                        email: connection.email || '',
+                        company: connection.company || '',
+                        jobTitle: connection.job_title || '',
+                        eventMet: connection.event_met || '',
+                        eventDate: connection.event_date || '',
+                        goal: connection.goal || '',
+                        notes: connection.notes || '',
+                        tags: (connection.tags || []).join(','),
+                        linkedin: connection.linkedin || '',
+                        github: connection.github || '',
+                      });
+                      setShowAddDialog(true);
+                    }}
+                  >
+                    <Settings className="w-5 h-5 text-blue-500 cursor-pointer" />
+                  </Button>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    aria-label="Delete"
+                    onClick={async e => {
+                      e.stopPropagation();
+                      if (!window.confirm('Are you sure you want to delete this connection?')) return;
+                      try {
+                        const res = await fetch(`${BASE_URL}/api/v1/connections/${connection.id}`, {
+                          method: 'DELETE',
+                          headers: { Authorization: `Bearer ${token}` },
+                        });
+                        if (!res.ok) throw new Error('Failed to delete connection');
+                        setConnections(prev => prev.filter((c: any) => c.id !== connection.id));
+                        toast.success('Connection deleted');
+                      } catch (err: any) {
+                        toast.error(err.message || 'Failed to delete connection');
+                      }
+                    }}
+                  >
+                    <Trash className="w-5 h-5 text-red-500 cursor-pointer" />
+                  </Button>
+                </div>
+                {viewMode === 'row' ? (
+                  <div className="flex flex-row items-stretch gap-6 w-full">
+                    {/* Avatar and Basic Info */}
+                    <div className="flex items-center min-w-[110px] justify-center">
+                      <div className="flex-row">
+                        <Avatar className="w-18 h-18 mb-2">
+                          <AvatarImage src={''} />
+                          <AvatarFallback>
+                            {connection?.name?.split(' ').map((n: string) => n[0]).join('')}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex items-center pt-2">
+                          <Button variant="outline" size="sm" className="flex-1 mr-1">
+                            <Linkedin className="w-4 h-4" />
+                          </Button>
+                          <Button variant="outline" size="sm" className="flex-1 ml-1">
+                            <Github className="w-4 h-4 " />
+                          </Button>
+                        </div>
                       </div>
-                      <div className="flex items-center">
-                        <Mail className="w-3 h-3 mr-1" />
-                        {connection.email}
+                      <div className="px-4">
+                        <CardTitle className="text-md mb-1 text-start">{connection.name}</CardTitle>
+                        <p className="text-gray-600 mb-2 text-sm text-start">{connection.job_title}</p>
+                        <div className="flex flex-col items-left text-xs text-gray-500">
+                          <div className="flex items-center">
+                            <Building className="w-3 h-3 mr-1" />
+                            {connection.company}
+                          </div>
+                          <div className="flex items-center">
+                            <Mail className="w-3 h-3 mr-1" />
+                            {connection.email}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    {/* Details */}
+                    <div className="flex-1 flex flex-row flex-nowrap gap-4 items-stretch overflow-x-auto">
+                      {/* Event Met */}
+                      <div className="bg-blue-50 p-3 rounded-lg flex flex-col justify-between min-w-[180px]">
+                        <div className="flex items-center text-sm font-medium text-blue-900 mb-1">
+                          <Calendar className="w-4 h-4 mr-2" />
+                          Met at: {connection?.event_met}
+                        </div>
+                        <span className="text-xs text-blue-600">{connection?.event_date}</span>
+                      </div>
+                      {/* Goal Connection */}
+                      <div className="bg-green-50 p-3 rounded-lg flex flex-col justify-between min-w-[180px]">
+                        <div className="flex items-center text-sm font-medium text-green-900 mb-1">
+                          <Target className="w-4 h-4 mr-2" />
+                          Connected Goal
+                        </div>
+                        <p className="text-sm text-green-700">{connection?.goal}</p>
+                      </div>
+                      {/* Skills/Tags */}
+                      <div className="flex flex-col min-w-[120px]">
+                        <p className="text-sm font-medium text-gray-700 mb-2">Skills & Expertise</p>
+                        <div className="flex flex-wrap gap-1">
+                          {(connection?.tags || []).map((tag: string, index: number) => (
+                            <div key={index} className="text-xs">
+                              {tag}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      {/* Notes */}
+                      <div className="flex flex-col min-w-[180px]">
+                        <div className="flex items-center text-sm font-medium text-gray-700 mb-2">
+                          <StickyNote className="w-4 h-4 mr-2" />
+                          Notes
+                        </div>
+                        <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
+                          {connection?.notes}
+                        </p>
                       </div>
                     </div>
                   </div>
-                </div>
-              </CardHeader>
-              
-              <CardContent className="space-y-4">
-                {/* Event Met */}
-                <div className="bg-blue-50 p-3 rounded-lg">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center text-sm font-medium text-blue-900">
-                      <Calendar className="w-4 h-4 mr-2" />
-                      Met at: {connection.eventMet}
-                    </div>
-                    <span className="text-xs text-blue-600">{connection.eventDate}</span>
-                  </div>
-                </div>
-
-                {/* Goal Connection */}
-                <div className="bg-green-50 p-3 rounded-lg">
-                  <div className="flex items-center text-sm font-medium text-green-900 mb-1">
-                    <Target className="w-4 h-4 mr-2" />
-                    Connected Goal
-                  </div>
-                  <p className="text-sm text-green-700">{connection.goal}</p>
-                </div>
-
-                {/* Skills/Tags */}
-                <div>
-                  <p className="text-sm font-medium text-gray-700 mb-2">Skills & Expertise</p>
-                  <div className="flex flex-wrap gap-1">
-                    {connection.tags.map((tag, index) => (
-                      // <Badge key={index} variant="secondary" className="text-xs">
-                      //   {tag}
-                      // </Badge>
-
-                      <div key={index} className="text-xs">
-                        {tag}
+                ) : (
+                  // Column view (original card layout)
+                  <>
+                    <CardHeader className="pb-4">
+                      <div className="flex items-start space-x-4">
+                        <Avatar className="w-16 h-16">
+                          <AvatarImage src={''} />
+                          <AvatarFallback>
+                            {connection.name?.split(' ').map((n: string) => n[0]).join('')}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1">
+                          <CardTitle className="text-xl mb-1">{connection.name}</CardTitle>
+                          <p className="text-gray-600 mb-2">{connection.job_title}</p>
+                          <div className="flex items-center space-x-4 text-sm text-gray-500">
+                            <div className="flex items-center">
+                              <Building className="w-3 h-3 mr-1" />
+                              {connection.company}
+                            </div>
+                            <div className="flex items-center">
+                              <Mail className="w-3 h-3 mr-1" />
+                              {connection.email}
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Notes */}
-                <div>
-                  <div className="flex items-center text-sm font-medium text-gray-700 mb-2">
-                    <StickyNote className="w-4 h-4 mr-2" />
-                    Notes
-                  </div>
-                  <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
-                    {connection.notes}
-                  </p>
-                </div>
-
-                {/* Social Links */}
-                <div>
-                  <p className="text-sm font-medium text-gray-700 mb-3">Social Profiles</p>
-                  <div className="flex space-x-3">
-                    {connection.social.linkedin && (
-                      <Button variant="outline" size="sm" className="flex-1">
-                        <Linkedin className="w-4 h-4 mr-2" />
-                        LinkedIn
-                      </Button>
-                    )}
-                    {connection.social.github && (
-                      <Button variant="outline" size="sm" className="flex-1">
-                        <Github className="w-4 h-4 mr-2" />
-                        GitHub
-                      </Button>
-                    )}
-                    {connection.social.facebook && (
-                      <Button variant="outline" size="sm" className="flex-1">
-                        <Facebook className="w-4 h-4 mr-2" />
-                        Facebook
-                      </Button>
-                    )}
-                  </div>
-                </div>
-
-                {/* Action Buttons */}
-                {/* <div className="flex space-x-2 pt-2">
-                  <Button variant="outline" size="sm" className="flex-1">
-                    Edit Connection
-                  </Button>
-                  <Button variant="outline" size="sm" className="flex-1">
-                    Send Message
-                  </Button>
-                </div> */}
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        {/* Empty State */}
-        {filteredConnections.length === 0 && searchTerm && (
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      {/* Event Met */}
+                      <div className="bg-blue-50 p-3 rounded-lg">
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center text-sm font-medium text-blue-900">
+                            <Calendar className="w-4 h-4 mr-2" />
+                            Met at: {connection.event_met}
+                          </div>
+                          <span className="text-xs text-blue-600">{connection.event_date}</span>
+                        </div>
+                      </div>
+                      {/* Goal Connection */}
+                      <div className="bg-green-50 p-3 rounded-lg">
+                        <div className="flex items-center text-sm font-medium text-green-900 mb-1">
+                          <Target className="w-4 h-4 mr-2" />
+                          Connected Goal
+                        </div>
+                        <p className="text-sm text-green-700">{connection.goal}</p>
+                      </div>
+                      {/* Skills/Tags */}
+                      <div>
+                        <p className="text-sm font-medium text-gray-700 mb-2">Skills & Expertise</p>
+                        <div className="flex flex-wrap gap-1">
+                          {(connection.tags || []).map((tag: string, index: number) => (
+                            <div key={index} className="text-xs">
+                              {tag}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      {/* Notes */}
+                      <div>
+                        <div className="flex items-center text-sm font-medium text-gray-700 mb-2">
+                          <StickyNote className="w-4 h-4 mr-2" />
+                          Notes
+                        </div>
+                        <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
+                          {connection.notes}
+                        </p>
+                      </div>
+                      {/* Social Links (optional, if you add social fields to backend) */}
+                    </CardContent>
+                  </>
+                )}
+              </Card>
+            ))}
+          </div>
+        ) : (
           <div className="text-center py-12">
             <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">No connections found</h3>
-            <p className="text-gray-600 mb-6">Try adjusting your search terms</p>
-            <Button 
-              variant="outline" 
-              onClick={() => setSearchTerm("")}
-            >
-              Clear Search
-            </Button>
+            <p className="text-gray-600 mb-6">{searchTerm ? 'Try adjusting your search terms' : 'You have not added any connections yet.'}</p>
+            {searchTerm && (
+              <Button 
+                variant="outline" 
+                onClick={() => setSearchTerm("")}
+              >
+                Clear Search
+              </Button>
+            )}
           </div>
         )}
       </div>
