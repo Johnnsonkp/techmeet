@@ -47,6 +47,7 @@ def create_app(config_class=None):
     from app.api.v1.routes.event import api as events_ns
     from app.api.v1.routes.connection import api as connection_ns
     from app.api.v1.routes.user_events import api as user_events_ns
+    from app.api.v1.routes.google_calendar import api as google_calendar_ns
 
     # Register the namespaces
     api.add_namespace(users_ns, path='/api/v1/users')
@@ -55,6 +56,7 @@ def create_app(config_class=None):
     api.add_namespace(events_ns, path='/api/v1/events')
     api.add_namespace(user_events_ns, path='/api/v1/user_events')
     api.add_namespace(connection_ns, path='/api/v1/connections')
+    api.add_namespace(google_calendar_ns, path='/api/v1/google_calendar')
 
     app.config['JWT_SECRET_KEY'] = 'your_jwt_secret_key'  # Use a strong and unique key in production
 
