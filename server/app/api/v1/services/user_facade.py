@@ -1,4 +1,6 @@
 from cloudinary import CloudinaryImage
+import cloudinary
+import cloudinary.uploader
 
 class UserFacade:
     @staticmethod
@@ -20,11 +22,11 @@ class UserFacade:
         }
     
     @staticmethod
-    def cloadinary_img_upload(self, file, public_id):
+    def cloudinary_img_upload(file, public_id):
         cloudinary.uploader.upload(file, public_id=f"{public_id}", unique_filename = False, overwrite=True)
 
         # Build the URL for the image and save it in the variable 'srcURL'
-        srcURL = CloudinaryImage(f"{public_id}").build_url()
+        srcURL = CloudinaryImage(f"{public_id}").build_url(secure=True)
 
         # Log the image URL to the console. 
         # Copy this URL in a browser tab to generate the image on the fly.

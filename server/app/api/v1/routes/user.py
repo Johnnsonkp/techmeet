@@ -9,6 +9,7 @@ from app import db
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from app.api.v1.services.user_facade import UserFacade
 from app.api.v1.services.profile_facade import ProfileFacade
+from datetime import datetime
 
 api = Namespace('users', description='User operations')
 
@@ -50,32 +51,45 @@ class UserList(Resource):
 class NewUserAuth(Resource):
     def post(self):
         """Creates a new user"""
-        data = request.get_json()
+        if request.content_type and request.content_type.startswith('multipart/form-data'):
+            data = request.form.to_dict()
+            image = request.files.get('profile_photo_url')
+        else:
+            data = request.get_json()
+            image = None
+        # Convert is_admin to boolean if present
+        if 'is_admin' in data:
+            if isinstance(data['is_admin'], str):
+                data['is_admin'] = data['is_admin'].lower() == 'true'
         email = data.get('email')
         desired_job = data.get('job_title')
         profile_photo_url = data.get('profile_photo_url')
 
         if User.query.filter_by(email=email).first():
             return {'message': 'Email already exists'}, 400
-            
+        
         # Attempt to find an existing profile for the job
         profile = Profile.query.filter_by(job_title=desired_job).first()
 
-        # If no profile exists, create one via OpenAI-powered facade
+        # If no profile exists, create one via OpenAI
         if not profile and desired_job:
             job_data = ProfileFacade.create_career_data(desired_job)
-
             if job_data:
                 profile = Profile.create_profile(job_data)
                 db.session.add(profile)
                 db.session.commit()
-            
+
+        img_url = None
+        if image:
+            public_id = str(email) + str(datetime.now())
+            print(f"public id {public_id}")
+            img_url = UserFacade.cloudinary_img_upload(image, public_id)
+            data['profile_photo_url'] = img_url
+
         # Now create the user and link profile
         new_user = User.register_user(data, is_oauth=False)
-
         if profile:
             new_user.profile_id = profile.id
-
         db.session.add(new_user)
         db.session.commit()
 
