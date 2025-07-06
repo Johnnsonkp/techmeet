@@ -29,15 +29,15 @@ class EventList(Resource):
 
         """Fetch all events from Google Sheets"""
         try:
-            events = EventFacade.get_events()
-
-            # events = EventFacade.get_events_from_sheet()
-            print(f"events: {events}");
+            # events = EventFacade.get_events()
+            events = EventFacade.get_events_from_sheet()
+            # print(f"events: {eventsss}");
             
             if(events):
                 paginated_events = events[start:end]
                 sanitised_data = EventFacade.safe_json(paginated_events)
                 event_json = json.loads(sanitised_data)
+
                 return {
                     "events": event_json,
                     "total": len(events),

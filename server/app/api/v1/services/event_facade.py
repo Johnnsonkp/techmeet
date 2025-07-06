@@ -8,59 +8,55 @@ from oauth2client.service_account import ServiceAccountCredentials
 import pandas as pd
 import math
 import json
+from google.oauth2 import service_account
+from googleapiclient.discovery import build
 # server/credentials.json
 
 class EventFacade:
     @staticmethod
     def get_events_from_sheet():
-        print(f"get_events_from_sheet");
-
-        sheet_url = "eventbrite-melbourne-technology_technology-events-in-melbourne_captured-list_2025-06-10_02-22-42_26c2a550-b1db-4e28-a22f-c63081f57716"
-        # Define the scope
-        scope = [
-            'https://spreadsheets.google.com/feeds',
-            'https://www.googleapis.com/auth/drive'
-        ]
-
+        print("get_events google sheets")
+        # Google Sheets API setup
         base_dir = os.path.dirname(os.path.abspath(__file__))
-        credentials_path = os.path.normpath(os.path.join(base_dir, '../../../credentials.json'))
+        credentials_path = os.path.normpath(os.path.join(base_dir, '../../../../credentials.json'))
 
-        # Load credentials and authorize
-        creds = ServiceAccountCredentials.from_json_keyfile_name(credentials_path, scope)
+        SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
+        SPREADSHEET_ID = '1qvfVzBHoFECGkhV6H4ToDKiSN01nmGogaAAeCEgBIq4'
+        RANGE_NAME = 'eventbrite-melbourne-technology_technology-events-in-melbourne_captured-list_2025-06-10_02-22-42_26c2a550-b1db-4e28-a22f-c63081f57716!A1:J200'
 
+        creds = service_account.Credentials.from_service_account_file(credentials_path, scopes=SCOPES)
 
-        print(f"creds: {creds}")
-        client = gspread.authorize(creds)
-        
+        try:
+            service = build('sheets', 'v4', credentials=creds)
+            sheet = service.spreadsheets()
+            result = sheet.values().get(spreadsheetId=SPREADSHEET_ID, range=RANGE_NAME).execute()
+            values = result.get('values', [])
 
-        # Open the spreadsheet by name
-        sheet = client.open('eventbrite-2-melbourne-technology').sheet1  # Change to your sheet name
+            if not values:
+                print('No data found in spreadsheet.')
+                return []
 
-        # Get all records as a list of dicts
-        raw_events = sheet.get_all_records()
-
-        print(f"get_events_from_sheet raw_events: {raw_events}");
-
-        # Format each event to match your API structure
-        events = []
-        for row in raw_events:
-            event = {
-                "position": row.get("position"),
-                "name": row.get("name"),
-                "datetime": row.get("datetime"),
-                "location": row.get("location"),
-                "price": row.get("price"),
-                "organizer": {
-                    "name": row.get("organizer") or "Unknown",
-                    "followers": row.get("followers") or "0"
-                },
-                "event_link": row.get("event_link"),
-                "image": row.get("image"),
-                "image_description": row.get("image_description")
-            }
-            events.append(event)
-        return events
-
+            headers = values[0]
+            events = []
+            for row in values[1:]:
+                row_dict = {headers[i]: row[i] if i < len(row) else '' for i in range(len(headers))}
+                event = {
+                    "position": row_dict.get("Position", ""),
+                    "name": row_dict.get("Event Name", ""),
+                    "datetime": row_dict.get("Event Date & Time", ""),
+                    "location": row_dict.get("Event Location", ""),
+                    "price": row_dict.get("Price", ""),
+                    "organizer": row_dict.get("Organizer", ""),
+                    "Followers": row_dict.get("Followers", ""),
+                    "event_link": row_dict.get("Event Link", ""),
+                    "image": row_dict.get("Event Image", ""),
+                    "image_description": row_dict.get("Image Description", "")
+                }
+                events.append(event)
+            return events
+        except Exception as e:
+            print("not working", e)
+            return []
 
     @staticmethod
     def get_events():
