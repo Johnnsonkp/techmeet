@@ -4,7 +4,7 @@ FROM node:18-alpine
 WORKDIR /app
 
 # Copy root package files
-COPY package.json package-lock.json ./
+COPY frontend/package.json frontend/package-lock.json ./frontend/
 
 # Install dependencies
 RUN npm install
@@ -18,4 +18,4 @@ RUN npm run build
 
 EXPOSE 3000
 
-CMD ["npm", "start"]
+CMD ["npm", "run", "start"]
