@@ -1,57 +1,38 @@
 {
-  "extends": "expo/tsconfig.base",
   "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
     "strict": true,
-    "baseUrl": "./",
+    "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./src/*"
+      "*": [
+        "*"
       ],
-      "@/components/*": [
-        "./src/components/*"
-      ],
-      "@/screens/*": [
-        "./src/screens/*"
-      ],
-      "@/navigation/*": [
-        "./src/navigation/*"
-      ],
-      "@/hooks/*": [
-        "./src/hooks/*"
-      ],
-      "@/utils/*": [
-        "./src/utils/*"
-      ],
-      "@/types/*": [
-        "./src/types/*"
-      ],
-      "@/shared/*": [
-        "../shared/*"
+      "../../client/frontend/shared/*": [
+        "../../client/frontend/shared/*"
       ]
     },
+    "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "skipLibCheck": true,
-    "resolveJsonModule": true,
-    "moduleResolution": "node",
-    "allowJs": true,
-    "forceConsistentCasingInFileNames": true,
     "noEmit": true,
-    "incremental": true,
-    "tsBuildInfoFile": ".tsbuildinfo",
-    "jsx": "react-native"
+    "resolveJsonModule": true,
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "react-native",
+    "skipLibCheck": true,
+    "allowJs": true
   },
   "include": [
     "**/*.ts",
     "**/*.tsx",
-    "../shared/**/*.ts",
-    "../shared/**/*.tsx",
-    "./types/**/*.d.ts"
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts",
+    "../../client/frontend/shared/**/*.ts",
+    "../../client/frontend/shared/**/*.tsx"
   ],
   "exclude": [
     "node_modules",
     ".expo",
-    "dist",
-    ".next"
+    "dist"
   ]
 }
