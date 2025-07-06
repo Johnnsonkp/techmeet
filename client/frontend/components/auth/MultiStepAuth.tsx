@@ -50,6 +50,7 @@ export const MultiStepAuth = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<FormData>(initialFormData);
   const [loading, setLoading] = useState(false);
+  const [userSignedIn, setUserSignedIn] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const authUser = useAuthStore((s) => s.user);
@@ -57,13 +58,13 @@ export const MultiStepAuth = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (authUser && formData.mode !== 'signin') {
+    if (authUser && formData.mode !== 'signin' && userSignedIn == false) {
       setCurrentStep(2);
     }
     if(authUser){
       return router.push('/dashboard')
     }
-  }, [authUser]);
+  }, [authUser, userSignedIn]);
 
   const updateFormData = (updates: Partial<FormData>) => {
     setFormData(prev => ({ ...prev, ...updates }));
@@ -101,7 +102,8 @@ export const MultiStepAuth = () => {
     // For sign in, submit directly after step 1
     if (formData.mode === 'signin') {
       handleSubmit();
-      return;
+
+      // return router.push('/dashboard')
     }
     if (currentStep < 3) {
       setCurrentStep(currentStep + 1);
@@ -118,6 +120,7 @@ export const MultiStepAuth = () => {
     if (!validateStep()) return;
     setLoading(true);
     setError(null);
+
     try {
       if (formData.mode === 'signin') {
         const result = await loginUser({
@@ -133,10 +136,12 @@ export const MultiStepAuth = () => {
           provider: result?.provider || 'credentials',
         }, setAuth);
         
-        return router.push('/dashboard')
+        setUserSignedIn(true);
+        return; 
+        // return router.push('/dashboard')
         
       } else {
-        let profilePhotoURL = '';
+
         if (formData.profilePhoto) {
           setUploading(true);
           // Send file to Flask backend using FormData
