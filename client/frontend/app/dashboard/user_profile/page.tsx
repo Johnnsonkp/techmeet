@@ -53,7 +53,7 @@ function Page() {
   const token = useAuthStore((s) => s.access_token);
   const { profile, loading, error } = useFetchUserProfile(token);
   const fallbackSrc = "https://www.svgrepo.com/show/382106/avatar-boy.svg";
-  const userName = user?.name || (user?.first_name && user?.last_name ? `${user?.first_name} ${user?.last_name}` : null);
+  const userName = user?.name || null;
   const userImage = user?.image || fallbackSrc;
   const desiredOccupation = profile?.job_title || null;
   const occupationDescription = profile?.description || null;
