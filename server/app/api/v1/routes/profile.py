@@ -6,10 +6,14 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from app import db
 from app.api.v1.models.profile import Profile
 from app.api.v1.services.profile_facade import ProfileFacade
+from flask_restx import fields   # added by Mao 21/6/2025
 
 api = Namespace('profiles', description='Profile operations')
+#api = Namespace('profile', description='Profile operations')
 
-profile_model = api.model("Profile", {
+
+#  added by Mao 21/6/2025 needed for swagger
+profile_model = api.model("Profiles", {
     'job_title': fields.String(required=True),
     'skills': fields.Raw(description='takes skills data as json a object'),
     'description': fields.String(required=True),

@@ -56,3 +56,4 @@ class EventList(Resource):
         db.session.add(event)
         db.session.commit()
         return {"message": "Event created", "id": event.id}, 201
+
