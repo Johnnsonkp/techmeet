@@ -51,6 +51,7 @@ export const MultiStepAuth = () => {
   const [formData, setFormData] = useState<FormData>(initialFormData);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
   const authUser = useAuthStore((s) => s.user);
   const setAuth = useAuthStore((s) => s.setAuth);
   const router = useRouter();
@@ -89,7 +90,7 @@ export const MultiStepAuth = () => {
     if (formData.mode === 'signup' && currentStep === 3) {
       if (!formData.bio) {
         setError('Bio is required.');
-        return false;
+       
       }
     }
     return true;
@@ -117,7 +118,6 @@ export const MultiStepAuth = () => {
     if (!validateStep()) return;
     setLoading(true);
     setError(null);
-
     try {
       if (formData.mode === 'signin') {
         const result = await loginUser({
@@ -136,51 +136,78 @@ export const MultiStepAuth = () => {
         return router.push('/dashboard')
         
       } else {
-        // Simulated photo upload step
-        const profilePhotoURL = formData.profilePhoto
-          ? await fakeUpload(formData.profilePhoto)
-          : 'https://example.com/default-profile.png';
+        let profilePhotoURL = '';
+        if (formData.profilePhoto) {
+          setUploading(true);
+          // Send file to Flask backend using FormData
+          const form = new FormData();
+          form.append('first_name', formData.firstName);
+          form.append('last_name', formData.lastName);
+          form.append('email', formData.email);
+          form.append('password', formData.password);
+          form.append('bio', formData.bio);
+          form.append('job_title', formData.jobTitle);
+          form.append('address', '123 Tech Avenue, Melbourne');
+          form.append('is_admin', 'false');
+          form.append('employment_status', formData.employmentStatus);
+          form.append('technical_skills', JSON.stringify(formData.technicalSkills));
+          form.append('profile_photo_url', formData.profilePhoto);
 
-        const result = await signUpUser({
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          email: formData.email,
-          password: formData.password,
-          bio: formData.bio,
-          profile_photo_url: profilePhotoURL,
-          job_title: formData.jobTitle,
-          address: '123 Tech Avenue, Melbourne', // Static or from user
-          is_admin: false,
-          employment_status: formData.employmentStatus,
-          technical_skills: formData.technicalSkills,
-        });
-        // alert('Sign-up successful');
-        console.log(result);
-        
-        if (!result || !result.token) {
-          setError('Authentication failed: No token returned.');
-          return;
+          const res = await fetch(`${process.env.NEXT_PUBLIC_FLASK_BASE_URL}/api/v1/users/sign_up`, {
+            method: 'POST',
+            body: form,
+          });
+          setUploading(false);
+          if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            setError(data.message || 'Sign up failed');
+            return;
+          }
+          const result = await res.json();
+          if (!result || !result.token) {
+            setError('Authentication failed: No token returned.');
+            return;
+          }
+          syncAuthToLocal({
+            token: result.token,
+            user: result.user,
+            provider: result?.provider || 'credentials',
+          }, setAuth);
+          return router.push('/dashboard');
+        } else {
+          // fallback: no image, send as JSON
+          const result = await signUpUser({
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            email: formData.email,
+            password: formData.password,
+            bio: formData.bio,
+            profile_photo_url: '',
+            job_title: formData.jobTitle,
+            address: '123 Tech Avenue, Melbourne',
+            is_admin: false,
+            employment_status: formData.employmentStatus,
+            technical_skills: formData.technicalSkills,
+          });
+          if (!result || !result.token) {
+            setError('Authentication failed: No token returned.');
+            return;
+          }
+          syncAuthToLocal({
+            token: result.token,
+            user: result.user,
+            provider: result?.provider || 'credentials',
+          }, setAuth);
+          return router.push('/dashboard');
         }
-        
-        syncAuthToLocal({
-          token: result.token,
-          user: result.user,
-          provider: result?.provider || 'credentials',
-        }, setAuth);
-
-        return router.push('/dashboard')
       }
     } catch (error) {
       setError('Something went wrong. Please try again.');
       console.error(error);
     } finally {
       setLoading(false);
+      setUploading(false);
     }
-  };
-
-  const fakeUpload = async (file: File): Promise<string> => {
-    console.log('Uploading file:', file.name);
-    return Promise.resolve(`https://example.com/uploaded/${file.name}`);
   };
 
   return (
