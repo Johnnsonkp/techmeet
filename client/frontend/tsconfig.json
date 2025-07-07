@@ -24,7 +24,7 @@
         "./*"
       ],
       "./shared/*": [
-        "./shared/*"
+        "../../shared/shared/*"
       ]
     },
     "plugins": [
