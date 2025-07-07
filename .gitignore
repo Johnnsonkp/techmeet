@@ -10,3 +10,7 @@ env/
 ./mobile/
 ./types/
 ./shared/
+mobile/
+shared/
+types/
+.env/
