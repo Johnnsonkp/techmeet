@@ -1,5 +1,6 @@
 import { AllPostsCustom } from "@/app/components/Posts";
 import BottomBar from "@/components/timer/bottomBar/BottomBar";
+import CircularControl from "@/components/control/CircularControl";
 import DefaultFooter from "@/components/footer/Footer";
 import GetStartedCode from "@/app/components/GetStartedCode";
 import Link from "next/link";
@@ -102,7 +103,8 @@ export default async function Page() {
           <div className="bg-gradient-to-b from-white w-full h-full absolute top-0"></div>
           <div style={styles.glassCard} className="border-2 border-white w-[90%] h-[95%] absolute top-0 left-20 rounded-lg"></div>
           {/* <GlassCard className="absolute bottom-0 right-8 rounded-full"/> */}
-          <RotatingWheel />
+          {/* <RotatingWheel /> */}
+          <CircularControl />
           <div className="container">
             <div className="relative min-h-[70vh] mx-auto max-w-2xl pt-10 xl:pt-20 pb-30 space-y-6 lg:max-w-4xl lg:px-12 flex flex-col items-center justify-center">
               <div className="flex flex-col gap-4 items-center">
