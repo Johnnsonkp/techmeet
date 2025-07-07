@@ -6,3 +6,6 @@ client/studio/
 .env/
 env/
 .expo/ 
+./mobile/
+./types/
+./shared/
