@@ -1,7 +1,12 @@
+version: '3.7'
 services:
   frontend:
     build:
       context: ./client
+      args:
+        - NEXT_PUBLIC_SANITY_PROJECT_ID=your_actual_project_id
+        - NEXT_PUBLIC_SANITY_DATASET=your_actual_dataset
+        - NEXT_PUBLIC_SANITY_API_READ_TOKEN=your_actual_token
     volumes:
       - ./client:/app
       - /app/node_modules
@@ -9,14 +14,60 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=development
+      - NEXT_PUBLIC_SANITY_PROJECT_ID=your_actual_project_id
+      - NEXT_PUBLIC_SANITY_DATASET=your_actual_dataset
+      - NEXT_PUBLIC_SANITY_API_READ_TOKEN=your_actual_token
     command: npm run dev
     depends_on:
       - backend
-
   backend:
+<<<<<<< HEAD
   build:
     context: ./server
   ports:
     - "8080:8080"
   environment:
     - FLASK_ENV=production
+=======
+    build:
+      context: ./server
+    volumes:
+      - ./server:/app
+    ports:
+      - "5328:5328"
+    environment:
+      - FLASK_APP=run.py
+      - FLASK_ENV=development
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=root
+      - DB_NAME=techmeet
+    command: python3 run.py --host=0.0.0.0 --port=5328
+    depends_on:
+      - db
+  db:
+    image: mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=techmeet
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+  mobile:
+    build:
+      context: ./client/frontend/mobile
+    volumes:
+      - ./client/frontend/mobile:/app
+      - /app/node_modules
+    ports:
+      - "19000:19000"
+    environment:
+      - EXPO_DEVTOOLS_LISTEN_ADDRESS=0.0.0.0
+      - REACT_NATIVE_PACKAGER_HOSTNAME=0.0.0.0
+    command: npx expo start --dev-client
+    depends_on:
+      - backend
+volumes:
+  db_data:
+>>>>>>> da9bf9e1d2e028439c3b0d4cf246edd7659af809
