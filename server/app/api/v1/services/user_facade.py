@@ -1,6 +1,8 @@
 from cloudinary import CloudinaryImage
 import cloudinary
 import cloudinary.uploader
+from app import db
+from app.api.v1.models.user_event import UserEvent
 
 class UserFacade:
     @staticmethod
@@ -33,3 +35,16 @@ class UserFacade:
         print("****2. Upload an image****\nDelivery URL: ", srcURL, "\n")
 
         return srcURL
+
+
+class UserEventFacade:
+    @staticmethod
+    def book_event(user_id, event_id):
+        # Check if already booked
+        existing = UserEvent.query.filter_by(user_id=user_id, event_id=event_id).first()
+        if existing:
+            return False, "User already booked this event."
+        booking = UserEvent(user_id=user_id, event_id=event_id)
+        db.session.add(booking)
+        db.session.commit()
+        return True, "Event booked successfully."
