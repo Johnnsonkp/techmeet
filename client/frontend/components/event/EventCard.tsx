@@ -35,6 +35,11 @@ interface Event {
   category?: string;
   rating?: number;
   progress?: number;
+  source_api?: string;
+  attendee_image_1?: string;
+  attendee_image_2?: string;
+  attendee_image_3?: string;
+  attendees_count?: number | string;
 }
 
 interface EventCardProps {
@@ -124,11 +129,35 @@ export function EventCardGrid({event} : EventCardProps) {
           <span className="text-sm">{event.location}</span>
         </div>
 
+
+        <h3 className="text-md font-semibold text-gray-900 mb-3 group-hover:text-purple-600 transition-colors">
+          {event?.source_api}
+        </h3>
+
         <Button 
           onClick={() => handleSelect(event)}
           className="cursor-pointer w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
           View Details
         </Button>
+
+        <Link target='_blank' href={`${event?.event_link}`}
+          className="cursor-pointer w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+          View Event source
+        </Link>
+
+        {event?.attendees_count && event?.attendees_count !== "" &&
+            <div className="mt-1.5 flex items-center text-xs font-medium text-primary">
+              <div className='mr-2 flex'>
+                <img className='-ml-2 size-6 rounded-full border border-white first:ml-0' src={event?.attendee_image_1} />
+                <img className='-ml-2 size-6 rounded-full border border-white first:ml-0' src={event?.attendee_image_2} />
+                <img className='-ml-2 size-6 rounded-full border border-white first:ml-0' src={event?.attendee_image_3} />
+              </div>
+              <span className="text-gray-500">
+                {event?.attendees_count || 0} Attendees
+              </span>
+            </div>
+        }
+
 
       </CardContent>
     </Card>

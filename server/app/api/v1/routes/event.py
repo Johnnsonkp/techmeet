@@ -30,7 +30,8 @@ class EventList(Resource):
         """Fetch all events from Google Sheets"""
         try:
             # events = EventFacade.get_events()
-            events = EventFacade.get_events_from_sheet()
+            # events = EventFacade.get_events_from_sheet()
+            events = EventFacade.get_all_events_from_sheets()
             # print(f"events: {eventsss}");
             
             if(events):

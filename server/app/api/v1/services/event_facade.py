@@ -10,11 +10,13 @@ import math
 import json
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
+import random
 # server/credentials.json
 
 class EventFacade:
     @staticmethod
     def get_events_from_sheet():
+        # base_dir = os.path.dirname(os.path.abspath(__file__))
         print("get_events google sheets")
         # Google Sheets API setup
         base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -22,7 +24,7 @@ class EventFacade:
 
         SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
         SPREADSHEET_ID = '1qvfVzBHoFECGkhV6H4ToDKiSN01nmGogaAAeCEgBIq4'
-        RANGE_NAME = 'eventbrite-melbourne-technology_technology-events-in-melbourne_captured-list_2025-06-10_02-22-42_26c2a550-b1db-4e28-a22f-c63081f57716!A1:J200'
+        RANGE_NAME = 'eventbrite-melbourne-technology'
 
         creds = service_account.Credentials.from_service_account_file(credentials_path, scopes=SCOPES)
 
@@ -57,6 +59,7 @@ class EventFacade:
         except Exception as e:
             print("not working", e)
             return []
+
 
     @staticmethod
     def get_events():
@@ -119,38 +122,67 @@ class EventFacade:
 
         return json.dumps(sanitize(data))
 
-        # google spreadsheet 
-        # Define scope
-        # scope = [
-        #     'https://spreadsheets.google.com/feeds',
-        #     'https://www.googleapis.com/auth/drive'
-        # ]
+    @staticmethod
+    def get_all_events_from_sheets():
+        """
+        Fetches and combines events from three tabs in the Google Sheet into a single list.
+        Handles different possible sheet titles/columns, always returning a consistent event dict.
+        """
+        print("get_all_events_from_sheets google sheets")
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        credentials_path = os.path.normpath(os.path.join(base_dir, '../../../../credentials.json'))
+        SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
+        SPREADSHEET_ID = '1qvfVzBHoFECGkhV6H4ToDKiSN01nmGogaAAeCEgBIq4'
+        TAB_RANGES = [
+            'eventbrite-melbourne-technology',
+            'meetup-melb-technology',
+            'humanitix-melb-technology'
+        ]
+        creds = service_account.Credentials.from_service_account_file(credentials_path, scopes=SCOPES)
+        all_events = []
+        try:
+            service = build('sheets', 'v4', credentials=creds)
+            sheet = service.spreadsheets()
+            for tab in TAB_RANGES:
+                try:
+                    result = sheet.values().get(spreadsheetId=SPREADSHEET_ID, range=tab).execute()
+                    values = result.get('values', [])
+                    if not values:
+                        print(f'No data found in tab: {tab}')
+                        continue
+                    headers = values[0]
+                    for row in values[1:]:
+                        row_dict = {headers[i]: row[i] if i < len(row) else '' for i in range(len(headers))}
+                        source_api = row_dict.get("Source_api", "")
 
-        # # Load service account credentials
-        # creds = ServiceAccountCredentials.from_json_keyfile_name('credentials.json', scope)
-        # client = gspread.authorize(creds)
+                        print(f"row_dict.get {source_api}")
 
-        # # Open the spreadsheet (first sheet or by name)
-        # sheet = client.open("TechMeet Events").sheet1
+                        event = {
+                            "position": row_dict.get("Position", ""),
+                            "name": row_dict.get("Event Name", ""),
+                            "datetime": row_dict.get("Event Date & Time", ""),
+                            "location": row_dict.get("Event Location", ""),
+                            "price": row_dict.get("Price", ""),
+                            "organizer": row_dict.get("Organizer", ""),
+                            "Followers": row_dict.get("Followers", ""),
+                            "event_link": row_dict.get("Event Link", ""),
+                            "image": row_dict.get("Event Image", ""),
+                            "image_description": row_dict.get("Image Description", "") or row_dict.get("Image Description or Position", ""),
+                            "source_api": row_dict.get("Source_api", ""), 
+                            # Additional keys for other possible columns
+                            "rating": row_dict.get("Rating", ""),
+                            "attendees_count": row_dict.get("Attendees Count", ""),
+                            "attendee_image_1": row_dict.get("Attendee Image 1", ""),
+                            "attendee_image_2": row_dict.get("Attendee Image 2", ""),
+                            "attendee_image_3": row_dict.get("Attendee Image 3", "")
+                        }
+                        all_events.append(event)
+                except Exception as e:
+                    print(f"Error reading tab {tab}: {e}")
 
-        # # Read rows as list of dicts
-        # raw_events = sheet.get_all_records()
+            random.shuffle(all_events)
+            return all_events
 
-        # # Format each event
-        # formatted_events = []
-        # for row in raw_events:
-        #     event = {
-        #         "event_position": row.get("Event Position"),
-        #         "name": row.get("Event Name"),
-        #         "datetime": row.get("Event Date & Time"),
-        #         "location": row.get("Event Location"),
-        #         "price": row.get("price"),
-        #         "organiser": row.get("Organiser"),
-        #         "followers": row.get("followers"),
-        #         "event_link": row.get("Event link"),
-        #         "image": row.get("event image"),
-        #         "description": row.get("Image description")
-        #     }
-        #     formatted_events.append(event)
-
-        # return formatted_events
+        except Exception as e:
+            print("not working", e)
+            return []
