@@ -4,18 +4,14 @@ FROM node:18-alpine
 WORKDIR /app
 
 # Copy root package files
-COPY frontend/package.json frontend/package-lock.json ./frontend/
+COPY package.json package-lock.json ./
 
 # Install dependencies
 RUN npm install
 
 # Copy only frontend code
-COPY frontend ./frontend
-
-WORKDIR /app/frontend
-
-RUN npm run build
+COPY . .
 
 EXPOSE 3000
 
-CMD ["npm", "run", "start"]
+CMD ["npm", "run", "dev"]
