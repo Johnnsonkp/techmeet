@@ -18,7 +18,7 @@ export function useCountdownTimer(targetDateString: string) {
   });
 
   const targetDate = new Date(targetDateString);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<number | null>(null); // Fix: useRef<number | null>
 
   useEffect(() => {
     function calculateTime(): Timer {
@@ -55,15 +55,21 @@ export function useCountdownTimer(targetDateString: string) {
         newTime.minutes === 0 &&
         newTime.seconds === 0
       ) {
-        clearInterval(intervalRef.current!);
+        if (intervalRef.current !== null) {
+          clearInterval(intervalRef.current);
+        }
         alert("Time is up!");
       }
     }
 
-    intervalRef.current = setInterval(updateCountdown, 1000);
+    intervalRef.current = window.setInterval(updateCountdown, 1000); // Fix: window.setInterval
     updateCountdown(); // Initial call
 
-    return () => clearInterval(intervalRef.current!); // Cleanup
+    return () => {
+      if (intervalRef.current !== null) {
+        clearInterval(intervalRef.current);
+      }
+    }; // Cleanup
   }, [targetDateString, targetDate]);
 
   return timerObj;
