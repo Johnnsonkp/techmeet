@@ -1,5 +1,17 @@
-version: '3.7'
 services:
+  frontend:
+    build:
+      context: ./client
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    command: npm run dev
+    depends_on:
+      - backend
   backend:
     build:
       context: ./server
@@ -30,17 +42,17 @@ services:
   mobile:
     build:
       context: ./mobile
-    volumes:
-      - ./mobile:/app
-    ports:
-      - "19000:19000"
-      - "19001:19001"
-      - "19002:19002"
-    environment:
-      - EXPO_DEVTOOLS_LISTEN_ADDRESS=0.0.0.0
-      - REACT_NATIVE_PACKAGER_HOSTNAME=0.0.0.0
-    command: npx expo start --dev-client
-    depends_on:
-      - backend
-volumes:
-  db_data:
+      volumes:
+        - ./mobile:/app
+      ports:
+        - "19000:19000"
+        - "19001:19001"
+        - "19002:19002"
+      environment:
+        - EXPO_DEVTOOLS_LISTEN_ADDRESS=0.0.0.0
+        - REACT_NATIVE_PACKAGER_HOSTNAME=0.0.0.0
+      command: npx expo start --dev-client
+      depends_on:
+        - backend
+  volumes:
+    db_data:

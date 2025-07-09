@@ -12,23 +12,14 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
-<<<<<<< HEAD:mobile/package.json
     "@react-native-async-storage/async-storage": "^2.2.0",
-=======
-    "@react-native-async-storage/async-storage": "2.1.2",
->>>>>>> da9bf9e1d2e028439c3b0d4cf246edd7659af809:client/frontend/mobile/package.json
     "@react-navigation/bottom-tabs": "^7.3.10",
     "@react-navigation/elements": "^2.3.8",
     "@react-navigation/native": "^7.1.14",
     "@react-navigation/native-stack": "^7.3.21",
-<<<<<<< HEAD:mobile/package.json
-    "expo": "~53.0.13",
-    "expo-auth-session": "^6.0.0",
-=======
     "@react-navigation/stack": "^7.4.2",
     "expo": "~53.0.13",
     "expo-auth-session": "~6.2.0",
->>>>>>> da9bf9e1d2e028439c3b0d4cf246edd7659af809:client/frontend/mobile/package.json
     "expo-blur": "~14.1.5",
     "expo-constants": "~17.1.6",
     "expo-font": "~13.3.1",
@@ -54,12 +45,9 @@
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
-    "@types/react": "~19.0.10",
-<<<<<<< HEAD:mobile/package.json
-=======
+    "@types/react": "^19.1.0",
     "@types/react-native": "^0.72.8",
     "@types/react-navigation": "^3.0.8",
->>>>>>> da9bf9e1d2e028439c3b0d4cf246edd7659af809:client/frontend/mobile/package.json
     "eslint": "^9.25.0",
     "eslint-config-expo": "~9.2.0",
     "typescript": "~5.8.3"
