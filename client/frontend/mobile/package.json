@@ -45,6 +45,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
+    "@types/expo": "^32.0.13",
     "@types/react": "^19.1.0",
     "@types/react-native": "^0.72.8",
     "@types/react-navigation": "^3.0.8",

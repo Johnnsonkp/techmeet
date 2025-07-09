@@ -1,5 +1,5 @@
 import { View, TextInput, Button } from 'react-native';
-import useProfileForm from '../../../../shared/shared/components/ProfileForm';
+import useProfileForm from '../../shared/components/ProfileForm';
 
 export default function ProfileSetupScreen() {
     const { name, setName, bio, setBio, saveProfile } = useProfileForm({});
