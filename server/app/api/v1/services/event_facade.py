@@ -27,7 +27,6 @@ from flask import jsonify
 import os
 import json
 import re
-# server/credentials.json
 
 kw_model = KeyBERT()
 
@@ -148,16 +147,29 @@ class EventFacade:
         Handles different possible sheet titles/columns, always returning a consistent event dict.
         """
         print("get_all_events_from_sheets google sheets")
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        credentials_path = os.path.normpath(os.path.join(base_dir, '../../../../credentials.json'))
-        SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
+
+        # base_dir = os.path.dirname(os.path.abspath(__file__))
+        # credentials_path = os.path.normpath(os.path.join(base_dir, '../../../../credentials.json'))
+
+        
+        # SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
         SPREADSHEET_ID = '1qvfVzBHoFECGkhV6H4ToDKiSN01nmGogaAAeCEgBIq4'
         TAB_RANGES = [
             'eventbrite-melbourne-technology',
             'meetup-melb-technology',
             'humanitix-melb-technology'
         ]
-        creds = service_account.Credentials.from_service_account_file(credentials_path, scopes=SCOPES)
+
+        credentials_json = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON")
+
+        if not credentials_json:
+            raise Exception("GOOGLE_SERVICE_ACCOUNT_JSON env var not set")
+        
+        creds_dict = json.loads(credentials_json)
+        creds = service_account.Credentials.from_service_account_info(creds_dict, scopes=['https://www.googleapis.com/auth/spreadsheets.readonly'])
+        # creds = service_account.Credentials.from_service_account_file(credentials_path, scopes=SCOPES)
+
+
         all_events = []
         try:
             print("TRY get_all_events_from_sheets google sheets")
@@ -214,128 +226,126 @@ class EventFacade:
         events = EventFacade.get_all_events_from_sheets()
         print(f"Fetched {len(events)} events from sheets.")
 
-        # 2. Generate categories and tags for each event using OpenAI
         # Helper to batch events
         def batch_events(events, batch_size):
             for i in range(0, len(events), batch_size):
                 yield events[i:i+batch_size]
 
-        # 2. Generate categories and tags for each event using OpenAI, batched
-        classified = []
-        try:
-            for batch in batch_events(events, 15):
-                batch_result = EventFacade.create_evemt_tags_categories(batch)
-                if batch_result:
-                    classified.extend(batch_result)
-            print(f"Classified events: {classified}")
-        except Exception as e:
-            print(f"[ERROR] OpenAI classification failed: {e}")
-            return {"error": "OpenAI classification failed", "details": str(e)}, 500
-
-        # 3. Create all categories and tags, and collect category_tag pairs
-        category_objs = {}
-        tag_objs = {}
-        category_tag_pairs = []
-        event_objs = []
-
-        # Defensive: Build a mapping from event (name, datetime) to classification
+        batch_size = 10
+        all_category_tag_pairs = []
+        all_event_objs = []
         classified_map = {}
-        if classified:
-            for event, classification in zip(events, classified):
-                key = (event.get('name', '').strip(), event.get('datetime', '').strip())
-                classified_map[key] = classification
+        openai_tags_map = {}
+        processed_events = []
 
-        if classified:
-            print("Processing classified events...")
-            for event in events:
-                key = (event.get('name', '').strip(), event.get('datetime', '').strip())
-                classification = classified_map.get(key)
-                if not classification:
-                    print(f"[WARN] No classification for event: {key}")
+        try:
+            for batch in batch_events(events, batch_size):
+                # 2. Generate categories and tags for each event using OpenAI, batched
+                classified = EventFacade.create_event_tags_categories(batch)
+                if not classified:
                     continue
-                event_categories = classification.get("categories", [])
-                event_tags = classification.get("tags", [])
+                # Defensive: Build a mapping from event (name, datetime) to classification
+                for event, classification in zip(batch, classified):
+                    key = (event.get('name', '').strip(), event.get('datetime', '').strip())
+                    classified_map[key] = classification
+                    openai_tags_map[key] = classification.get('tags', [])
 
-                # Create/get categories
-                category_ids = []
-                for cat_name in event_categories:
-                    cat_name_n = cat_name.strip()
-                    if not cat_name_n:
+                category_objs = {}
+                tag_objs = {}
+                category_tag_pairs = []
+                event_objs = []
+
+                print("Processing classified events in batch...")
+                for event in batch:
+                    key = (event.get('name', '').strip(), event.get('datetime', '').strip())
+                    classification = classified_map.get(key)
+                    if not classification:
+                        print(f"[WARN] No classification for event: {key}")
                         continue
-                    category = Category.query.filter_by(name=cat_name_n).first()
-                    if not category:
-                        category = Category(name=cat_name_n)
-                        db.session.add(category)
-                        db.session.flush()
-                    category_objs[cat_name_n] = category
-                    category_ids.append(category.id)
+                    event_categories = classification.get("categories", [])
+                    event_tags = classification.get("tags", [])
 
-                # Create/get tags
-                tag_ids = []
-                for tag_name in event_tags:
-                    tag_name_n = tag_name.strip()
-                    if not tag_name_n:
-                        continue
-                    tag = Tag.query.filter_by(name=tag_name_n).first()
-                    if not tag:
-                        tag = Tag(name=tag_name_n)
-                        db.session.add(tag)
-                        db.session.flush()
-                    tag_objs[tag_name_n] = tag
-                    tag_ids.append(tag.id)
+                    # Create/get categories
+                    category_ids = []
+                    for cat_name in event_categories:
+                        cat_name_n = cat_name.strip()
+                        if not cat_name_n:
+                            continue
+                        category = Category.query.filter_by(name=cat_name_n).first()
+                        if not category:
+                            category = Category(name=cat_name_n)
+                            db.session.add(category)
+                            db.session.flush()
+                        category_objs[cat_name_n] = category
+                        category_ids.append(category.id)
 
-                # Collect category_tag pairs
-                for cat_id in category_ids:
+                    # Create/get tags
+                    tag_ids = []
+                    for tag_name in event_tags:
+                        tag_name_n = tag_name.strip()
+                        if not tag_name_n:
+                            continue
+                        tag = Tag.query.filter_by(name=tag_name_n).first()
+                        if not tag:
+                            tag = Tag(name=tag_name_n)
+                            db.session.add(tag)
+                            db.session.flush()
+                        tag_objs[tag_name_n] = tag
+                        tag_ids.append(tag.id)
+
+                    # Collect category_tag pairs
+                    for cat_id in category_ids:
+                        for tag_id in tag_ids:
+                            category_tag_pairs.append((cat_id, tag_id))
+
+                    # 4. Create the event and attach tags
+                    event_obj = Event(
+                        position=event.get('position', ''),
+                        name=event.get('name', ''),
+                        datetime=event.get('datetime', ''),
+                        location=event.get('location', ''),
+                        seat_availability=event.get('seat_availability', ''),
+                        price=event.get('price', ''),
+                        organizer=event.get('organizer', ''),
+                        followers=event.get('Followers', ''),
+                        event_link=event.get('event_link', ''),
+                        image=event.get('image', ''),
+                        image_description=event.get('image_description', ''),
+                        source_api=event.get('source_api', ''),
+                        rating=event.get('rating', ''),
+                        attendees_count=event.get('attendees_count', ''),
+                        attendee_image_1=event.get('attendee_image_1', ''),
+                        attendee_image_2=event.get('attendee_image_2', ''),
+                        attendee_image_3=event.get('attendee_image_3', ''),
+                        description=event.get('description', ''),
+                    )
+                    db.session.add(event_obj)
+                    db.session.flush()
+                    # Attach tags to event
                     for tag_id in tag_ids:
-                        category_tag_pairs.append((cat_id, tag_id))
+                        tag = Tag.query.get(tag_id)
+                        if tag and tag not in event_obj.tags:
+                            event_obj.tags.append(tag)
+                    event_objs.append(event_obj)
+                    processed_events.append(event)
 
-                # 4. Create the event and attach tags
-                event_obj = Event(
-                    position=event.get('position', ''),
-                    name=event.get('name', ''),
-                    datetime=event.get('datetime', ''),
-                    location=event.get('location', ''),
-                    seat_availability=event.get('seat_availability', ''),
-                    price=event.get('price', ''),
-                    organizer=event.get('organizer', ''),
-                    followers=event.get('Followers', ''),
-                    event_link=event.get('event_link', ''),
-                    image=event.get('image', ''),
-                    image_description=event.get('image_description', ''),
-                    source_api=event.get('source_api', ''),
-                    rating=event.get('rating', ''),
-                    attendees_count=event.get('attendees_count', ''),
-                    attendee_image_1=event.get('attendee_image_1', ''),
-                    attendee_image_2=event.get('attendee_image_2', ''),
-                    attendee_image_3=event.get('attendee_image_3', ''),
-                    description=event.get('description', ''),
-                )
-                db.session.add(event_obj)
-                db.session.flush()
-                # Attach tags to event
-                for tag_id in tag_ids:
-                    tag = Tag.query.get(tag_id)
-                    if tag and tag not in event_obj.tags:
-                        event_obj.tags.append(tag)
-                event_objs.append(event_obj)
-
-        # 5. Now create category_tag links (avoid duplicates)
-        for category_id, tag_id in category_tag_pairs:
-            exists = db.session.query(CategoryTag).filter_by(category_id=category_id, tag_id=tag_id).first()
-            if not exists:
-                db.session.add(CategoryTag(category_id=category_id, tag_id=tag_id))
-        db.session.commit()
-        print("Events, categories, tags, and category_tags saved.")
+                # 5. Now create category_tag links (avoid duplicates) for this batch
+                for category_id, tag_id in category_tag_pairs:
+                    exists = db.session.query(CategoryTag).filter_by(category_id=category_id, tag_id=tag_id).first()
+                    if not exists:
+                        db.session.add(CategoryTag(category_id=category_id, tag_id=tag_id))
+                db.session.commit()
+                print(f"Batch of {len(batch)} events, categories, tags, and category_tags saved.")
+                all_category_tag_pairs.extend(category_tag_pairs)
+                all_event_objs.extend(event_objs)
+        except Exception as e:
+            db.session.rollback()
+            print(f"[ERROR] Batch processing failed: {e}")
+            return {"error": "Batch processing failed", "details": str(e)}, 500
 
         # Return all events as a list of dicts for API use
         all_events = Event.query.order_by(Event.id.desc()).all()
         result = []
-        # Map events to their OpenAI tags by (name, datetime) for best-effort matching
-        openai_tags_map = {}
-        if classified:
-            for event, classification in zip(events, classified):
-                key = (event.get('name', '').strip(), event.get('datetime', '').strip())
-                openai_tags_map[key] = classification.get('tags', [])
         for e in all_events:
             key = (e.name.strip() if e.name else '', e.datetime.strip() if e.datetime else '')
             result.append({
@@ -366,13 +376,13 @@ class EventFacade:
 
 
     @staticmethod
-    def create_evemt_tags_categories(events):
+    def create_event_tags_categories(events):
         prompt = f"""
-            You are an expert event classifier.
+            You are an expert tech event classifier.
 
             Your task is to read a list of events, and for each event:
-            - Generate a maximum of **2 relevant category names**
-            - Generate a maximum of **6 descriptive tags** based on the event name and description
+            - Generate a maximum of **2 relevant tech category names**
+            - Generate a maximum of **6 tech descriptive tags** based on the event name, description and image description (if available).
             - DO NOT reuse any **category** or **tag** if it has already been assigned to a previous event in the same list.
             - Skip assigning tags/categories to any event that would result in duplicates.
 

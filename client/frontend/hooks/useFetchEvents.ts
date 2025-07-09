@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 
-import { useEventStore } from '@/store/eventStore'; // adjust path as needed
+import { useEventStore } from '@/store/eventStore';
 
 const base_url = process.env.NEXT_PUBLIC_FLASK_BASE_URL;
 
@@ -11,7 +11,6 @@ export const useFetchEvents = () => {
   const setEvents = useEventStore((s) => s.setEvents);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
 
   console.log("base_url", base_url);
   console.log("process.env.NEXT_PUBLIC_FLASK_BASE_URL", process.env.NEXT_PUBLIC_FLASK_BASE_URL);

@@ -50,19 +50,9 @@ export default function EventFilterSidebar({
 }) {
   return (
     <aside className="w-full md:w-64 p-4 bg-white shadow-xs space-y-4 border-2 rounded-lg pb-20">
-      {/* <div>
-        <label className="block font-semibold mb-1">Search</label>
-        <input
-          type="text"
-          className="w-full border rounded p-2"
-          placeholder="Search events..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </div> */}
 
       <MediumText text="Filters"/>
-
+      
       <div className="flex flex-col md:flex-row gap-4 flex-1">
         <div className="flex-1 relative max-w-md">
           <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
