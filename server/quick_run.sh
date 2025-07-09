@@ -18,8 +18,8 @@ export FLASK_DEBUG=1
 pip install -r requirements.txt
 
 # Run migrations before starting app
-echo "Running DB migrations..."
-flask db upgrade
+# echo "Running DB migrations..."
+# flask db upgrade
 
 # Run the application
 flask run --host='localhost' --port=5328 
