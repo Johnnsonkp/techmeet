@@ -26,9 +26,6 @@ def create_app(config_class=None):
     app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
     cloudinary.config(
-      # cloud_name=app.config['CLOUD_NAME'],
-      # api_key=app.config['CLOUD_API_KEY'],
-      # api_secret=app.config['CLOUD_API_SECRET']
       cloud_name = os.getenv('CLOUD_NAME'),
       api_key = os.getenv('CLOUD_API_KEY'),
       api_secret = os.getenv('CLOUD_API_SECRET')

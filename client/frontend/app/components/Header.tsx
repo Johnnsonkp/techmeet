@@ -2,6 +2,7 @@ import HeaderUnderline from "./HeaderUnderline";
 import Link from "next/link";
 import NavAvatar from "./NavAvatar/NavAvatar";
 import NavDropDown from "./NavAvatar/NavDropDown";
+import SearchBar from "@/components/search/SearchBar";
 import { sanityFetch } from "@/sanity/lib/live";
 import { settingsQuery } from "@/sanity/lib/queries";
 
@@ -15,11 +16,16 @@ export default async function Header() {
       <div className="flex-col justify-between align-middle w-full mt-3">
       <div className="custom-nav-container py-6 px-2 sm:px-6 h-[90%]">
         <div className="flex items-center justify-between gap-5">
-          <Link className="flex items-center gap-2" href="/">
-            <span className="text-lg sm:text-2xl pl-2 font-semibold">
-              {settings?.title || "techmeet."}
-            </span>
-          </Link>
+          
+          <div className="flex">
+            <Link className="flex items-center gap-2 mr-10" href="/">
+              <span className="text-xl sm:text-2xl pl-2 font-semibold">
+                {settings?.title || "techmeet."}
+              </span>
+            </Link>
+
+            <SearchBar />
+          </div>
 
           <nav>
             <ul
