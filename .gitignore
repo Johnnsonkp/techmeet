@@ -3,3 +3,8 @@ __pycache__/
 venv/
 node_modules/
 client/studio/
+env*
+env/
+.env
+.env*
+/server/credentials.json*
