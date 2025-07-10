@@ -11,12 +11,14 @@ export const useFetchEvents = () => {
   const setEvents = useEventStore((s) => s.setEvents);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [noEventsFound, setNoEventsFound] = useState(false);
 
   console.log("base_url", base_url);
   console.log("process.env.NEXT_PUBLIC_FLASK_BASE_URL", process.env.NEXT_PUBLIC_FLASK_BASE_URL);
 
   // Fetch paginated events
   const fetchEvents = async (page: number, limit: number) => {
+    if (noEventsFound) return;
     setLoading(true);
     setError(null);
     try {
@@ -25,9 +27,12 @@ export const useFetchEvents = () => {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
       const data = await res.json();
-      if (data?.events) {
+      if (data?.events && data.events.length > 0) {
         setEvents(data.events, { page, limit, total: data.total });
+        setNoEventsFound(false);
         return;
+      } else {
+        setNoEventsFound(true);
       }
     } catch (err) {
       setError("Failed to fetch events");
