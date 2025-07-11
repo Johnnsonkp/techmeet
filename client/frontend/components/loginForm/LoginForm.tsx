@@ -29,7 +29,7 @@ export default function LoginForm(){
                 <label htmlFor="email" className="block text-sm font-medium leading-5  text-gray-700">Email address</label>
                 <div className="mt-1 relative rounded-md shadow-sm">
                   <input id="email" name="email" placeholder="user@example.com" type="email" required={true} value="" className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" onChange={handleInput}/>
-                  <div className="hidden absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                  <div className=" absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                     <svg className="h-5 w-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd"
                             d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
@@ -62,7 +62,7 @@ export default function LoginForm(){
                     Sign in
                   </button>
                     {/* <p/> */}
-                  <button className="text-gray-400 bg-white w-full px-4 py-2 border flex gap-2 border-slate-200 dark:border-slate-700 rounded-lg text-slate-400 dark:text-slate-200 hover:border-slate-400 dark:hover:border-slate-500 hover:text-slate-900 dark:hover:text-slate-300 hover:shadow transition duration-150"
+                  <button className=" bg-white w-full px-4 py-2 border flex gap-2 border-slate-200 dark:border-slate-700 rounded-lg text-slate-400 dark:text-slate-200 hover:border-slate-400 dark:hover:border-slate-500 hover:text-slate-900 dark:hover:text-slate-300 hover:shadow transition duration-150"
                   >
                     <span>Login</span>
                   </button>

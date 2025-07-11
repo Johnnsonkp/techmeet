@@ -11,7 +11,7 @@ export const SignInButton: any = () => {
 export const SignOutButton: any = () => {
   return (
     <button 
-      className='cursor-pointer flex align-middle justify-center p-1 w-4 border-2 bg-red-500 w-[110px] text-white' 
+      className='cursor-pointer flex align-middle justify-center p-1 border-2 bg-red-500 w-[110px] text-white' 
       onClick={() => logout()}>Sign Out</button>
   )
 }
