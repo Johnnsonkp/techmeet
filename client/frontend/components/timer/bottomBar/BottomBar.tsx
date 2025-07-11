@@ -11,6 +11,7 @@ export default function BottomBar() {
     action: ''
   })
 
+
   // Add upload handler
   const handleUploadEvents = async () => {
     setStatus({ loading: true, action: 'Upload' });
@@ -54,13 +55,13 @@ export default function BottomBar() {
       >
         {status.loading && status.action == 'Dashboard'? <Loader2Icon className="animate-spin" /> : 'Dashboard'}
       </Link>
-      <button
+      {/* <button
         className="!text-white flex items-center align-middle justify-center gap-2 relative cursor-pointer bg-blue md:aspect-square px-4 py-0 md:p-2 rounded-xl md:rounded-full hover:bg-yellow hover:text-black transition-colors duration-300 w-25"
         onClick={handleUploadEvents}
         disabled={status.loading && status.action === 'Upload'}
       >
         {status.loading && status.action === 'Upload' ? <Loader2Icon className="animate-spin" /> : 'Upload Events'}
-      </button>
+      </button> */}
     </div>
   );
 }

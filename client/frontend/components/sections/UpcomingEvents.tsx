@@ -60,7 +60,7 @@ export const UpcomingEvents = () => {
 
         <div className="flex-[0.78] overflow-y-auto pb-0 p-4 grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-3">
           {loading ? "" : first3Events.map((event: Event, index: number) => (
-            <div className="hover:shadow-md cursor-pointer ">
+            <div key={index} className="hover:shadow-md cursor-pointer ">
               <img
                 src={event.image}
                 alt={event.imageDescription}

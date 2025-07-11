@@ -13,7 +13,7 @@ class BaseConfig:
       # JWT token expiration (set to 7 days)
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=7)
     JWT_ERROR_MESSAGE_KEY = "message"
-    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
+    # JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
     JWT_TOKEN_LOCATION = ["headers"]
     JWT_COOKIE_CSRF_PROTECT = False
 
@@ -31,6 +31,8 @@ class DevelopmentConfig(BaseConfig):
         'DATABASE_URL',
         'mysql+pymysql://root:@localhost:3306/techmeet'
     )
+    # SQLALCHEMY_DATABASE_URI = "mysql+pymysql://root:emTrWwReBsZoiovHdDtinwtXXqwkxwSI@mysql.railway.internal:3306/railway"
+    # SQLALCHEMY_DATABASE_URI = "mysql+pymysql://root:emTrWwReBsZoiovHdDtinwtXXqwkxwSI@gondola.proxy.rlwy.net:56303/railway"
 
 
 class ProductionConfig(BaseConfig):

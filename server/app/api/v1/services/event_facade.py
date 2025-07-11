@@ -219,42 +219,42 @@ class EventFacade:
 
 
     @staticmethod
+    def sanitize_int_field(value):
+        if value == '' or value is None:
+            return None
+        try:
+            return int(value)
+        except (ValueError, TypeError):
+            return None
+
+    @staticmethod
     def get_events_from_sheets_to_db():
         print("get_events_from_sheets_to_db")
-
         # 1. Fetch events from Google Sheets
         events = EventFacade.get_all_events_from_sheets()
         print(f"Fetched {len(events)} events from sheets.")
-
-        # Helper to batch events
         def batch_events(events, batch_size):
             for i in range(0, len(events), batch_size):
                 yield events[i:i+batch_size]
-
         batch_size = 10
         all_category_tag_pairs = []
         all_event_objs = []
         classified_map = {}
         openai_tags_map = {}
         processed_events = []
-
         try:
             for batch in batch_events(events, batch_size):
-                # 2. Generate categories and tags for each event using OpenAI, batched
                 classified = EventFacade.create_event_tags_categories(batch)
                 if not classified:
                     continue
-                # Defensive: Build a mapping from event (name, datetime) to classification
                 for event, classification in zip(batch, classified):
                     key = (event.get('name', '').strip(), event.get('datetime', '').strip())
                     classified_map[key] = classification
                     openai_tags_map[key] = classification.get('tags', [])
-
                 category_objs = {}
                 tag_objs = {}
                 category_tag_pairs = []
                 event_objs = []
-
                 print("Processing classified events in batch...")
                 for event in batch:
                     key = (event.get('name', '').strip(), event.get('datetime', '').strip())
@@ -264,8 +264,6 @@ class EventFacade:
                         continue
                     event_categories = classification.get("categories", [])
                     event_tags = classification.get("tags", [])
-
-                    # Create/get categories
                     category_ids = []
                     for cat_name in event_categories:
                         cat_name_n = cat_name.strip()
@@ -278,8 +276,6 @@ class EventFacade:
                             db.session.flush()
                         category_objs[cat_name_n] = category
                         category_ids.append(category.id)
-
-                    # Create/get tags
                     tag_ids = []
                     for tag_name in event_tags:
                         tag_name_n = tag_name.strip()
@@ -292,19 +288,15 @@ class EventFacade:
                             db.session.flush()
                         tag_objs[tag_name_n] = tag
                         tag_ids.append(tag.id)
-
-                    # Collect category_tag pairs
                     for cat_id in category_ids:
                         for tag_id in tag_ids:
                             category_tag_pairs.append((cat_id, tag_id))
-
-                    # 4. Create the event and attach tags
                     event_obj = Event(
                         position=event.get('position', ''),
                         name=event.get('name', ''),
                         datetime=event.get('datetime', ''),
                         location=event.get('location', ''),
-                        seat_availability=event.get('seat_availability', ''),
+                        seat_availability=EventFacade.sanitize_int_field(event.get('seat_availability', '')),
                         price=event.get('price', ''),
                         organizer=event.get('organizer', ''),
                         followers=event.get('Followers', ''),
@@ -312,8 +304,8 @@ class EventFacade:
                         image=event.get('image', ''),
                         image_description=event.get('image_description', ''),
                         source_api=event.get('source_api', ''),
-                        rating=event.get('rating', ''),
-                        attendees_count=event.get('attendees_count', ''),
+                        rating=EventFacade.sanitize_int_field(event.get('rating', '')),
+                        attendees_count=EventFacade.sanitize_int_field(event.get('attendees_count', '')),
                         attendee_image_1=event.get('attendee_image_1', ''),
                         attendee_image_2=event.get('attendee_image_2', ''),
                         attendee_image_3=event.get('attendee_image_3', ''),
@@ -321,15 +313,12 @@ class EventFacade:
                     )
                     db.session.add(event_obj)
                     db.session.flush()
-                    # Attach tags to event
                     for tag_id in tag_ids:
                         tag = Tag.query.get(tag_id)
                         if tag and tag not in event_obj.tags:
                             event_obj.tags.append(tag)
                     event_objs.append(event_obj)
                     processed_events.append(event)
-
-                # 5. Now create category_tag links (avoid duplicates) for this batch
                 for category_id, tag_id in category_tag_pairs:
                     exists = db.session.query(CategoryTag).filter_by(category_id=category_id, tag_id=tag_id).first()
                     if not exists:
@@ -342,8 +331,6 @@ class EventFacade:
             db.session.rollback()
             print(f"[ERROR] Batch processing failed: {e}")
             return {"error": "Batch processing failed", "details": str(e)}, 500
-
-        # Return all events as a list of dicts for API use
         all_events = Event.query.order_by(Event.id.desc()).all()
         result = []
         for e in all_events:
