@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+from datetime import timedelta
 
 # Load environment variables from .env file
 load_dotenv()
@@ -8,6 +9,13 @@ class BaseConfig:
     """Base configuration."""
     SECRET_KEY = os.getenv('SECRET_KEY', 'insecure-default-key')  # Fallback for dev only
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+      # JWT token expiration (set to 7 days)
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=7)
+    JWT_ERROR_MESSAGE_KEY = "message"
+    # JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
+    JWT_TOKEN_LOCATION = ["headers"]
+    JWT_COOKIE_CSRF_PROTECT = False
 
      # Cloudinary-specific variables
     CLOUDINARY_URL = os.getenv('CLOUDINARY_URL')
@@ -23,6 +31,8 @@ class DevelopmentConfig(BaseConfig):
         'DATABASE_URL',
         'mysql+pymysql://root:@localhost:3306/techmeet'
     )
+    # SQLALCHEMY_DATABASE_URI = "mysql+pymysql://root:emTrWwReBsZoiovHdDtinwtXXqwkxwSI@mysql.railway.internal:3306/railway"
+    # SQLALCHEMY_DATABASE_URI = "mysql+pymysql://root:emTrWwReBsZoiovHdDtinwtXXqwkxwSI@gondola.proxy.rlwy.net:56303/railway"
 
 
 class ProductionConfig(BaseConfig):

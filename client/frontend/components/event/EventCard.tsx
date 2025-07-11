@@ -6,6 +6,7 @@ import { Card, CardContent } from '../ui/card'
 import { Button } from '../ui/button'
 import Link from 'next/link'
 import React from 'react'
+import { formatDateTimeNow } from '../utils/formatDate'
 import { slugify } from '@/lib/event/slugify-url'
 import { useEffect } from 'react'
 import { useEventStore } from '@/store/eventStore'
@@ -35,6 +36,11 @@ interface Event {
   category?: string;
   rating?: number;
   progress?: number;
+  source_api?: string;
+  attendee_image_1?: string;
+  attendee_image_2?: string;
+  attendee_image_3?: string;
+  attendees_count?: number | string;
 }
 
 interface EventCardProps {
@@ -46,6 +52,7 @@ interface Props {
 }
 
 export function EventCardGridLoadingSkeleton({ index }: Props)  {
+
   
   return (
     <Card key={index} className="border-0 h-[500px] w-[100%] flex-1 cursor-pointer group transition-all duration-300 bg-white overflow-hidden">
@@ -90,14 +97,47 @@ export function EventCardGrid({event} : EventCardProps) {
     
     router.push(`events/${event?.position}-${url}`);
   }
+
+  const AvatarPlaceholder_1 = () => {
+    return (
+      <img 
+        className="-ml-2 size-6 rounded-full border border-white first:ml-0" 
+        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80" 
+        alt="" 
+      />
+    )
+  }
+
+  const AvatarPlaceholder_2 = () => {
+    return (
+      <img 
+        className="-ml-2 size-6 rounded-full border border-white first:ml-0" 
+        src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2.25&amp;w=256&amp;h=256&amp;q=80" 
+        alt="" 
+      />
+    )
+  }
+
+  const AvatarPlaceholder_3 = () => {
+    return (
+      <img 
+        className="-ml-2 size-6 rounded-full border border-white first:ml-0" 
+        src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80" 
+        alt="" 
+      />
+    )
+  }
   
   return (
-    <Card key={event?.id} className="h-[500px] w-[100%] flex-1 cursor-pointer group hover:shadow-xl transition-all duration-300 hover:-translate-y-[0.3] bg-white overflow-hidden">
+    <Card  
+      onClick={() => handleSelect(event)}
+      key={event?.id} 
+      className="h-[420px] w-[100%] flex-1 cursor-pointer group hover:shadow-md transition-all duration-300 hover:-translate-y-[0.3] bg-white overflow-hidden">
       <div className="relative p-3">
         <img
           src={event.image}
           alt={event.imageDescription}
-          className="w-full h-60 object-cover group-hover:scale-[1.005] transition-transform duration-300 rounded-lg"
+          className="w-full h-60 object-cover transition-transform duration-300 rounded-lg"
         />
         <div className="absolute bottom-3 right-3 bg-black/50 text-white px-2 py-1 rounded text-sm font-medium">
           {event.price}
@@ -105,30 +145,39 @@ export function EventCardGrid({event} : EventCardProps) {
       </div>
       
       <CardContent className="p-3 pt-0 mt-0">
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center text-gray-600 text-xs">
+        <div className="flex items-center justify-between mb-0">
+          <div className="flex items-center text-gray-600 text-sm">
             <Calendar className="w-3 h-3 mr-1" />
-            {event?.date || event?.datetime}
-            <Clock className="w-3 h-3 ml-3 mr-1" />
+            {event?.date || event?.datetime || formatDateTimeNow()}
+            {/* <Clock className="w-3 h-3 ml-3 mr-1" /> */}
           </div>
-
-            {/* <div className="h-6 bg-gray-300 rounded w-3/4 mb-0"></div> */}
         </div>
+        
+        <div className="flex items-center text-gray-600 mb-3">
+            <MapPin className="w-3 h-3 mr-1" />
+            <span className="text-sm">{event?.location || 'Melbourne, AU'}</span> 
+        </div>
+
         
         <h3 className="text-md font-semibold text-gray-900 mb-3 group-hover:text-purple-600 transition-colors">
           {event.name}
         </h3>
         
-        <div className="flex items-center text-gray-600 mb-4">
-          <MapPin className="w-4 h-4 mr-2" />
-          <span className="text-sm">{event.location}</span>
-        </div>
+        {event?.attendees_count && event?.attendees_count !== "" &&
+          <div className="mt-4 flex items-center text-xs font-medium text-primary">
+            <div className='mr-2 flex'>
+              { event?.attendee_image_1 ? <img className='-ml-2 size-6 rounded-full border border-white first:ml-0' src={event?.attendee_image_1} /> : <AvatarPlaceholder_1 />} 
+              { event?.attendee_image_2 ? <img className='-ml-2 size-6 rounded-full border border-white first:ml-0' src={event?.attendee_image_2} /> : <AvatarPlaceholder_2 />}
+              { event?.attendee_image_3 ? <img className='-ml-2 size-6 rounded-full border border-white first:ml-0' src={event?.attendee_image_3} /> : <AvatarPlaceholder_3 />}
+            </div>
+            
+            <span className="text-gray-500">
+              {event?.attendees_count || "0 Attendees"} 
+            </span>
+          </div>
+        }
 
-        <Button 
-          onClick={() => handleSelect(event)}
-          className="cursor-pointer w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
-          View Details
-        </Button>
+
 
       </CardContent>
     </Card>
@@ -166,12 +215,12 @@ export function EventCardList({event} : EventCardProps) {
         
         <div className="flex-1 min-w-0">
           <div className="flex items-center space-x-2 mb-2">
-            <div className="bg-green-500 text-white text-xs">Active</div>
+            {/* <div className="bg-green-500 text-white text-xs">Active</div> */}
             <div className="flex items-center text-sm text-gray-600">
               <Calendar className="w-4 h-4 mr-1" />
               {/* {new Date(event.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} */}
               {event?.date || event?.datetime}
-              <Clock className="w-4 h-4 ml-3 mr-1" />
+              {/* <Clock className="w-4 h-4 ml-3 mr-1" /> */}
               {/* {event.time.split(' - ')[0]} */}
             </div>
           </div>
@@ -182,24 +231,15 @@ export function EventCardList({event} : EventCardProps) {
           
           <div className="flex items-center text-gray-600 mb-2">
             <MapPin className="w-4 h-4 mr-2" />
-            <span className="text-sm">{event.location}</span>
+            <span className="text-sm">{event?.location || 'Melbourne, AU'}</span> 
           </div>
           
           <div className="flex items-center space-x-4">
-            <div className="flex items-center">
-              <div className="w-20 bg-gray-200 rounded-full h-2 mr-2">
-                <div 
-                  className="bg-purple-600 h-2 rounded-full"
-                  style={{ width: `${event?.progress}%` }}
-                ></div>
-              </div>
-              <span className="text-sm font-medium text-gray-700">{event?.progress}%</span>
-            </div>
           </div>
         </div>
         
         <div className="text-right flex-shrink-0">
-          <div className="text-2xl font-bold text-purple-600 mb-2">{event.price}</div>
+          <div className="text-sm font-bold mb-2">{event.price}</div>
           {/* <Link href={`/events/${event.id || event?.position}`}> */}
             <Button 
               onClick={() => handleSelect(event)}

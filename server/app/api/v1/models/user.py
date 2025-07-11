@@ -35,7 +35,11 @@ class User(db.Model):
     # foreignkey relationships
     # This is the many-to-one end
     profile_id = db.Column(db.Integer, db.ForeignKey('profiles.id'), nullable=True)
+    profile = db.relationship('Profile', back_populates='users')
+    
     oauth_connections = db.relationship('OauthConnection', backref='user', lazy=True, cascade='all, delete-orphan')
+    
+    connections = db.relationship('Connection', back_populates='user', cascade='all, delete-orphan')
     
     def __repr__(self):
         return f'<User {self.email}>'

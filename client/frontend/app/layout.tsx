@@ -11,6 +11,7 @@ import Header from "@/app/components/Header";
 import { Inter } from "next/font/google";
 import type { Metadata } from "next";
 import { Providers } from "./providers";
+import SectionDivider from "@/components/divider/SectionDivider";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Toaster } from "sonner";
 import { draftMode } from "next/headers";
@@ -70,7 +71,9 @@ export default async function RootLayout({
     <html lang="en" className={`${inter.variable} bg-white text-black`}>
       <body>
         <Providers>
-          <section className="min-h-screen pt-20">
+          {/* <section className="min-h-screen pt-20"> */}
+          <section className="min-h-screen">
+            <SectionDivider />
             {/* The <Toaster> component is responsible for rendering toast notifications used in /app/client-utils.ts and /app/components/DraftModeToast.tsx */}
             <Toaster />
             {isDraftMode && (
@@ -83,7 +86,6 @@ export default async function RootLayout({
             {/* The <SanityLive> component is responsible for making all sanityFetch calls in your application live, so should always be rendered. */}
             <SanityLive onError={handleError} />
             <Header />
-            {/* <CustomHeader /> */}
             <main className="">{children}</main>
             <Footer />
           </section>

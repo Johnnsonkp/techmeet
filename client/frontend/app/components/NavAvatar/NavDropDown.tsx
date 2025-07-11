@@ -35,7 +35,7 @@ function NavDropDown({user}: any) {
           <User2Icon size={15}/>
           <span className='ml-2 text-xs'>Dashboard</span>
         </a>
-        <a href="/dashboard/profile" className="px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 flex items-center transition-colors duration-200">
+        <a href="/dashboard/user_profile" className="px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 flex items-center transition-colors duration-200">
           <UserCogIcon size={15}/>
           <span className='ml-2 text-xs'>Profile</span>
         </a>

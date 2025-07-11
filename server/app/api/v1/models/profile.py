@@ -10,13 +10,11 @@ class Profile(db.Model):
     personality = db.Column(db.JSON)
     tags = db.Column(db.JSON)
 
-    # This is the one-to-many: 1 profile could belong to multiple users
-    users = db.relationship('User', backref='profile', lazy=True)
-
+    # One-to-many: 1 profile can belong to many users
+    users = db.relationship('User', back_populates='profile', lazy=True)
 
     @classmethod
     def create_profile(cls, data):
-
         profile = cls(
             job_title=data.get('job_title'),
             skills=data.get('skills'),
@@ -24,5 +22,4 @@ class Profile(db.Model):
             personality=data.get('personality'),
             tags=data.get('tags'),
         )
-
         return profile

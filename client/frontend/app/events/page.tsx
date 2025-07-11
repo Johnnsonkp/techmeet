@@ -39,6 +39,8 @@ const EventsPage = () => {
   const [initialPageLoad, setInitialPageLoad] = useState(true);
 
   const { events: storeEvents } = useEventStore((s) => s);
+  const setCurrentSearchTerm = useEventStore((s) => s.setCurrentSearchTerm);
+  const currentSearchTerm = useEventStore((s) => s.currentSearchTerm);
   const { loading, error, fetchEvents } = useFetchEvents();
 
   useEffect(() => {
@@ -105,27 +107,28 @@ const EventsPage = () => {
   const eventsToDisplay = eventsFiltered ?? storeEvents?.events ?? [];
   const totalPages = Math.ceil((storeEvents?.total ?? 0) / limit);
 
+  // Update currentSearchTerm in store whenever searchTerm changes
+  useEffect(() => {
+    setCurrentSearchTerm(searchTerm);
+  }, [searchTerm, setCurrentSearchTerm]);
+
   return (
     <div className="min-h-screen h-full pb-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-1 py-8">
         {/* Top bar */}
-        <div className="rounded-2xl p-6 mb-2">
+        {/* <div className="rounded-2xl p-6 mb-2">
           <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
-            {/* Search and category */}
-            <div className="flex flex-col md:flex-row gap-4 flex-1">
-              <div className="flex-1 relative max-w-md">
-                <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                <Input
-                  placeholder="Search event, location, etc."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 h-10"
-                />
-              </div>
-            </div>
+          </div>
+        </div> */}
 
-            {/* Filters and layout toggle */}
-            <div className="flex items-center gap-3">
+        <div className="mb-4 flex justify-between items-center">
+          {currentSearchTerm ? (
+            <LargeText text={`${currentSearchTerm} Events in Melbourne`} />
+          ) : (
+            <LargeText text="Technology Events in Melbourne" />
+          )}
+
+          <div className="flex items-center gap-3">
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
@@ -168,11 +171,6 @@ const EventsPage = () => {
                 </Button>
               </div>
             </div>
-          </div>
-        </div>
-
-        <div className="mb-4">
-          <LargeText text="Technology Events in Melbourne" />
         </div>
 
         {/* Sidebar + Events */}
@@ -180,6 +178,8 @@ const EventsPage = () => {
           <div className="flex justify-between w-full">
             <Card className="w-[] bg-white shadow-none border-0 flex-[0.2]">
               <EventFilterSidebar
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
                 selectedCategory={selectedCategory}
                 setSelectedCategory={setSelectedCategory}
                 selectedLocation={selectedLocation}
@@ -194,7 +194,7 @@ const EventsPage = () => {
             {initialPageLoad && loading || initialPageLoad ? (
               <div className="flex-[0.78] overflow-y-auto p-4 grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4">
                 {months.map((month, index: number) => (
-                  <EventCardGridLoadingSkeleton index={index}/>
+                  <EventCardGridLoadingSkeleton key={index} index={index}/>
                 ))}
               </div>
             ) : viewMode === "grid" ? (
