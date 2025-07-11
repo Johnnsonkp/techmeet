@@ -145,37 +145,72 @@ export function EventCardGrid({event} : EventCardProps) {
       </div>
       
       <CardContent className="p-3 pt-0 mt-0">
-        <div className="flex items-center justify-between mb-0">
-          <div className="flex items-center text-gray-600 text-sm">
+        <div className="flex items-center justify-between mb-1">
+          <div className="flex items-center text-gray-600 text-xs">
             <Calendar className="w-3 h-3 mr-1" />
             {event?.date || event?.datetime || formatDateTimeNow()}
             {/* <Clock className="w-3 h-3 ml-3 mr-1" /> */}
           </div>
         </div>
         
-        <div className="flex items-center text-gray-600 mb-3">
+        <div className="flex items-center text-gray-600 mb-2">
             <MapPin className="w-3 h-3 mr-1" />
-            <span className="text-sm">{event?.location || 'Melbourne, AU'}</span> 
+            <span className="text-xs">{
+              event?.location?.length > 30? 
+              event?.location?.slice(0, 33) + "..." : event?.location || 'Melbourne, AU'}
+            </span> 
         </div>
 
         
-        <h3 className="text-md font-semibold text-gray-900 mb-3 group-hover:text-purple-600 transition-colors">
-          {event.name}
-        </h3>
+        <h3 className="text-md font-semibold text-gray-900 mb-3 group-hover:text-purple-600 transition-colors min-h-13">
+          {event?.name?.length > 50 ? event?.name?.slice(0, 50) + "..." : event?.name}
+        </h3> 
         
-        {event?.attendees_count && event?.attendees_count !== "" &&
-          <div className="mt-4 flex items-center text-xs font-medium text-primary">
-            <div className='mr-2 flex'>
-              { event?.attendee_image_1 ? <img className='-ml-2 size-6 rounded-full border border-white first:ml-0' src={event?.attendee_image_1} /> : <AvatarPlaceholder_1 />} 
-              { event?.attendee_image_2 ? <img className='-ml-2 size-6 rounded-full border border-white first:ml-0' src={event?.attendee_image_2} /> : <AvatarPlaceholder_2 />}
-              { event?.attendee_image_3 ? <img className='-ml-2 size-6 rounded-full border border-white first:ml-0' src={event?.attendee_image_3} /> : <AvatarPlaceholder_3 />}
+        <div className='relative'>
+          {typeof event?.attendee_image_1 === "string" && event.attendee_image_1.trim() !== "" ? (
+            <div className="absolute bottom-[-35] mt-4 flex items-center text-xs font-medium text-primary w-[100%] justify-between">
+              
+              <div className='flex items-center'>
+              <div className='mr-1 flex'>
+                {typeof event?.attendee_image_1 === "string" && event.attendee_image_1.trim() !== "" ? (
+                  <img className='-ml-2 size-6 object-cover rounded-full border border-white first:ml-0' src={event?.attendee_image_1} />
+                ) : (
+                  <AvatarPlaceholder_1 />
+                )}
+                {typeof event?.attendee_image_2 === "string" && event.attendee_image_2.trim() !== "" ? (
+                  <img className='-ml-2 size-6 object-cover rounded-full border border-white first:ml-0' src={event?.attendee_image_2} />
+                ) : (
+                  <AvatarPlaceholder_2 />
+                )}
+                {typeof event?.attendee_image_3 === "string" && event.attendee_image_3.trim() !== "" ? (
+                  <img className='-ml-2 size-6 rounded-full object-cover border border-white first:ml-0' src={event?.attendee_image_3} />
+                ) : (
+                  <AvatarPlaceholder_3 />
+                )}
+              </div>
+
+                <span className="text-gray-500 align-middle align-center">
+                  {event?.attendees_count || "0 Attendees"}
+                </span>
+              </div>
+
+                <div className="flex gap-1 ml-3">
+                  <span className="bg-indigo-100 text-indigo-800 px-1 py-1 rounded-full text-[10px]">JS</span>
+                  <span className="bg-indigo-100 text-indigo-800 px-1 py-1 rounded-full text-[10px]">React</span>
+                  <span className="bg-indigo-100 text-indigo-800 px-1 py-1 rounded-full text-[10px]">Node.js</span>
+                </div>
+
             </div>
-            
-            <span className="text-gray-500">
-              {event?.attendees_count || "0 Attendees"} 
-            </span>
-          </div>
-        }
+            ) : 
+
+              <div className="flex gap-1 mt-4 absolute bottom-[-35]">
+                <span className="bg-purple-100 text-indigo-800 px-2 py-1 rounded-full text-[10px]">JS</span>
+                <span className="bg-indigo-100 text-indigo-800 px-2 py-1 rounded-full text-[10px]">React</span>
+                <span className="bg-indigo-100 text-indigo-800 px-2 py-1 rounded-full text-[10px]">Node.js</span>
+                <span className="bg-indigo-100 text-indigo-800 px-2 py-1 rounded-full text-[10px]">Node.js</span>
+              </div>
+          }
+        </div>   
 
 
 

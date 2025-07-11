@@ -31,8 +31,6 @@ class DevelopmentConfig(BaseConfig):
         'DATABASE_URL',
         'mysql+pymysql://root:@localhost:3306/techmeet'
     )
-    # SQLALCHEMY_DATABASE_URI = "mysql+pymysql://root:emTrWwReBsZoiovHdDtinwtXXqwkxwSI@mysql.railway.internal:3306/railway"
-    # SQLALCHEMY_DATABASE_URI = "mysql+pymysql://root:emTrWwReBsZoiovHdDtinwtXXqwkxwSI@gondola.proxy.rlwy.net:56303/railway"
 
 
 class ProductionConfig(BaseConfig):
