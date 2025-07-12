@@ -9,6 +9,5 @@ env/
 env*
 .expo/
 /server/credentials.json*
-mobile/
 shared/
 types/
