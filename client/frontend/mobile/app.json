@@ -10,8 +10,18 @@
       "android"
     ],
     "jsEngine": "hermes",
+    "ios": {
+      "bundleIdentifier": "com.techmeet.mobile"
+    },
+    "android": {
+      "package": "com.techmeet.mobile"
+    },
     "plugins": [
       "expo-secure-store"
-    ]
+    ],
+    "extra": {
+      "sanityProjectId": "abc123",
+      "sanityDataset": "production"
+    }
   }
 }
