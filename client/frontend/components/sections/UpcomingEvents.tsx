@@ -20,22 +20,29 @@ export const UpcomingEvents = () => {
 
     const first3Events = getFirst3ValidEvents();
 
-    useEffect(() => {
-      const shouldFetch =
-        !storeEvents ||
-        storeEvents?.page !== currentPage;
+    // useEffect(() => {
+    //   const shouldFetch =
+    //     !storeEvents ||
+    //     storeEvents?.page !== currentPage;
   
-      if (shouldFetch) {
-        fetchEvents(currentPage, limit);
+    //   if (shouldFetch) {
+    //     fetchEvents(currentPage, limit);
+    //   }
+    // }, [currentPage, storeEvents, fetchEvents]);
+
+    useEffect(() => {
+      if (!storeEvents || !storeEvents.events || storeEvents.events.length === 0) {
+        fetchEvents(1, limit);
       }
-    }, [currentPage, storeEvents, fetchEvents]);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const handleSeeMore = () => {
       router.push(`/events`);
     }
 
   return (
-    <section className="py-10 bg-transparent">
+    <section className="py-12 bg-transparent">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between mb-8">
           <div>
