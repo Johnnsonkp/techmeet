@@ -1,3 +1,7 @@
+'use client';
+
+import { useEffect, useState } from "react";
+
 import Link from "next/link";
 import SocialIcon_1 from "@/components/socialIcons/SocialIcon_1";
 import SocialIcon_2 from "@/components/socialIcons/SocialIcon_2";
@@ -5,8 +9,16 @@ import SocialIcon_3 from "@/components/socialIcons/SocialIcon_3";
 import SocialIcon_4 from "@/components/socialIcons/SocialIcon_4";
 
 export default function Footer() {
+   const [currentPath, setCurrentPath] = useState("");
+
+  useEffect(() => {
+    setCurrentPath(window.location.pathname);
+  }, []);
+
+   const hideFooter = currentPath.includes("/auth") || currentPath.includes("/dashboard");
+  
   return (
-    <footer className="bg-gray-50 relative">
+    <div className={`${hideFooter && "hidden"} bg-gray-50 relative`}>
       <div className="absolute inset-0 bg-[url(/images/tile-grid-black.png)] bg-size-[17px] opacity-20 bg-position-[0_1]"></div>
         <div className="container relative">
           <div className="flex flex-col items-center justify-between py-28 lg:flex-row">
@@ -41,6 +53,6 @@ export default function Footer() {
          <span className="text-gray-400 ">©<Link href="/">Techmeet</Link> 2025, All rights reserved.</span>
        </div>
       </div>
-    </footer>
+    </div>
   );
 }

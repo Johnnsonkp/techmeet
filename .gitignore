@@ -3,3 +3,11 @@ __pycache__/
 venv/
 node_modules/
 client/studio/
+.env
+.env*
+env/
+env*
+.expo/
+/server/credentials.json*
+shared/
+types/

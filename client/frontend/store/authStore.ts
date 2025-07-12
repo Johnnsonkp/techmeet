@@ -6,6 +6,7 @@ interface AuthState {
     id: string;
     name?: string | null;
     email?: string | null;
+    bio?: string | null;
     image?: string | null;
   } | null;
   access_token: string | null;

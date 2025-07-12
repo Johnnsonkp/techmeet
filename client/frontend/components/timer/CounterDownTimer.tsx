@@ -18,7 +18,7 @@ export function useCountdownTimer(targetDateString: string) {
   });
 
   const targetDate = new Date(targetDateString);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     function calculateTime(): Timer {

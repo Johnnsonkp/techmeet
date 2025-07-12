@@ -37,6 +37,7 @@ interface EventsPayload {
 interface EventState {
   events: EventsPayload | null;
   selectedEvent: Event | null;
+  currentSearchTerm: string; // <-- Add persistent search term
 
   setEvents: (events: Event[], meta: { page: number; limit: number; total: number }) => void;
   setNextPage: (events: Event[], meta: { page: number; limit: number; total: number }) => void;
@@ -48,6 +49,8 @@ interface EventState {
   selectEvent: (event: Event) => void;
   clearSelectedEvent: () => void;
   clearEvents: () => void;
+  setCurrentSearchTerm: (term: string) => void; // <-- Add setter
+  getFirst3ValidEvents: () => Event[]; // <-- Add this line
 }
 
 export const useEventStore = create<EventState>()(
@@ -55,6 +58,7 @@ export const useEventStore = create<EventState>()(
     (set, get) => ({
       events: null,
       selectedEvent: null,
+      currentSearchTerm: '', // <-- Initialize
 
       setEvents: (events, { page, limit, total }) =>
         set({
@@ -114,6 +118,11 @@ export const useEventStore = create<EventState>()(
       selectEvent: (event) => set({ selectedEvent: event }),
       clearSelectedEvent: () => set({ selectedEvent: null }),
       clearEvents: () => set({ events: null, selectedEvent: null }),
+      setCurrentSearchTerm: (term) => set({ currentSearchTerm: term }), // <-- Setter
+      getFirst3ValidEvents: () => {
+        const events = get().events?.events || [];
+        return events.filter(e => e.datetime && e.location).slice(0, 6);
+      },
     }),
     {
       name: 'event-store',

@@ -9,6 +9,7 @@ interface AuthData {
     first_name?: string;
     last_name?: string;
     profile_photo_url?: string | null;
+    bio?: string | null; // Ensure bio is included if available
   };
   provider?: 'google' | 'github' | 'credentials';
 }
@@ -27,6 +28,7 @@ export function syncAuthToLocal(authData: AuthData, setAuth: any) {
       email: user.email,
       name: user?.name || user?.first_name, 
       image: user.profile_photo_url || null,
+      bio: user?.bio || null, // Ensure bio is included if available
     },
     access_token: token,
     provider,

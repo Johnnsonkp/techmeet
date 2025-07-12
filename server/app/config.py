@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+from datetime import timedelta
 
 # Load environment variables from .env file
 load_dotenv()
@@ -9,6 +10,16 @@ class BaseConfig:
     SECRET_KEY = os.getenv('SECRET_KEY', 'insecure-default-key')  # Fallback for dev only
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+<<<<<<< HEAD
+=======
+      # JWT token expiration (set to 7 days)
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=7)
+    JWT_ERROR_MESSAGE_KEY = "message"
+    # JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
+    JWT_TOKEN_LOCATION = ["headers"]
+    JWT_COOKIE_CSRF_PROTECT = False
+
+>>>>>>> e6b2a658ee8cc0af1316a3e4fae26bf1581eaa5d
      # Cloudinary-specific variables
     CLOUDINARY_URL = os.getenv('CLOUDINARY_URL')
     CLOUD_NAME = os.getenv('CLOUD_NAME')

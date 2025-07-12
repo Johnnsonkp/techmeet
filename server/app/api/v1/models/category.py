@@ -5,4 +5,9 @@ class Category(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
-    tags = db.relationship('Tag', secondary='category_tags', backref='categories')
+    tags = db.relationship(
+        'Tag',
+        secondary='category_tags',
+        back_populates='categories',
+        collection_class=set
+    )

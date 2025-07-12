@@ -12,6 +12,10 @@ source venv/bin/activate
 # Set environment variables for development mode
 export FLASK_APP=run.py
 export FLASK_ENV=development  # Enables debug mode and auto-reload
+<<<<<<< HEAD
+=======
+export FLASK_DEBUG=1
+>>>>>>> e6b2a658ee8cc0af1316a3e4fae26bf1581eaa5d
 
 # Install requirements
 pip install -r requirements.txt
