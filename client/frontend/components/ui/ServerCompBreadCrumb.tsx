@@ -13,7 +13,7 @@ export default function PathDisplay() {
   
   return (
     <BreadcrumbLink href={pathname}>
-      {segments[1]}
+      {segments[1] || "home"}
     </BreadcrumbLink>
   )
 }

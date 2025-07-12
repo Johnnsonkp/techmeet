@@ -67,10 +67,10 @@ export default async function RootLayout({
   const { isEnabled: isDraftMode } = await draftMode();
 
   return (
-    <Providers>
-      <html lang="en" className={`${inter.variable} bg-white text-black`}>
-        <body>
-          <section className="min-h-screen pt-24">
+    <html lang="en" className={`${inter.variable} bg-white text-black`}>
+      <body>
+        <Providers>
+          <section className="min-h-screen pt-20">
             {/* The <Toaster> component is responsible for rendering toast notifications used in /app/client-utils.ts and /app/components/DraftModeToast.tsx */}
             <Toaster />
             {isDraftMode && (
@@ -87,9 +87,9 @@ export default async function RootLayout({
             <main className="">{children}</main>
             <Footer />
           </section>
-          <SpeedInsights />
-        </body>
-      </html>
-    </Providers>
+        <SpeedInsights />
+        </Providers>
+      </body>
+    </html>
   );
 }

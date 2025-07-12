@@ -15,23 +15,23 @@ import { currentUser, requireAuth } from '../../lib/auth/user'
 
 import { AppSidebar } from "@/components/app-sidebar"
 import PathDisplay from "@/components/ui/ServerCompBreadCrumb"
+import RequireAuth from "@/components/RequireAuth"
 import { Separator } from "@/components/ui/separator"
-import { SignOutButton } from "@/components/ui/authButtons/AuthButtons";
 
 export default async function DashboardPage({children}: {children: React.ReactNode}) {
-  await requireAuth()
-  // const user = await currentUser()
+  // await requireAuth()
 
   return (
+    <RequireAuth>
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        <header className="border-t-2 flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+        <header className="flex h-6 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-6">
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1 cursor-pointer" />
             <Separator
               orientation="vertical"
-              className="mr-2 data-[orientation=vertical]:h-4"
+              className="mr-1 data-[orientation=vertical]:h-4"
             />
             <Breadcrumb>
               <BreadcrumbList>
@@ -44,14 +44,13 @@ export default async function DashboardPage({children}: {children: React.ReactNo
                 <BreadcrumbItem>
                   <BreadcrumbPage><PathDisplay /></BreadcrumbPage>
                 </BreadcrumbItem>
-                <SignOutButton />
               </BreadcrumbList>
             </Breadcrumb>
           </div>
         </header>
-        <main className="">{children}</main>
+        <main className="min-h-[100vh] pb-30">{children}</main>
       </SidebarInset>
-     
     </SidebarProvider>
+    </RequireAuth>
   )
 }
