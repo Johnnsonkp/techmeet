@@ -1,0 +1,17 @@
+{
+  "expo": {
+    "name": "TechMeet",
+    "slug": "techmeet",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "techmeet",
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "jsEngine": "hermes",
+    "plugins": [
+      "expo-secure-store"
+    ]
+  }
+}
