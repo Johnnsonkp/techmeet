@@ -41,6 +41,8 @@ interface Event {
   attendee_image_2?: string;
   attendee_image_3?: string;
   attendees_count?: number | string;
+  tags?: string[] | undefined;
+  categories?: string[] | undefined;
 }
 
 interface EventCardProps {
@@ -195,25 +197,23 @@ export function EventCardGrid({event} : EventCardProps) {
               </div>
 
                 <div className="flex gap-1 ml-3">
-                  <span className="bg-indigo-100 text-indigo-800 px-1 py-1 rounded-full text-[10px]">JS</span>
-                  <span className="bg-indigo-100 text-indigo-800 px-1 py-1 rounded-full text-[10px]">React</span>
-                  <span className="bg-indigo-100 text-indigo-800 px-1 py-1 rounded-full text-[10px]">Node.js</span>
+                  {event.tags && event.tags.map((tag, index) => (
+                    index <= 3 && 
+                      <span key={index} className="bg-indigo-100 text-indigo-800 px-1 py-1 rounded-full text-[11px]">#{tag}</span>    
+                    ))}
                 </div>
 
             </div>
             ) : 
 
               <div className="flex gap-1 mt-4 absolute bottom-[-35]">
-                <span className="bg-purple-100 text-indigo-800 px-2 py-1 rounded-full text-[10px]">JS</span>
-                <span className="bg-indigo-100 text-indigo-800 px-2 py-1 rounded-full text-[10px]">React</span>
-                <span className="bg-indigo-100 text-indigo-800 px-2 py-1 rounded-full text-[10px]">Node.js</span>
-                <span className="bg-indigo-100 text-indigo-800 px-2 py-1 rounded-full text-[10px]">Node.js</span>
+                {event.tags && event.tags.map((tag, index) => (
+                    index < 4 && 
+                      <span key={index} className="bg-indigo-100 text-indigo-800 px-1 py-1 rounded-full text-[11px]">#{tag}</span>    
+                    ))}
               </div>
           }
         </div>   
-
-
-
       </CardContent>
     </Card>
   )

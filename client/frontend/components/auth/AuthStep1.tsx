@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 
 import { AuthButton } from './AuthButton';
+import {Loader2Icon} from "lucide-react";
+import { toast } from "sonner";
 
 interface AuthStep1Props {
   formData: any;
@@ -38,6 +40,16 @@ export const AuthStep1: React.FC<AuthStep1Props> = ({ formData, updateFormData, 
     }
   };
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh] w-full">
+        {toast.loading("loading...")}
+        loading...
+        <Loader2Icon className="animate-spin w-20 h-20 text-indigo-600" />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -45,7 +57,7 @@ export const AuthStep1: React.FC<AuthStep1Props> = ({ formData, updateFormData, 
         <h2 className="text-2xl font-bold text-indigo-700">
           {formData.mode === 'signup' ? 'Create Account' : 'Sign In'}
         </h2>
-        <p className="text-sm text-gray-500 mt-1">STEP 1 OF 3</p>
+        {/* <p className="text-sm text-gray-500 mt-1">STEP 1 OF 3</p> */}
       </div>
 
       {/* Toggle Mode Link */}
@@ -119,7 +131,7 @@ export const AuthStep1: React.FC<AuthStep1Props> = ({ formData, updateFormData, 
         placeholder="Password"
         value={formData.password}
         onChange={(e) => updateFormData({ password: e.target.value })}
-        className="w-full border p-3 rounded-md text-sm"
+        className="w-full border p-3 rounded-md text-sm mb-3"
       />
 
       {/* Terms Checkbox for Signup */}
@@ -142,7 +154,7 @@ export const AuthStep1: React.FC<AuthStep1Props> = ({ formData, updateFormData, 
       <button
         onClick={handleContinue}
         disabled={loading}
-        className="w-full mt-4 cursor-pointer py-3 rounded-md text-white font-medium bg-gradient-to-r from-indigo-500 to-purple-500 hover:opacity-90 transition"
+        className="w-full mt-0 cursor-pointer py-3 rounded-md text-white font-medium bg-gradient-to-r from-indigo-500 to-purple-500 hover:opacity-90 transition"
       >
         {loading ? 'Loading...' : (formData.mode === 'signup' ? 'Continue' : 'Sign In')}
       </button>

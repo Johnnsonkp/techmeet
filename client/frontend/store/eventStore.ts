@@ -25,6 +25,9 @@ export interface Event {
   category?: string;
   rating?: number;
   progress?: number;
+  tags?: string[] | undefined;
+  source_api?: string;
+  categories?: string[] | undefined;
 }
 
 interface EventsPayload {

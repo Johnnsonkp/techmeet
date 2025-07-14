@@ -7,7 +7,7 @@ function SectionDivider() {
   const pathname = usePathname();
 
   // Show divider only on homepage
-  return pathname !== "/" ? <div className="pt-20"></div> : null;
+  return pathname !== "/" && pathname !== "/auth"  ? <div className="pt-20"></div> : null;
 }
 
 export default SectionDivider

@@ -10,6 +10,8 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 from app.api.v1.services.user_facade import UserFacade
 from app.api.v1.services.profile_facade import ProfileFacade
 from datetime import datetime
+from app.api.v1.models.connection import Connection
+from app.api.v1.models.user_event import UserEvent
 
 api = Namespace('users', description='User operations')
 
@@ -185,4 +187,33 @@ class UserProfileResource(Resource):
             'description': profile.description,
             'personality': profile.personality,
             'tags': profile.tags,
+        }, 200
+
+@api.route('/stats', methods=['GET', 'PUT'])
+class UserStats(Resource):
+    @jwt_required()
+    def get(self):
+        """Get the stats of the currently authenticated user"""
+        user_id = get_jwt_identity()
+        user = User.query.get(user_id)
+        if not user:
+            return {'message': 'User not found'}, 404
+
+        # Count accepted connections (user is requester or receiver)
+        connections_count = Connection.query.filter(
+            ((Connection.user_id == user_id) )
+        ).count()
+
+        # Count events attended (UserEvent records for this user)
+        events_attended_count = UserEvent.query.filter_by(user_id=user_id).count()
+
+        # Placeholders for future logic
+        upcoming_events_count = 0
+        active_goals_count = 0
+
+        return {
+            'connections_count': connections_count,
+            'events_attended_count': events_attended_count,
+            'upcoming_events_count': upcoming_events_count,
+            'active_goals_count': active_goals_count,
         }, 200

@@ -7,7 +7,7 @@ interface AuthState {
     name?: string | null;
     email?: string | null;
     bio?: string | null;
-    image?: string | null;
+    image?: string;
   } | null;
   access_token: string | null;
   provider: string | null;

@@ -8,6 +8,7 @@ import { VisualEditing, toPlainText } from "next-sanity";
 import DraftModeToast from "@/app/components/DraftModeToast";
 import Footer from "@/app/components/Footer";
 import Header from "@/app/components/Header";
+import {HeaderClientWrapper} from "./providers/HeaderClientWrapper";
 import { Inter } from "next/font/google";
 import type { Metadata } from "next";
 import { Providers } from "./providers";
@@ -85,7 +86,11 @@ export default async function RootLayout({
             )}
             {/* The <SanityLive> component is responsible for making all sanityFetch calls in your application live, so should always be rendered. */}
             <SanityLive onError={handleError} />
-            <Header />
+
+            <HeaderClientWrapper>
+              <Header />
+            </HeaderClientWrapper>
+            
             <main className="">{children}</main>
             <Footer />
           </section>
