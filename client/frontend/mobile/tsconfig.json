@@ -32,11 +32,8 @@
   "include": [
     "**/*.ts",
     "**/*.tsx",
-<<<<<<< HEAD
-=======
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
->>>>>>> e6b2a658ee8cc0af1316a3e4fae26bf1581eaa5d
     "../shared/**/*.ts",
     "../shared/**/*.tsx"
   ],
@@ -44,11 +41,5 @@
     "node_modules",
     ".expo",
     "dist"
-<<<<<<< HEAD
-  ],
-  "extends": "expo/tsconfig.base"
-}
-=======
   ]
 }
->>>>>>> e6b2a658ee8cc0af1316a3e4fae26bf1581eaa5d

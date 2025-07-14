@@ -1,15 +1,3 @@
-<<<<<<< HEAD
-import { NavigationContainer } from '@react-navigation/native';
-import AppNavigator from './navigation/AppNavigator';
-
-export default function App() {
-    return (
-        <NavigationContainer>
-            <AppNavigator />
-        </NavigationContainer>
-    );
-}
-=======
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
 import { createClient } from '@sanity/client';
@@ -23,11 +11,11 @@ const hasSanityCredentials = Constants.expoConfig?.extra?.sanityProjectId && Con
 
 const client = hasSanityCredentials
   ? createClient({
-      projectId: Constants.expoConfig?.extra?.sanityProjectId || 'abc123',
-      dataset: Constants.expoConfig?.extra?.sanityDataset || 'production',
-      apiVersion: '2025-07-11',
-      useCdn: true,
-    })
+    projectId: Constants.expoConfig?.extra?.sanityProjectId || 'abc123',
+    dataset: Constants.expoConfig?.extra?.sanityDataset || 'production',
+    apiVersion: '2025-07-11',
+    useCdn: true,
+  })
   : null;
 
 const mockEvents = [
@@ -125,4 +113,3 @@ const styles = StyleSheet.create({
 });
 
 export default App;
->>>>>>> e6b2a658ee8cc0af1316a3e4fae26bf1581eaa5d
