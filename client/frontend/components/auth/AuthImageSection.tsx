@@ -1,17 +1,19 @@
-import React from 'react';
 import Image from 'next/image';
+import React from 'react';
 
 export const AuthImageSection = () => {
   return (
-    <div className="hidden lg:flex lg:w-1/2 relative bg-black">
+    // <div className="hidden lg:flex lg:w-1/2 relative bg-black">
+    <div className="hidden lg:flex lg:w-1/2 relative bg-[#1B1B1B]">
       {/* Grid of event images in the background */}
-      <div className="absolute inset-0 grid grid-cols-2 gap-2 p-4 opacity-30">
+      {/* <div className="absolute inset-0 grid grid-cols-2 gap-2 p-4 opacity-30"> */}
+      <div className="absolute inset-0 grid grid-cols-2 gap-2 p-4">
         <Image
           src="/images/event1.jpg"
           alt="Event 1"
           width={200}
           height={200}
-          className="w-full h-full object-cover rounded-lg"
+          className="w-full h-full object-cover rounded-lg "
         />
         <Image
           src="/images/event2.jpg"
@@ -37,7 +39,7 @@ export const AuthImageSection = () => {
       </div>
 
       {/* Foreground content */}
-      <div className="relative z-10 flex flex-col justify-center items-center text-white p-12">
+      {/* <div className="relative z-10 flex flex-col justify-center items-center text-white p-12">
         <div className="max-w-lg text-center">
           <h1 className="text-4xl font-bold mb-6">Join TechMeet</h1>
           <p className="text-xl mb-8 opacity-90">
@@ -58,7 +60,7 @@ export const AuthImageSection = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
