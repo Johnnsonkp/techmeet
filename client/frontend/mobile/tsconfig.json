@@ -25,8 +25,7 @@
       "react",
       "react-native",
       "node",
-      "@react-native-async-storage/async-storage",
-      "@types/expo"
+      "@react-native-async-storage/async-storage"
     ]
   },
   "include": [

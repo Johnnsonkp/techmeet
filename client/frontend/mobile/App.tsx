@@ -7,6 +7,12 @@ import { Ionicons } from '@expo/vector-icons';
 import ProfileSetupScreen from './screens/ProfileSetupScreen';
 import Constants from 'expo-constants';
 
+interface Event {
+  _id: string;
+  title: string;
+  date: string;
+}
+
 const hasSanityCredentials = Constants.expoConfig?.extra?.sanityProjectId && Constants.expoConfig?.extra?.sanityDataset;
 
 const client = hasSanityCredentials
@@ -18,7 +24,7 @@ const client = hasSanityCredentials
   })
   : null;
 
-const mockEvents = [
+const mockEvents: Event[] = [
   { _id: '1', title: 'Mock Event 1', date: '2025-07-15' },
   { _id: '2', title: 'Mock Event 2', date: '2025-07-20' },
 ];
@@ -26,9 +32,9 @@ const mockEvents = [
 const Tab = createBottomTabNavigator();
 
 const EventScreen = () => {
-  const [events, setEvents] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [events, setEvents] = useState<Event[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!hasSanityCredentials || !client) {
@@ -38,7 +44,7 @@ const EventScreen = () => {
     }
 
     client
-      .fetch('*[_type == "event"]{title, _id, date}')
+      .fetch<Event[]>('*[_type == "event"]{title, _id, date}')
       .then((data) => {
         setEvents(data);
         setLoading(false);
@@ -88,7 +94,7 @@ const App = () => {
       <Tab.Navigator
         screenOptions={({ route }) => ({
           tabBarIcon: ({ color, size }) => {
-            let iconName;
+            let iconName: 'calendar' | 'person' = 'calendar';
             if (route.name === 'Events') {
               iconName = 'calendar';
             } else if (route.name === 'Profile') {
