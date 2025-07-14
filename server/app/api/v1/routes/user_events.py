@@ -1,4 +1,3 @@
-
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from flask_restx import Namespace, Resource, fields
 from app import db
@@ -19,35 +18,69 @@ user_event_model = api.model('UserEvent', {
 class UserEvents(Resource):
     @jwt_required()
     def get(self):
-        """Get all the events registered to currently logged in user"""
+        """Get all the events registered to currently logged in user, with tags and categories like the post route"""
         current_user_id = get_jwt_identity()
+        user = User.query.filter_by(id=current_user_id).first()
 
-        user = User.query.filter_by(user_id=current_user_id).first()
         if not user:
             return {"error": "User not found"}, 404
-        events = [{
-            'event_id': event.id,
-            'name': event.name,
-            'description': event.description,
-            'price': event.price,
-            'location' : event.location,
-            'date' : event.date,
-            'time' : event.time.isoformat(),
-        } for event in user.events]  # using the user.events relationship
-        
+
+        booked_events = []
+        for user_event in user.events:
+            event = user_event.event
+            # Get tags directly related to the event
+            tags = [tag.name for tag in event.tags] if hasattr(event, 'tags') and event.tags else []
+            # If no tags, try to infer from title or image_description
+            if not tags or len(tags) < 2:
+                from app.api.v1.models.tag import Tag
+                all_tags = Tag.query.all()
+                event_text = f"{getattr(event, 'name', '')} {getattr(event, 'image_description', '')}".lower()
+
+                for tag in all_tags:
+                    if tag.name and tag.name.lower() in event_text and tag.name not in tags:
+                        tags.append(tag.name)
+
+            booked_events.append({
+                "id": event.id if event.id is not None else None,
+                "name": event.name if event.name is not None else None,
+                "description": event.description if hasattr(event, 'description') else None,
+                "price": event.price if event.price is not None else None,
+                "location": event.location if event.location is not None else None,
+                "seat_availability": event.seat_availability if hasattr(event, 'seat_availability') else None,
+                "source_api_id": event.source_api_id if hasattr(event, 'source_api_id') else None,
+                "position": event.position if hasattr(event, 'position') else None,
+                "datetime": event.datetime if event.datetime is not None else None,
+                "organizer": event.organizer if event.organizer is not None else None,
+                "followers": event.Followers if hasattr(event, 'Followers') and event.Followers is not None else (event.followers if hasattr(event, 'followers') else None),
+                "event_link": event.event_link if event.event_link is not None else None,
+                "image": event.image if event.image is not None else None,
+                "image_description": event.image_description if event.image_description is not None else None,
+                "source_api": event.source_api if event.source_api is not None else None,
+                "rating": event.rating if hasattr(event, 'rating') else None,
+                "attendees_count": event.attendees_count if hasattr(event, 'attendees_count') else None,
+                "attendee_image_1": event.attendee_image_1 if hasattr(event, 'attendee_image_1') else None,
+                "attendee_image_2": event.attendee_image_2 if hasattr(event, 'attendee_image_2') else None,
+                "attendee_image_3": event.attendee_image_3 if hasattr(event, 'attendee_image_3') else None,
+                "tags": tags,
+                "categories": [
+                    cat.strip()
+                    for tag in getattr(event, 'tags', [])
+                    for category in getattr(tag, 'categories', [])
+                    for cat in category.name.split(",")
+                ] if hasattr(event, 'tags') and event.tags else []
+            })
+
         response = {
-            "user_id": user.user_id,
+            "user_id": user.id,
             "first_name": user.first_name,
             "last name": user.last_name,
-            "events": events
+            "booked_events": booked_events
         }
         return response, 200
 
 # get the events of specific user ( only admin )
 @api.route('/<int:user_id>')
 class UserEventsList(Resource):
-    # @api.doc(security='Bearer Auth')
-    # @api.marshal_list_with(user_event_model)  # for development phase
     @api.marshal_with(user_event_model)
     @jwt_required()
     def get(self, user_id):
@@ -58,25 +91,9 @@ class UserEventsList(Resource):
         if current_user_id != user_id:
             return {"error": "Unauthorized access"}, 403
         
-        user = User.query.filter_by(user_id=user_id).first()
+        user = User.query.filter_by(id=user_id).first()
         if not user:
             return {"error": "User not found"}, 404
-
-        # using UserEvent ( only display event_id)
-        # user_events = UserEvent.query.filter_by(user_id=user_id).all()
-        
-        # return [{
-        #     'user_id': user_event.user_id,
-        #     'event_id': user_event.event_id
-        # } for user_event in user_events]
-    
-        # using User relationship ( user.events ) to extract event name 
-        # events_list = [attendee.event for attendee in user.events]  # user.events is many to many to events object
-        
-        # return ({   "ID": user.id 
-        #             "First name": user.first_name,
-        #             "Last name": user.last_name, "Events":
-        #             [event_list.name for event_list in events_list]}),201
 
         events = [{
             'event_id': event.id,
@@ -103,19 +120,10 @@ class UserEventsList(Resource):
 class EventUsersList(Resource):
     def get(self, event_id):
         """Get all registered users for a specific event ( only admin )"""
-        # might need to implement admin user check
-        # ...
         # check if the event_id is in the database
-        event = Event.query.filter(event_id=event_id).first()
+        event = Event.query.filter_by(id=event_id).first()
         if not event:
             return {"error": "Event not found"}, 404
-        
-        # users_list = [attendee.user for attendee in event.users]  # backref .users in event
-
-        # return ({   "ID" : event.event_id,
-        #             "Event" : event.name,
-        #             [user_list.first_name, user_list.last_name for user_list in users_list]
-        #             }),201
         
         attendees = event.users  # event relationship named 'users'
         
@@ -147,15 +155,14 @@ class EventUsersList(Resource):
         """Post/ Add an event to current logged in user"""
         current_user_id = get_jwt_identity()
                         
-        user = User.query.filter_by(user_id=current_user_id).first()
+        user = User.query.filter_by(id=current_user_id).first()
         if not user:
             return {"error": "User not found"}, 404
         
         # check if the event_id is in the database
-        event = Event.query.filter_by(event_id=event_id).first()
+        event = Event.query.filter_by(id=event_id).first()
         if not event:
              return {"error": f"Event {event_id} not found"}, 404
-       
 
         # Check if attendance already exists
         if UserEvent.query.filter_by(user_id=current_user_id, event_id=event_id).first():
@@ -165,29 +172,72 @@ class EventUsersList(Resource):
         db.session.add(attendee)
         db.session.commit()
 
+        events = Event.query.order_by(Event.id.desc()).all()
+
+        event_dicts = []
+        for e in events:
+          # Get tags directly related to the event
+          tags = [tag.name for tag in e.tags] if hasattr(e, 'tags') and e.tags else []
+          # If no tags, try to infer from title or image_description
+          if not tags or len(tags) < 2:
+              # Get all tags from the database
+              from app.api.v1.models.tag import Tag
+              all_tags = Tag.query.all()
+              event_text = f"{getattr(e, 'name', '')} {getattr(e, 'image_description', '')}".lower()
+              for tag in all_tags:
+                  if tag.name and tag.name.lower() in event_text and tag.name not in tags:
+                      tags.append(tag.name)
+
+        event_dicts.append({
+            "id": event.id if event.id is not None else None,
+            "name": event.name if event.name is not None else None,
+            "description": event.description if hasattr(event, 'description') else None,
+            "price": event.price if event.price is not None else None,
+            "location": event.location if event.location is not None else None,
+            "seat_availability": event.seat_availability if hasattr(event, 'seat_availability') else None,
+            "source_api_id": event.source_api_id if hasattr(event, 'source_api_id') else None,
+            "position": event.position if hasattr(event, 'position') else None,
+            "datetime": event.datetime if event.datetime is not None else None,
+            "organizer": event.organizer if event.organizer is not None else None,
+            "followers": event.Followers if hasattr(event, 'Followers') and event.Followers is not None else (event.followers if hasattr(event, 'followers') else None),
+            "event_link": event.event_link if event.event_link is not None else None,
+            "image": event.image if event.image is not None else None,
+            "image_description": event.image_description if event.image_description is not None else None,
+            "source_api": event.source_api if event.source_api is not None else None,
+            "rating": event.rating if hasattr(event, 'rating') else None,
+            "attendees_count": event.attendees_count if hasattr(event, 'attendees_count') else None,
+            "attendee_image_1": event.attendee_image_1 if hasattr(event, 'attendee_image_1') else None,
+            "attendee_image_2": event.attendee_image_2 if hasattr(event, 'attendee_image_2') else None,
+            "attendee_image_3": event.attendee_image_3 if hasattr(event, 'attendee_image_3') else None,
+            "tags": tags,
+            "categories": [
+                cat.strip()
+                for tag in getattr(attendee, 'tags', [])
+                for category in getattr(tag, 'categories', [])
+                for cat in category.name.split(",")
+            ] if hasattr(attendee, 'tags') and attendee.tags else []
+        })
+
         return {
             "message": "Added successfully",
             "user_id": attendee.user_id,
             "event_id": attendee.event_id,
-            "description": event.description,
             "price": event.price,
             "location" : event.location,
-            "date" : event.date,
-            "time" : event.time.isoformat(),
-
+            "date" : event.datetime,
+            "booked_event": event_dicts
         }, 201
         
     @jwt_required()
     def delete(self, event_id):
         """Delete an event attached to current logged in user"""
         current_user_id = get_jwt_identity()
-                        
-        user = User.query.filter_by(user_id=current_user_id).first()
+        user = User.query.filter_by(id=current_user_id).first()
         if not user:
             return {"error": "User not found"}, 404
         
         # check if the event_id is in the database
-        event = Event.query.filter_by(event_id=event_id).first()
+        event = Event.query.filter_by(id=event_id).first()
         if not event:
              return {"error": f"Event {event_id} not found"}, 404
         
@@ -236,7 +286,7 @@ class UserEvents(Resource):
         # return (f'Successfully added\n user_id: {user_event.user_id}\n event_id:{user_event.event_id})  
                        
         # check if the event_id is in the database
-        event = Event.query.filter_by(event_id=event_id).first()
+        event = Event.query.filter_by(id=event_id).first()
         if not event:
              return {"error": f"Event {event_id} not found"}, 404
        
@@ -275,8 +325,8 @@ class UserEvents(Resource):
             "user_id": attendee.user_id,
             "event_id": attendee.event_id
         }, 201
-        
 
-        
+
+
 
 

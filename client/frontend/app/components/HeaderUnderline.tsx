@@ -7,7 +7,7 @@ function HeaderUnderline() {
   const pathname = usePathname()
 
   return (
-    pathname.includes("/dashboard")? <hr className="w-full relative mt-2 "></hr> : ""
+    pathname.includes("/dashboard")? <hr className="w-full relative mt-0 h-2"></hr> : ""
   )
 }
 

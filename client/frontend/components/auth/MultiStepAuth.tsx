@@ -6,6 +6,7 @@ import { AuthStep1 } from '../auth/AuthStep1';
 import { AuthStep2 } from '../auth/AuthStep2';
 import { AuthStep3 } from '../auth/AuthStep3';
 import { syncAuthToLocal } from '@/lib/auth/syncAuth';
+import { toast } from "sonner";
 import { useAuthStore } from '@/store/authStore';
 import { useRouter } from 'next/navigation';
 
@@ -61,7 +62,7 @@ export const MultiStepAuth = () => {
     if (authUser && formData.mode !== 'signin' && userSignedIn == false) {
       setCurrentStep(2);
     }
-    if(authUser){
+    else if (authUser && formData.mode !== 'signin' && userSignedIn == true){
       return router.push('/dashboard')
     }
   }, [authUser, userSignedIn]);
@@ -102,8 +103,6 @@ export const MultiStepAuth = () => {
     // For sign in, submit directly after step 1
     if (formData.mode === 'signin') {
       handleSubmit();
-
-      // return router.push('/dashboard')
     }
     if (currentStep < 3) {
       setCurrentStep(currentStep + 1);
@@ -127,7 +126,8 @@ export const MultiStepAuth = () => {
           email: formData.email,
           password: formData.password,
         });
-        alert('Login successful');
+        // alert('Login successful');
+        // toast.success('Login successful');
         console.log(result);
 
         syncAuthToLocal({
@@ -136,13 +136,13 @@ export const MultiStepAuth = () => {
           provider: result?.provider || 'credentials',
         }, setAuth);
         
+        toast.success('Login successful');
         setUserSignedIn(true);
-        return; 
-        // return router.push('/dashboard')
+        return router.push('/dashboard')
         
       } else {
 
-        if (formData.profilePhoto) {
+        if (formData.profilePhoto || authUser?.image) {
           setUploading(true);
           // Send file to Flask backend using FormData
           const form = new FormData();
@@ -156,7 +156,7 @@ export const MultiStepAuth = () => {
           form.append('is_admin', 'false');
           form.append('employment_status', formData.employmentStatus);
           form.append('technical_skills', JSON.stringify(formData.technicalSkills));
-          form.append('profile_photo_url', formData.profilePhoto);
+          form.append('profile_photo_url', formData.profilePhoto || authUser?.image || '');
 
           const res = await fetch(`${process.env.NEXT_PUBLIC_FLASK_BASE_URL}/api/v1/users/sign_up`, {
             method: 'POST',
@@ -206,9 +206,15 @@ export const MultiStepAuth = () => {
           return router.push('/dashboard');
         }
       }
-    } catch (error) {
-      setError('Something went wrong. Please try again.');
+    } catch (error: any) {
+      // setError('Something went wrong. Please try again.');
+      toast.error('Something went wrong. Please try again.', error);
       console.error(error);
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000)
+      
     } finally {
       setLoading(false);
       setUploading(false);
@@ -216,7 +222,7 @@ export const MultiStepAuth = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white ">
       <div className="flex min-h-screen">
         {/* Left Image Section */}
         <AuthImageSection />
@@ -225,23 +231,24 @@ export const MultiStepAuth = () => {
         <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
           <div className="w-full max-w-md">
             {/* Progress Indicator */}
-            <div className="mb-8">
+            <div className="mb-5">
               <div className="flex justify-center space-x-4">
-                {[1, 2, 3].map((step) => (
-                  <div
-                    key={step}
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
-                      step <= currentStep && formData.mode === 'signup'
-                        ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white'
-                        : step === 1 && formData.mode === 'signin'
-                        ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white'
-                        : 'bg-gray-200 text-gray-500'
-                    }`}
-                    aria-current={step === currentStep ? 'step' : undefined}
-                  >
-                    {step}
-                  </div>
-                ))}
+                { formData.mode === 'signup' && 
+                  [1, 2, 3].map((step) => (
+                    <div
+                      key={step}
+                      className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
+                        step <= currentStep && formData.mode === 'signup'
+                          ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white'
+                          : step === 1 && formData.mode === 'signin'
+                          ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white'
+                          : 'bg-gray-200 text-gray-500'
+                      }`}
+                      aria-current={step === currentStep ? 'step' : undefined}
+                    >
+                      {step}
+                    </div>
+                  ))}
               </div>
             </div>
             {error && (

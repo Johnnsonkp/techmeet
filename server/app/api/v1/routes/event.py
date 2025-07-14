@@ -37,6 +37,18 @@ class EventList(Resource):
 
             event_dicts = []
             for e in events:
+              # Get tags directly related to the event
+              tags = [tag.name for tag in e.tags] if hasattr(e, 'tags') and e.tags else []
+              # If no tags, try to infer from title or image_description
+              if not tags or len(tags) < 2:
+                  # Get all tags from the database
+                  from app.api.v1.models.tag import Tag
+                  all_tags = Tag.query.all()
+                  event_text = f"{getattr(e, 'name', '')} {getattr(e, 'image_description', '')}".lower()
+                  for tag in all_tags:
+                      if tag.name and tag.name.lower() in event_text and tag.name not in tags:
+                          tags.append(tag.name)
+
               event_dicts.append({
                   "id": e.id if e.id is not None else None,
                   "name": e.name if e.name is not None else None,
@@ -58,7 +70,13 @@ class EventList(Resource):
                   "attendee_image_1": e.attendee_image_1 if hasattr(e, 'attendee_image_1') else None,
                   "attendee_image_2": e.attendee_image_2 if hasattr(e, 'attendee_image_2') else None,
                   "attendee_image_3": e.attendee_image_3 if hasattr(e, 'attendee_image_3') else None,
-                  "tags": [tag.name or "" for tag in e.tags] if hasattr(e, 'tags') and e.tags else []
+                  "tags": tags,
+                  "categories": [
+                      cat.strip()
+                      for tag in getattr(e, 'tags', [])
+                      for category in getattr(tag, 'categories', [])
+                      for cat in category.name.split(",")
+                  ] if hasattr(e, 'tags') and e.tags else []
               })
             
             if(event_dicts):
