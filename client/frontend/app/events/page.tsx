@@ -8,7 +8,6 @@ import {
   Search as SearchIcon,
 } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
-import { Sidebar, SidebarContent, SidebarProvider } from "@/components/ui/sidebar2";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -43,17 +42,22 @@ const EventsPage = () => {
   const currentSearchTerm = useEventStore((s) => s.currentSearchTerm);
   const { loading, error, fetchEvents } = useFetchEvents();
 
+  // Fetch events only once on mount (including page refresh)
   useEffect(() => {
-    setInitialPageLoad(false)
+    setInitialPageLoad(false);
 
-    const shouldFetch =
-      !storeEvents ||
-      storeEvents?.page !== currentPage;
+    if (storeEvents?.events) return;
+    fetchEvents(currentPage, limit);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-    if (shouldFetch) {
+  // Fetch events when currentPage changes (but not on initial mount, since above already does it)
+  useEffect(() => {
+    if (currentPage !== 1) {
       fetchEvents(currentPage, limit);
     }
-  }, [currentPage, storeEvents, fetchEvents, initialPageLoad]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage]);
 
   const parseEvents = useCallback(() => {
     console.log("selectedLocation", selectedLocation)
@@ -112,15 +116,28 @@ const EventsPage = () => {
     setCurrentSearchTerm(searchTerm);
   }, [searchTerm, setCurrentSearchTerm]);
 
+  // When user searches or filters, reset to page 1 and fetch events
+  useEffect(() => {
+    if (
+      searchTerm.trim() ||
+      selectedCategory !== "All" ||
+      selectedMonth !== "All" ||
+      selectedLocation !== "All"
+    ) {
+      setCurrentPage(1);
+      fetchEvents(1, limit);
+      const filtered = parseEvents();
+      setEventsFiltered(filtered);
+    } else {
+      setEventsFiltered(null);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchTerm, selectedCategory, selectedMonth, selectedLocation]);
+
   return (
     <div className="min-h-screen h-full pb-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-1 py-8">
         {/* Top bar */}
-        {/* <div className="rounded-2xl p-6 mb-2">
-          <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
-          </div>
-        </div> */}
-
         <div className="mb-4 flex justify-between items-center">
           {currentSearchTerm ? (
             <LargeText text={`${currentSearchTerm} Events in Melbourne`} />

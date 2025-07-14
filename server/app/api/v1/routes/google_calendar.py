@@ -6,6 +6,7 @@ from app.api.v1.models.oauth_connection import OauthConnection
 from datetime import datetime, timezone
 from flask import jsonify
 import requests
+from flask import request
 
 api = Namespace('calendar', description='Google Calendar')
 
@@ -35,11 +36,44 @@ class CalendarEvents(CalendarBase):
     @jwt_required()
     def get(self):
         """Get upcoming events"""
+        # data = request.get_json()
+        # token = data.get('access_token')
+
+        # data = request.get_json()
+        # oauth = self._get_oauth_connection(get_jwt_identity())
+
+        # data = request.get_json()
+
+        # print(f"Received data: {data}")  # Debugging line
+
+
+    
+        # return {"message": "This is a placeholder response for the GET request."}, 200
+        # if not oauth:
+        #     return {"error": "Google connection not found"}, 404
+        # if not self._verify_token_active(oauth):
+        #     return {"error": "Token expired"}, 401
+
+        # time_now = datetime.now(timezone.utc).isoformat()
+        # params = {
+        #     'maxResults': 10,
+        #     'timeMin': time_now,
+        #     'orderBy': 'startTime',
+        #     'singleEvents': 'true'
+        # }
+
+        data = request.get_json()
+        token = data.get('access_token')
+
+        if not token:
+            return {"error": "Missing required fields"}, 400
+
+        # Validate token with Google
+        response = requests.get(f"https://www.googleapis.com/oauth2/v3/tokeninfo?access_token={token}")
+        if response.status_code != 200:
+            return {"error": "Invalid token"}, 401
+
         oauth = self._get_oauth_connection(get_jwt_identity())
-        if not oauth:
-            return {"error": "Google connection not found"}, 404
-        if not self._verify_token_active(oauth):
-            return {"error": "Token expired"}, 401
 
         time_now = datetime.now(timezone.utc).isoformat()
         params = {
@@ -99,6 +133,7 @@ class CalendarEvents(CalendarBase):
                 'end': res.json().get('end', {}).get('dateTime')
             })
         except requests.exceptions.RequestException as e:
+            
             return {"error": f"API connection failed: {str(e)}"}, 500
 
 

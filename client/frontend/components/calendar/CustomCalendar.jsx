@@ -4,6 +4,8 @@ import './calendarStyles.css'
 
 import React, { useEffect, useRef, useState } from 'react';
 
+import { useAuthStore } from '@/store/authStore';
+
 const months = [
   'January', 'February', 'March', 'April', 'May', 'June',
   'July', 'August', 'September', 'October', 'November', 'December'
@@ -19,10 +21,8 @@ function CustomCalendar() {
   const titleRef = useRef(null);
   const typeRef = useRef(null);
   const modalRef = useRef(null);
-
-  useEffect(() => {
-    loadEvents();
-  }, []);
+  const access_token = useAuthStore((s) => s.access_token);
+  
 
   useEffect(() => {
     renderCalendar();
@@ -138,6 +138,29 @@ function CustomCalendar() {
 
     return calendarDays;
   };
+
+  const base_url = process.env.NEXT_PUBLIC_FLASK_BASE_URL;
+
+  const getCalendarEvents = () => {
+    const res = fetch(`${base_url}/api/v1/google_calendar`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${access_token}`
+      }
+    })
+    return res;
+    // const data = res
+    
+    // if(data){
+    //   return data;
+    // }
+  }
+
+  // useEffect(() => {
+  //   getCalendarEvents()
+  //   .then((data) => console.log("Calendar events loaded successfully.", data))
+  // }, []);
 
   return (
     <div>
