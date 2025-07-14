@@ -42,30 +42,16 @@
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.11.1",
     "react-native-web": "~0.20.0",
-<<<<<<< HEAD
-    "react-native-webview": "13.13.5"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.25.2",
-    "@types/expo": "^32.0.13",
-    "@types/react": "^19.1.0",
-    "@types/react-native": "^0.72.8",
-=======
     "react-native-webview": "13.13.5",
     "@sanity/client": "6.22.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@types/react": "^19.1.0",
->>>>>>> e6b2a658ee8cc0af1316a3e4fae26bf1581eaa5d
     "@types/react-navigation": "^3.0.8",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~9.2.0",
     "typescript": "~5.8.3"
   },
   "private": true
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> e6b2a658ee8cc0af1316a3e4fae26bf1581eaa5d
