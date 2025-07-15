@@ -100,6 +100,27 @@ export function EventCardGrid({event} : EventCardProps) {
     router.push(`events/${event?.position}-${url}`);
   }
 
+  function getTagsWithWordLimit(tags: string[], maxTags: number, maxWords: number) {
+    const result: string[] = [];
+    let wordCount = 0;
+    
+    for (const tag of tags) {
+      const tagWords = tag.trim().split(/\s+/).length;
+      if (result.length < maxTags && wordCount + tagWords <= maxWords) {
+        result.push(tag);
+        wordCount += tagWords;
+      } else {
+        break;
+      }
+    }
+    return result;
+  }
+
+  const limitedTags = event.tags ? getTagsWithWordLimit(event.tags, 2, 8) : [];
+  const limitedTagsWithAttendees = event.tags ? getTagsWithWordLimit(event.tags, 3, 10) : [];
+
+
+
   const AvatarPlaceholder_1 = () => {
     return (
       <img 
@@ -192,25 +213,32 @@ export function EventCardGrid({event} : EventCardProps) {
               </div>
 
                 <span className="text-gray-500 align-middle align-center">
-                  {event?.attendees_count || "0 Attendees"}
+                  {/* {event?.attendees_count || "0 Attendees"} */}
+                  {event?.attendees_count}
                 </span>
               </div>
 
                 <div className="flex gap-1 ml-3">
-                  {event.tags && event.tags.map((tag, index) => (
+                  {/* {event.tags && event.tags.map((tag, index) => (
                     index <= 3 && 
                       <span key={index} className="bg-indigo-100 text-indigo-800 px-1 py-1 rounded-full text-[11px]">#{tag}</span>    
-                    ))}
+                    ))} */}
+                  {limitedTagsWithAttendees.map((tag, index) => (
+                    <span key={index} className="bg-indigo-100 text-indigo-800 px-1 py-1 rounded-full text-[11px]">#{tag}</span>
+                  ))}
                 </div>
 
             </div>
             ) : 
 
               <div className="flex gap-1 mt-4 absolute bottom-[-35]">
-                {event.tags && event.tags.map((tag, index) => (
+                {limitedTags.map((tag, index) => (
+                  <span key={index} className="bg-indigo-100 text-indigo-800 px-1 py-1 rounded-full text-[11px]">#{tag}</span>
+                ))}
+                {/* {event.tags && event.tags.map((tag, index) => (
                     index < 4 && 
                       <span key={index} className="bg-indigo-100 text-indigo-800 px-1 py-1 rounded-full text-[11px]">#{tag}</span>    
-                    ))}
+                    ))} */}
               </div>
           }
         </div>   
