@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, Dispatch, SetStateAction } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import Constants from 'expo-constants';
 
-const LoginScreen = ({ onLogin }: { onLogin: (token: string) => void }) => {
+interface LoginScreenProps {
+    onLogin: Dispatch<SetStateAction<string | null>>;
+}
+
+const LoginScreen = ({ onLogin }: LoginScreenProps) => {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
