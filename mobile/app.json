@@ -21,8 +21,7 @@
       "expo-secure-store"
     ],
     "extra": {
-      "sanityProjectId": "abc123",
-      "sanityDataset": "production"
+      "backendUrl": "http://localhost:5000"
     }
   }
 }
