@@ -1,14 +1,16 @@
-import { View, TextInput, Button } from 'react-native';
-import useProfileForm from '../../shared/components/ProfileForm';
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 
-export default function ProfileSetupScreen() {
-    const { name, setName, bio, setBio, saveProfile } = useProfileForm({});
-
+const ProfileSetupScreen = () => {
     return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <TextInput placeholder="Name" onChangeText={setName} value={name} />
-            <TextInput placeholder="Bio" onChangeText={setBio} value={bio} />
-            <Button title="Save" onPress={saveProfile} />
+        <View style={styles.container}>
+            <Text>Profile Setup Screen</Text>
         </View>
     );
-}
+};
+
+const styles = StyleSheet.create({
+    container: { flex: 1, padding: 20, backgroundColor: '#fff' },
+});
+
+export default ProfileSetupScreen;
