@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
-import { createClient } from '@sanity/client';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
@@ -12,17 +11,6 @@ interface Event {
   title: string;
   date: string;
 }
-
-const hasSanityCredentials = Constants.expoConfig?.extra?.sanityProjectId && Constants.expoConfig?.extra?.sanityDataset;
-
-const client = hasSanityCredentials
-  ? createClient({
-    projectId: Constants.expoConfig?.extra?.sanityProjectId || 'abc123',
-    dataset: Constants.expoConfig?.extra?.sanityDataset || 'production',
-    apiVersion: '2025-07-11',
-    useCdn: true,
-  })
-  : null;
 
 const mockEvents: Event[] = [
   { _id: '1', title: 'Mock Event 1', date: '2025-07-15' },
@@ -37,21 +25,17 @@ const EventScreen = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!hasSanityCredentials || !client) {
-      setEvents(mockEvents);
-      setLoading(false);
-      return;
-    }
-
-    client
-      .fetch<Event[]>('*[_type == "event"]{title, _id, date}')
+    const backendUrl = Constants.expoConfig?.extra?.backendUrl || 'http://localhost:5000';
+    fetch(`${backendUrl}/api/v1/events`)
+      .then((response) => response.json())
       .then((data) => {
         setEvents(data);
         setLoading(false);
       })
       .catch((error) => {
-        console.error('Error fetching events:', error);
-        setError('Failed to load events');
+        console.error('Error fetching events from backend:', error);
+        setEvents(mockEvents);
+        setError('Failed to load events from backend');
         setLoading(false);
       });
   }, []);
