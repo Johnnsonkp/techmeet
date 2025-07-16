@@ -10,12 +10,8 @@ COPY package.json package-lock.json ./
 RUN npm install
 
 # Copy only frontend code
-COPY frontend ./frontend
-
-WORKDIR /app/frontend
-
-RUN npm run build
+COPY . .
 
 EXPOSE 3000
 
-CMD ["npm", "start"]
+CMD ["npm", "run", "dev"]

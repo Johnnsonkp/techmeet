@@ -8,9 +8,8 @@ __pycache__/
 
 # Environment files
 *.env
+<<<<<<< HEAD
+=======
 .credentials.json/
-./credentials.json
-*.credentials.json/
-*.credentials.json
-credentials.json/
+>>>>>>> e6b2a658ee8cc0af1316a3e4fae26bf1581eaa5d
 credentials.json

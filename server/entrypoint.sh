@@ -7,7 +7,11 @@ echo "Environment: $FLASK_ENV"
 echo "Running DB migrations..."
 flask db upgrade
 
+<<<<<<< HEAD
+if [ "$FLASK_ENV" !== "production" ]; then
+=======
 if [ "$FLASK_ENV" != "production" ]; then
+>>>>>>> e6b2a658ee8cc0af1316a3e4fae26bf1581eaa5d
   echo "Starting Flask development server on port 5328..."
   export FLASK_APP=run.py
   flask run --host='localhost' --port=5328

@@ -23,6 +23,8 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "example.com",
+<<<<<<< HEAD
+=======
       },
       {
         protocol: "https",
@@ -31,6 +33,7 @@ const nextConfig: NextConfig = {
       {
         protocol: "http",
         hostname: "res.cloudinary.com",
+>>>>>>> e6b2a658ee8cc0af1316a3e4fae26bf1581eaa5d
       }
     ],
     dangerouslyAllowSVG: true, // See issue #2
