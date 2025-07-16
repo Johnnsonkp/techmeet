@@ -25,7 +25,7 @@ const EventScreen = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const backendUrl = Constants.expoConfig?.extra?.backendUrl || 'http://localhost:5000';
+    const backendUrl = Constants.expoConfig?.extra?.backendUrl || 'http://localhost:5328';
     fetch(`${backendUrl}/api/v1/events`)
       .then((response) => response.json())
       .then((data) => {
