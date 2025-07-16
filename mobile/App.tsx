@@ -1,15 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, ActivityIndicator, Alert } from 'react-native';
+import React, { useState, useEffect, Dispatch, SetStateAction } from 'react';
+import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import ProfileSetupScreen from './screens/ProfileSetupScreen';
+import LoginScreen from './screens/LoginScreen';
 import Constants from 'expo-constants';
 
 interface Event {
   _id: string;
   title: string;
   date: string;
+}
+
+interface LoginScreenProps {
+  onLogin: Dispatch<SetStateAction<string | null>>;
+}
+
+interface ProfileSetupScreenProps {
+  token: string | null;
 }
 
 const mockEvents: Event[] = [
@@ -73,6 +82,12 @@ const EventScreen = () => {
 };
 
 const App = () => {
+  const [token, setToken] = useState<string | null>(null);
+
+  if (!token) {
+    return <LoginScreen onLogin={setToken} />;
+  }
+
   return (
     <NavigationContainer>
       <Tab.Navigator
@@ -89,7 +104,10 @@ const App = () => {
         })}
       >
         <Tab.Screen name="Events" component={EventScreen} />
-        <Tab.Screen name="Profile" component={ProfileSetupScreen} />
+        <Tab.Screen
+          name="Profile"
+          component={() => <ProfileSetupScreen token={token} />}
+        />
       </Tab.Navigator>
     </NavigationContainer>
   );

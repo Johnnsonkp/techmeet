@@ -2,22 +2,30 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import Constants from 'expo-constants';
 
-const ProfileSetupScreen = () => {
+interface ProfileSetupScreenProps {
+    token: string | null;
+}
+
+const ProfileSetupScreen = ({ token }: ProfileSetupScreenProps) => {
     const [jobTitle, setJobTitle] = useState<string>('');
     const [skills, setSkills] = useState<string>('');
     const [description, setDescription] = useState<string>('');
-    const [userId, setUserId] = useState<string>('test-user-id'); // Replace with actual user ID
     const [loading, setLoading] = useState<boolean>(false);
 
     const handleSubmit = async () => {
+        if (!token) {
+            Alert.alert('Error', 'Please log in first');
+            return;
+        }
         setLoading(true);
         const backendUrl = Constants.expoConfig?.extra?.backendUrl || 'http://localhost:5328';
 
         try {
-            const response = await fetch(`${backendUrl}/api/v1/profiles/?user_id=${userId}`, {
+            const response = await fetch(`${backendUrl}/api/v1/profiles/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
                 },
                 body: JSON.stringify({
                     job_title: jobTitle,
@@ -47,21 +55,15 @@ const ProfileSetupScreen = () => {
             <Text style={styles.header}>Profile Setup</Text>
             <TextInput
                 style={styles.input}
-                placeholder="User ID (temporary for testing)"
-                value={userId}
-                onChangeText={setUserId}
+                placeholder="Job Title"
+                value={jobTitle}
+                onChangeText={setJobTitle}
             />
             <TextInput
                 style={styles.input}
                 placeholder='Skills (JSON array, e.g., ["JavaScript", "Python"])'
                 value={skills}
                 onChangeText={setSkills}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Job Title"
-                value={jobTitle}
-                onChangeText={setJobTitle}
             />
             <TextInput
                 style={styles.input}
