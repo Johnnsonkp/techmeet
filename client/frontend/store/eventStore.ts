@@ -40,6 +40,8 @@ interface EventsPayload {
 interface EventState {
   events: EventsPayload | null;
   selectedEvent: Event | null;
+  userEvents: Event[] | null;
+  refreshEvents: boolean; // Optional property for refreshing events
   currentSearchTerm: string; // <-- Add persistent search term
 
   setEvents: (events: Event[], meta: { page: number; limit: number; total: number }) => void;
@@ -53,6 +55,8 @@ interface EventState {
   clearSelectedEvent: () => void;
   clearEvents: () => void;
   setCurrentSearchTerm: (term: string) => void; // <-- Add setter
+  setUserEvents: (events: Event[]) => void;
+  setRefreshEvents: (refresh: boolean) => void; // Optional setter for refresh state
   getFirst3ValidEvents: () => Event[]; // <-- Add this line
 }
 
@@ -61,6 +65,8 @@ export const useEventStore = create<EventState>()(
     (set, get) => ({
       events: null,
       selectedEvent: null,
+      userEvents: [],
+      refreshEvents: true, // Initialize refresh state
       currentSearchTerm: '', // <-- Initialize
 
       setEvents: (events, { page, limit, total }) =>
@@ -119,6 +125,7 @@ export const useEventStore = create<EventState>()(
       },
 
       selectEvent: (event) => set({ selectedEvent: event }),
+      setUserEvents: (events: Event[]) => set({ userEvents: events }),
       clearSelectedEvent: () => set({ selectedEvent: null }),
       clearEvents: () => set({ events: null, selectedEvent: null }),
       setCurrentSearchTerm: (term) => set({ currentSearchTerm: term }), // <-- Setter
@@ -126,6 +133,7 @@ export const useEventStore = create<EventState>()(
         const events = get().events?.events || [];
         return events.filter(e => e.datetime && e.location).slice(0, 6);
       },
+      setRefreshEvents: (refresh) => set({ refreshEvents: refresh }), // Optional setter for refresh state
     }),
     {
       name: 'event-store',
