@@ -43,7 +43,7 @@ const SignInPage: React.FC = () => {
       toast.success("Login successful");
       return router.push("/dashboard");
     } catch (err) {
-      toast.error("Login failed");
+      toast.error(`Login failed ${err}` );
     } finally {
       setLoading(false);
     }

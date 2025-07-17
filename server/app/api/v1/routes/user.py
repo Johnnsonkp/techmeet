@@ -115,7 +115,6 @@ class ExistingUserAuth(Resource):
         password = data.get('password')
 
         user = User.query.filter_by(email=email).first()
-        
 
         # if not user or not user.check_password(password):
         if not user or not user.verify_password(password):
