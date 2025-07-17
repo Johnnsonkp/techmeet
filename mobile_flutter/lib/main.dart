@@ -1,11 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:provider/provider.dart';
 import 'screens/login_screen.dart';
+import 'screens/home_screen.dart';
 import 'screens/profile_setup_screen.dart';
+import 'screens/dashboard_screen.dart';
+import 'screens/event_detail_screen.dart';
+import 'providers/auth_provider.dart';
 
 void main() {
-  runApp(const TechMeetApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+      ],
+      child: const TechMeetApp(),
+    ),
+  );
 }
 
 class TechMeetApp extends StatefulWidget {
@@ -16,101 +26,48 @@ class TechMeetApp extends StatefulWidget {
 }
 
 class _TechMeetAppState extends State<TechMeetApp> {
-  String? _token;
-
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
     return MaterialApp(
-      home: _token == null
+      initialRoute: authProvider.token == null ? '/login' : '/home',
+      routes: {
+        '/login': (context) => LoginScreen(onLogin: (token) {
+              Navigator.pushReplacementNamed(context, '/home');
+            }),
+        '/home': (context) => const HomeScreen(),
+        '/dashboard': (context) => const DashboardScreen(),
+        '/profile': (context) => ProfileSetupScreen(token: authProvider.token!),
+        '/event': (context) => const EventDetailScreen(eventId: ''),
+      },
+      home: authProvider.token == null
           ? LoginScreen(onLogin: (token) {
-              setState(() => _token = token);
+              Navigator.pushReplacementNamed(context, '/home');
             })
           : DefaultTabController(
-              length: 2,
+              length: 3,
               child: Scaffold(
                 appBar: AppBar(
                   title: const Text('TechMeet'),
                   bottom: const TabBar(
                     tabs: [
-                      Tab(icon: Icon(Icons.calendar_today), text: 'Events'),
+                      Tab(icon: Icon(Icons.home), text: 'Home'),
+                      Tab(icon: Icon(Icons.calendar_today), text: 'Dashboard'),
                       Tab(icon: Icon(Icons.person), text: 'Profile'),
                     ],
+                    labelColor: Colors.black,
+                    indicatorColor: Colors.blue,
                   ),
                 ),
                 body: TabBarView(
                   children: [
-                    EventScreen(),
-                    ProfileSetupScreen(token: _token!),
+                    const HomeScreen(),
+                    const DashboardScreen(),
+                    ProfileSetupScreen(token: authProvider.token!),
                   ],
                 ),
               ),
             ),
-    );
-  }
-}
-
-class EventScreen extends StatefulWidget {
-  const EventScreen({super.key});
-
-  @override
-  _EventScreenState createState() => _EventScreenState();
-}
-
-class _EventScreenState extends State<EventScreen> {
-  List<dynamic> _events = [];
-  bool _isLoading = true;
-  String? _error;
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchEvents();
-  }
-
-  Future<void> _fetchEvents() async {
-    try {
-      final response =
-          await http.get(Uri.parse('http://localhost:5328/api/v1/events'));
-      if (response.statusCode == 200) {
-        setState(() {
-          _events = jsonDecode(response.body);
-          _isLoading = false;
-        });
-      } else {
-        setState(() {
-          _error = 'Failed to load events';
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      setState(() {
-        _error = 'Failed to connect to backend';
-        _isLoading = false;
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (_isLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
-    if (_error != null) {
-      return Center(
-        child: Text(_error!,
-            style: const TextStyle(color: Colors.red, fontSize: 18)),
-      );
-    }
-    return ListView.builder(
-      padding: const EdgeInsets.all(16.0),
-      itemCount: _events.length,
-      itemBuilder: (context, index) {
-        final event = _events[index];
-        return ListTile(
-          title: Text(event['title']),
-          subtitle: Text(event['date']),
-        );
-      },
     );
   }
 }
