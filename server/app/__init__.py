@@ -60,7 +60,7 @@ def create_app(config_class=None):
     api.add_namespace(events_ns, path='/api/v1/events')
     api.add_namespace(user_events_ns, path='/api/v1/user_events')
     api.add_namespace(connection_ns, path='/api/v1/connections')
-    api.add_namespace(google_calendar_ns, path='/api/v1/google_calendar')
+    api.add_namespace(google_calendar_ns, path='/api/v1/google_calendar/')
     api.add_namespace(categories_ns, path='/api/v1/categories')
 
     app.config['JWT_SECRET_KEY'] = 'your_jwt_secret_key'  # Use a strong and unique key in production

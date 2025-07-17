@@ -33,6 +33,7 @@ export const authOptions: NextAuthConfig = {
     async jwt({ token, user, account }) {
       if (account) {
         token.access_token = account.access_token;
+        token.refresh_token = account.refresh_token;
         token.provider = account.provider;
       }
 
@@ -53,6 +54,7 @@ export const authOptions: NextAuthConfig = {
           email: token.email,
         },
         access_token: token.access_token,
+        refresh_token: token.refresh_token,
         provider: token.provider,
       };
     },

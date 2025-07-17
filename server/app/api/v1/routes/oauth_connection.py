@@ -25,6 +25,7 @@ class GoogleOAuth(Resource):
         data = request.get_json()
         email = data.get('email')
         token = data.get('access_token')
+        refresh_token = data.get('refresh_token')
 
         if not email or not token:
             return {"error": "Missing required fields"}, 400
@@ -53,11 +54,12 @@ class GoogleOAuth(Resource):
             db.session.add(oauth)
 
         oauth.access_token = token
+        oauth.refresh_token = refresh_token
         oauth.expires_at = expires_at
         db.session.commit()
 
         print(f"oauth_user {oauth}")
         print(f"user_facade.to_dict(user) {UserFacade.to_dict(user)}")
 
-        jwt_token = create_access_token(identity=user.id)
-        return jsonify({"token": jwt_token, "user": UserFacade.to_dict(user), "provider": "google"})
+        jwt_token = create_access_token(identity=str(user.id))
+        return jsonify({"token": jwt_token, "refresh_token": refresh_token, "user": UserFacade.to_dict(user), "provider": "google"})
