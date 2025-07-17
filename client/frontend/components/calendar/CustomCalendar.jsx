@@ -4,6 +4,7 @@ import './calendarStyles.css'
 
 import React, { useEffect, useRef, useState } from 'react';
 
+import { getCalendar } from '@/hooks/fetchUserCalendar';
 import { useAuthStore } from '@/store/authStore';
 
 const months = [
@@ -22,10 +23,11 @@ function CustomCalendar() {
   const typeRef = useRef(null);
   const modalRef = useRef(null);
   const access_token = useAuthStore((s) => s.access_token);
+  const { data } = getCalendar();
   
 
   useEffect(() => {
-    renderCalendar();
+    console.log("Calendar data:", data);
   }, [currentDate, events, filterType]);
 
   const loadEvents = () => {

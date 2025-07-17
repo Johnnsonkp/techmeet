@@ -10,6 +10,7 @@ interface AuthState {
     image?: string;
   } | null;
   access_token: string | null;
+  refresh_token: string | null;
   provider: string | null;
 }
 
@@ -23,9 +24,10 @@ export const useAuthStore = create<AuthStore>()(
     (set) => ({
       user: null,
       access_token: null,
+      refresh_token: null,
       provider: null,
       setAuth: (data) => set(data),
-      logout: () => set({ user: null, access_token: null, provider: null }),
+      logout: () => set({ user: null, access_token: null, refresh_token: null, provider: null }),
     }),
     { name: 'auth-store' }
   )

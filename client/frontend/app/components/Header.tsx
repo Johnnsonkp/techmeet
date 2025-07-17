@@ -34,7 +34,7 @@ export default async function Header() {
               role="list"
               className="flex items-center gap-4 md:gap-6 leading-5 text-xs sm:text-base tracking-tight font-mono"
             >
-              <li className="sm:before:w-[1px] sm:before:bg-gray-200 before:block flex sm:gap-4 md:gap-6">
+              <li className="flex sm:gap-4 md:gap-6">
                 <Link href="/events" className="hover:underline">
                   Events
                 </Link>

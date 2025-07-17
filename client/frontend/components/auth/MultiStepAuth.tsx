@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { loginUser, signUpUser } from '@/lib/flask/api';
 
 import { AuthImageSection } from '../auth/AuthImageSection';
 import { AuthStep1 } from '../auth/AuthStep1';
 import { AuthStep2 } from '../auth/AuthStep2';
 import { AuthStep3 } from '../auth/AuthStep3';
+import { signUpUser } from '@/lib/flask/api';
 import { syncAuthToLocal } from '@/lib/auth/syncAuth';
 import { toast } from "sonner";
 import { useAuthStore } from '@/store/authStore';
@@ -59,10 +59,12 @@ export const MultiStepAuth = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (authUser && formData.mode !== 'signin' && userSignedIn == false) {
+    if (authUser && userSignedIn == false) {
+      // Set onboarding flag if Google OAuth user and profile not complete
+      localStorage.setItem('tm_onboarding_required', 'true');
       setCurrentStep(2);
     }
-    else if (authUser && formData.mode !== 'signin' && userSignedIn == true){
+    else if (authUser && userSignedIn == true){
       return router.push('/dashboard')
     }
   }, [authUser, userSignedIn]);
@@ -78,21 +80,20 @@ export const MultiStepAuth = () => {
         setError('Email and password are required.');
         return false;
       }
-      if (formData.mode === 'signup' && (!formData.firstName || !formData.lastName || !formData.agreeToTerms)) {
+      if (!formData.firstName || !formData.lastName || !formData.agreeToTerms) {
         setError('Please fill all required fields and agree to terms.');
         return false;
       }
     }
-    if (formData.mode === 'signup' && currentStep === 2) {
+    if (currentStep === 2) {
       if (!formData.jobTitle || !formData.employmentStatus) {
         setError('Job title and employment status are required.');
         return false;
       }
     }
-    if (formData.mode === 'signup' && currentStep === 3) {
+    if (currentStep === 3) {
       if (!formData.bio) {
         setError('Bio is required.');
-       
       }
     }
     return true;
@@ -100,10 +101,6 @@ export const MultiStepAuth = () => {
 
   const handleNext = () => {
     if (!validateStep()) return;
-    // For sign in, submit directly after step 1
-    if (formData.mode === 'signin') {
-      handleSubmit();
-    }
     if (currentStep < 3) {
       setCurrentStep(currentStep + 1);
     }
@@ -121,100 +118,91 @@ export const MultiStepAuth = () => {
     setError(null);
 
     try {
-      if (formData.mode === 'signin') {
-        const result = await loginUser({
-          email: formData.email,
-          password: formData.password,
-        });
-        // alert('Login successful');
-        // toast.success('Login successful');
-        console.log(result);
+      if (formData.profilePhoto || authUser?.image) {
+        setUploading(true);
+        // Send file to Flask backend using FormData
+        const form = new FormData();
+        form.append('first_name', formData?.firstName || authUser?.name || '');
+        form.append('last_name', formData.lastName);
+        form.append('email', formData.email || authUser?.email || '');
+        form.append('password', formData.password);
+        form.append('bio', formData.bio);
+        form.append('job_title', formData.jobTitle);
+        form.append('address', '123 Tech Avenue, Melbourne');
+        form.append('is_admin', 'false');
+        form.append('employment_status', formData.employmentStatus);
+        form.append('technical_skills', JSON.stringify(formData.technicalSkills));
+        form.append('profile_photo_url', formData.profilePhoto || authUser?.image || '');
 
+        console.log('formData:', formData);
+        console.log('Submitting form:', form);
+        
+        const res = await fetch(`${process.env.NEXT_PUBLIC_FLASK_BASE_URL}/api/v1/users/sign_up`, {
+          method: 'POST',
+          body: form,
+        });
+        setUploading(false);
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          setError(data.message || 'Sign up failed');
+          return;
+        }
+        const result = await res.json();
+        if (!result || !result.token) {
+          setError('Authentication failed: No token returned.');
+          return;
+        }
         syncAuthToLocal({
           token: result.token,
           user: result.user,
           provider: result?.provider || 'credentials',
         }, setAuth);
-        
-        toast.success('Login successful');
+
+        // After successful profile completion and backend sync:
+        // Clear onboarding flag and reload to trigger AuthHydrator
+        localStorage.setItem('tm_onboarding_required', 'false');
         setUserSignedIn(true);
-        return router.push('/dashboard')
-        
+        window.location.reload();
+        return;
       } else {
 
-        if (formData.profilePhoto || authUser?.image) {
-          setUploading(true);
-          // Send file to Flask backend using FormData
-          const form = new FormData();
-          form.append('first_name', formData.firstName);
-          form.append('last_name', formData.lastName);
-          form.append('email', formData.email);
-          form.append('password', formData.password);
-          form.append('bio', formData.bio);
-          form.append('job_title', formData.jobTitle);
-          form.append('address', '123 Tech Avenue, Melbourne');
-          form.append('is_admin', 'false');
-          form.append('employment_status', formData.employmentStatus);
-          form.append('technical_skills', JSON.stringify(formData.technicalSkills));
-          form.append('profile_photo_url', formData.profilePhoto || authUser?.image || '');
+        console.log('Submitting form else:', formData);
 
-          const res = await fetch(`${process.env.NEXT_PUBLIC_FLASK_BASE_URL}/api/v1/users/sign_up`, {
-            method: 'POST',
-            body: form,
-          });
-          setUploading(false);
-          if (!res.ok) {
-            const data = await res.json().catch(() => ({}));
-            setError(data.message || 'Sign up failed');
-            return;
-          }
-          const result = await res.json();
-          if (!result || !result.token) {
-            setError('Authentication failed: No token returned.');
-            return;
-          }
-          syncAuthToLocal({
-            token: result.token,
-            user: result.user,
-            provider: result?.provider || 'credentials',
-          }, setAuth);
-          return router.push('/dashboard');
-        } else {
-          // fallback: no image, send as JSON
-          const result = await signUpUser({
-            first_name: formData.firstName,
-            last_name: formData.lastName,
-            email: formData.email,
-            password: formData.password,
-            bio: formData.bio,
-            profile_photo_url: '',
-            job_title: formData.jobTitle,
-            address: '123 Tech Avenue, Melbourne',
-            is_admin: false,
-            employment_status: formData.employmentStatus,
-            technical_skills: formData.technicalSkills,
-          });
-          if (!result || !result.token) {
-            setError('Authentication failed: No token returned.');
-            return;
-          }
-          syncAuthToLocal({
-            token: result.token,
-            user: result.user,
-            provider: result?.provider || 'credentials',
-          }, setAuth);
-          return router.push('/dashboard');
+        // fallback: no image, send as JSON
+        const result = await signUpUser({
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          email: formData.email,
+          password: formData.password,
+          bio: formData.bio,
+          profile_photo_url: '',
+          job_title: formData.jobTitle,
+          address: '123 Tech Avenue, Melbourne',
+          is_admin: false,
+          employment_status: formData.employmentStatus,
+          technical_skills: formData.technicalSkills,
+        });
+        if (!result || !result.token) {
+          setError('Authentication failed: No token returned.');
+          return;
         }
+        syncAuthToLocal({
+          token: result.token,
+          user: result.user,
+          provider: result?.provider || 'credentials',
+        }, setAuth);
+
+        localStorage.setItem('tm_onboarding_required', 'false');
+        setUserSignedIn(true);
+        window.location.reload();
+        return;
       }
     } catch (error: any) {
-      // setError('Something went wrong. Please try again.');
       toast.error('Something went wrong. Please try again.', error);
       console.error(error);
-
       setTimeout(() => {
         window.location.reload();
       }, 2000)
-      
     } finally {
       setLoading(false);
       setUploading(false);
