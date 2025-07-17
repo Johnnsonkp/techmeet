@@ -1,50 +1,69 @@
+from flask import Flask
+from flask_restx import Api
+from flask_jwt_extended import JWTManager
+from flask_sqlalchemy import SQLAlchemy
+from flask_bcrypt import Bcrypt
+from app.config import config as config_map
+from flask_migrate import Migrate
+from flask_cors import CORS
+import cloudinary
 import os
-from dotenv import load_dotenv
-from datetime import timedelta
+import openai
+from werkzeug.middleware.proxy_fix import ProxyFix
 
-load_dotenv()
+openai.api_key = os.getenv("OPENAI_API_KEY")
+db = SQLAlchemy()
+bcrypt = Bcrypt()
+jwt = JWTManager()
+migrate = Migrate()
 
-class BaseConfig:
-    """Base configuration."""
-    SECRET_KEY = os.getenv('SECRET_KEY', 'insecure-default-key')
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
-    JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=7)
-    JWT_ERROR_MESSAGE_KEY = "message"
-    JWT_TOKEN_LOCATION = ["headers"]
-    JWT_COOKIE_CSRF_PROTECT = False
-    CLOUDINARY_URL = os.getenv('CLOUDINARY_URL')
-    CLOUD_NAME = os.getenv('CLOUD_NAME')
-    CLOUD_API_KEY = os.getenv('CLOUD_API_KEY')
-    CLOUD_API_SECRET = os.getenv('CLOUD_API_SECRET')
-    CLIENT_ID = os.getenv('CLIENT_ID')
-    CLIENT_SECRET = os.getenv('CLIENT_SECRET')
-    REDIRECT_URI = os.getenv('REDIRECT_URI')
-    REFRESH_TOKEN = os.getenv('TOKEN')
+def create_app(config_class=None):
+    """ method used to create an app instance"""
+    app = Flask(__name__)
+    CORS(app, origins=["http://localhost:3000", "https://techmeet-production.up.railway.app"], supports_credentials=True)
 
-class DevelopmentConfig(BaseConfig):
-    """Development configuration."""
-    DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///techmeet.db'
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
-class ProductionConfig(BaseConfig):
-    """Production configuration."""
-    DEBUG = False
-    SQLALCHEMY_DATABASE_URI = os.getenv('MYSQL_URL')
+    cloudinary.config(
+        cloud_name=os.getenv('CLOUD_NAME'),
+        api_key=os.getenv('CLOUD_API_KEY'),
+        api_secret=os.getenv('CLOUD_API_SECRET')
+    )
 
-    def __init__(self):
-        if not os.getenv('SECRET_KEY'):
-            raise RuntimeError("SECRET_KEY must be set in production")
-        if not self.SQLALCHEMY_DATABASE_URI:
-            raise RuntimeError("MYSQL_URL must be set in production")
+    config_name = config_class or os.getenv('FLASK_CONFIG', 'default')
+    
+    app.config.from_object(config_map.get(config_name, config_map['default']))
 
-class TestingConfig(BaseConfig):
-    """Testing configuration."""
-    TESTING = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
+    api = Api(app, version='1.0', title='TechMeet API', description='TechMeet Application API')
+    
+    from app.api.v1.routes.user import api as users_ns
+    from app.api.v1.routes.oauth_connection import api as oauth_ns
+    from app.api.v1.routes.profile import api as profiles_ns
+    from app.api.v1.routes.event import api as events_ns
+    from app.api.v1.routes.connection import api as connection_ns
+    from app.api.v1.routes.user_events import api as user_events_ns
+    from app.api.v1.routes.google_calendar import api as google_calendar_ns
+    from app.api.v1.routes.categories import api as categories_ns
 
-config = {
-    'development': DevelopmentConfig,
-    'production': ProductionConfig,
-    'testing': TestingConfig,
-    'default': DevelopmentConfig
-}
+    api.add_namespace(users_ns, path='/api/v1/users')
+    api.add_namespace(oauth_ns, path='/api/v1/oauth')
+    api.add_namespace(profiles_ns, path='/api/v1/profiles')
+    api.add_namespace(events_ns, path='/api/v1/events')
+    api.add_namespace(user_events_ns, path='/api/v1/user_events')
+    api.add_namespace(connection_ns, path='/api/v1/connections')
+    api.add_namespace(google_calendar_ns, path='/api/v1/google_calendar/')
+    api.add_namespace(categories_ns, path='/api/v1/categories')
+
+    app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'your_jwt_secret_key')
+
+    db.init_app(app)
+    bcrypt.init_app(app)
+    jwt.init_app(app)
+    migrate.init_app(app, db)
+
+    from app.api.v1 import models
+
+    with app.app_context():
+        db.create_all()
+
+    return app
