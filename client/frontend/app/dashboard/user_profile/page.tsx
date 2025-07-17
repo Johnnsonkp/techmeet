@@ -110,7 +110,7 @@ function Page() {
                       </div>
                     )}
                     {desiredOccupation && (
-                      <p className="text-lg text-gray-600 mt-1 font-medium">{desiredOccupation}</p>
+                      <p className="text-lg text-gray-600 mt-1 font-medium">Desired Occupation: {desiredOccupation}</p>
                     )}
                     <div className="flex items-center space-x-4 mt-4">
                       <GithubStandAloneBtn />

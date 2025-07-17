@@ -56,7 +56,7 @@ function RoadmapPage() {
 	return (
 		<div className="flex min-h-screen">
 			{/* Left: Completion Percentage */}
-			<div className="w-1/5 flex flex-col items-center justify-center bg-gray-50 border-r">
+			{/* <div className="w-1/5 flex flex-col items-center justify-center bg-gray-50 border-r">
 				<div className="text-4xl font-bold text-purple-700">{percent}%</div>
 				<div className="text-gray-500 mt-2">Completed</div>
 				<div className="mt-6">
@@ -75,10 +75,10 @@ function RoadmapPage() {
 						Undo
 					</button>
 				</div>
-			</div>
+			</div> */}
 
 			{/* Middle: Roadmap Timeline */}
-			<div className="w-3/5 flex flex-col items-center py-12 px-8">
+			{/* <div className="w-3/5 flex flex-col items-center py-12 px-8">
 				<MediumText text="9-Step Learning Roadmap" />
 				<div className="w-full mt-8">
 					{ROADMAP.map((step, idx) => (
@@ -119,10 +119,10 @@ function RoadmapPage() {
 						</div>
 					))}
 				</div>
-			</div>
+			</div> */}
 
-			{/* Right: Timeline List */}
-			<div className="w-1/5 bg-gray-50 border-l px-4 py-8">
+
+			{/* <div className="w-1/5 bg-gray-50 border-l px-4 py-8">
 				<div className="font-bold text-gray-700 mb-4">Timeline</div>
 				<ol className="list-decimal list-inside space-y-2">
 					{ROADMAP.map((step, idx) => (
@@ -138,7 +138,7 @@ function RoadmapPage() {
 						</li>
 					))}
 				</ol>
-			</div>
+			</div> */}
 		</div>
 	)
 }

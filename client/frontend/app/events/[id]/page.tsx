@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 // import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { LogoCapsule } from "@/components/profile/Tag";
 import React from 'react';
 import {toast} from "sonner";
 import { use } from 'react';
@@ -95,7 +96,7 @@ const page = ({ params }: { params: Promise<{ id: string }> }) => {
   return (
     <div className="min-h-screen bg-white pb-30">
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
         <div className="grid lg:grid-cols-4 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-3 space-y-6">
@@ -112,15 +113,15 @@ const page = ({ params }: { params: Promise<{ id: string }> }) => {
                 <img
                   src={event?.image}
                   alt={event?.imageDescription}
-                  className="w-full h-80 object-cover"
+                  className="w-full h-100 object-cover"
                 />
                 <div className="absolute top-4 left-4 flex space-x-2">
-                  {event?.categories && event.categories.map((category: string, idx: number) => (
-                     <span key={idx} className="bg-purple-100 text-purple-800 px-3 py-1 rounded-xs text-[14px]">
+                  {/* Show each unique category only once */}
+                  {event?.categories && Array.from(new Set(event.categories)).map((category: string, idx: number) => (
+                    <span key={idx} className="bg-purple-100 text-purple-800 px-3 py-1 rounded-xs text-[14px]">
                       {category}
                     </span>
                   ))}
-
                 </div>
                 
                 <div className="absolute bottom-4 right-4 bg-black/70 text-white px-3 py-1 rounded-lg">
@@ -159,8 +160,11 @@ const page = ({ params }: { params: Promise<{ id: string }> }) => {
                       {/* {event?.followers.toLocaleString()} */}
                     </div>
 
-                    <div className="text-sm text-gray-600">
-                      {event?.source_api}
+                    <div className="text-sm text-gray-600 flex align-start cursor-pointer rounded-lg border border-gray-200 px-2 py-1 font-bold">
+                      {event?.source_api == "Eventbrite" && <img className='p-1 h-7 object-contain' src="/images/Eventbrite_Logo_1.png" alt="Eventbrite Logo" />}
+                      {event?.source_api == "humanitix" && <img className='p-1 h-13 object-contain' src="/images/humanitix_logo.png" alt="Humanitix Logo" />}
+                      {event?.source_api == "meetup" && <img src="/images/meetup_logo.png" alt="Meetup Logo" className="h-14 object-contain" />}
+                      {/* {event?.source_api} */}
                     </div>
 
                   </div>
@@ -214,43 +218,18 @@ const page = ({ params }: { params: Promise<{ id: string }> }) => {
           <div className="space-y-6">
             {/* Seat Plan */}
             <Card className="bg-white mt-11">
-              <CardContent className="p-6">
-                <h3 className="font-semibold text-gray-900 mb-4">Seat Plan</h3>
-                <div className="bg-gradient-to-b from-blue-100 to-purple-100 rounded-lg p-4 mb-4 h-32 flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="text-sm text-gray-600 mb-1">Stage View</div>
-                    <div className="grid grid-cols-3 gap-1">
-                      <div className="w-3 h-3 bg-yellow-400 rounded"></div>
-                      <div className="w-3 h-3 bg-purple-600 rounded"></div>
-                      <div className="w-3 h-3 bg-pink-400 rounded"></div>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="space-y-2 text-sm">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <div className="w-3 h-3 bg-yellow-400 rounded mr-2"></div>
-                      <span>Diamond $120</span>
-                    </div>
-                    <span className="text-gray-500">Standing</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <div className="w-3 h-3 bg-purple-600 rounded mr-2"></div>
-                      <span>Platinum $100</span>
-                    </div>
-                    <span className="text-gray-500">Reserved</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <div className="w-3 h-3 bg-pink-400 rounded mr-2"></div>
-                      <span>Gold $85</span>
-                    </div>
-                    <span className="text-gray-500">Reserved</span>
+              <CardContent className="p-3">
+                <h3 className="font-semibold text-gray-900 mb-4">Location</h3>
 
-                  </div>
-                </div>
+                {/* <div className="overflow-hidden w-[20rem] h-[20rem]"> */}
+                  <iframe
+                    className="w-[16rem] h-[15rem]"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d243647.3160407063!2d-74.25986568785095!3d40.697670063849574!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDDCsDQxJzUxLjYiTiA3NMKwMTUnMzUuNyJX!5e0!3m2!1sen!2sus!4v1652901957916"
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  ></iframe>
+                {/* </div> */}
+
               </CardContent>
             </Card>
 
