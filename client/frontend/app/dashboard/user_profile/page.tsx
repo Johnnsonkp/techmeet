@@ -22,6 +22,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { GithubStandAloneBtn, LinkedInStandAloneBtn } from "@/components/ui/buttons/Buttons";
 import React, { useEffect } from 'react'
+import { SkillCapsule, Tag } from "@/components/profile/Tag";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 import { Button } from "@/components/ui/button";
@@ -29,7 +30,6 @@ import Link from "next/link";
 import { MediumText } from '@/components/ui/textDisplay/LargeText'
 import { NeutralButton } from "@/components/ui/buttons/Buttons"
 import { SkillTags } from "@/components/profile/Cards"
-import { Tag } from "@/components/profile/Tag";
 import UserProfileCard from "@/components/user/UserProfileCard"
 import { useAuthStore } from "@/store/authStore";
 import { useFetchUserProfile } from "@/hooks/fetchUserProfile";
@@ -231,15 +231,21 @@ function Page() {
                         {occupationDescription ? <p>{occupationDescription}</p> : <span className="text-gray-400 italic">No description provided.</span>}
                       </div>
                     </div>
+
+                    <hr className="mt-5"></hr>
+                    
                     <div className="mt-4">
                       <h3 className="font-semibold text-gray-900 mb-3">Skills</h3>
                       <div className="flex flex-wrap gap-2">
                         {userSkills.length > 0 ? userSkills.map((skill, index) => (
-                          <Tag key={index} name={skill}/>
+                          // <Tag key={index} name={skill}/>
+                          <SkillCapsule key={index} name={skill} />
                         )) : <span className="text-gray-400 italic">No skills provided.</span>}
                       </div>
                     </div>
-                    <hr></hr>
+                    
+                    <hr className="mt-5"></hr>
+
                     <div className="mt-4">
                       <h3 className="font-semibold text-gray-900 mb-3">Tags</h3>
                       <div className="flex flex-wrap gap-2">

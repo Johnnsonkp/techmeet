@@ -162,7 +162,7 @@ export const MultiStepAuth = () => {
         // Clear onboarding flag and reload to trigger AuthHydrator
         localStorage.setItem('tm_onboarding_required', 'false');
         setUserSignedIn(true);
-        window.location.reload();
+        router.push('/dashboard');
         return;
       } else {
 
