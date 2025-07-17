@@ -160,32 +160,8 @@ const Connections = () => {
               <Input placeholder="Job Title" value={form.jobTitle} onChange={e => setForm(f => ({...f, jobTitle: e.target.value}))} />
             </div>
             <div className="flex gap-4">
-              {/* <Select value={form.eventMet} onValueChange={val => setForm(f => ({...f, eventMet: val}))}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Event Met" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="React Summit 2024">React Summit 2024</SelectItem>
-                  <SelectItem value="AI Hackathon Weekend">AI Hackathon Weekend</SelectItem>
-                  <SelectItem value="UX Design Workshop">UX Design Workshop</SelectItem>
-                  <SelectItem value="DevOps Conference">DevOps Conference</SelectItem>
-                  <SelectItem value="Other">Other</SelectItem>
-                </SelectContent>
-              </Select> */}
               <Input placeholder="Event Date" value={form.eventDate} onChange={e => setForm(f => ({...f, eventDate: e.target.value}))} />
             </div>
-            {/* <Select value={form.goal} onValueChange={val => setForm(f => ({...f, goal: val}))}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Goal" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Learn advanced React patterns">Learn advanced React patterns</SelectItem>
-                <SelectItem value="Transition to AI/ML development">Transition to AI/ML development</SelectItem>
-                <SelectItem value="Improve UI/UX design skills">Improve UI/UX design skills</SelectItem>
-                <SelectItem value="Learn cloud architecture">Learn cloud architecture</SelectItem>
-                <SelectItem value="Other">Other</SelectItem>
-              </SelectContent>
-            </Select> */}
             <Input placeholder="Notes" value={form.notes} onChange={e => setForm(f => ({...f, notes: e.target.value}))} />
             <Input placeholder="Tags (comma separated)" value={form.tags} onChange={e => setForm(f => ({...f, tags: e.target.value}))} />
             <div className="flex gap-4">
@@ -217,7 +193,8 @@ const Connections = () => {
                   variant={viewMode === 'row' ? 'default' : 'ghost'}
                   size="sm"
                   onClick={() => setViewMode("row")}
-                  className={viewMode === 'row' ? 'bg-purple-600 text-white cursor-pointer' : 'cursor-pointer'}
+                  className={viewMode === 'row' ? ' text-white cursor-pointer' : 'cursor-pointer'}
+                  // className={viewMode === 'row' ? 'bg-purple-600 text-white cursor-pointer' : 'cursor-pointer'}
                 >
                   <List className="w-4 h-4" />
                 </Button>
@@ -225,13 +202,17 @@ const Connections = () => {
                   variant={viewMode === 'column' ? 'default' : 'ghost'}
                   size="sm"
                   onClick={() => setViewMode("column")}
-                  className={viewMode === 'column' ? 'bg-purple-600 text-white mx-1 cursor-pointer' : 'mx-1 cursor-pointer'}
+                  className={viewMode === 'column' ? ' text-white mx-1 cursor-pointer' : 'mx-1 cursor-pointer'}
+                  // className={viewMode === 'column' ? 'bg-purple-600 text-white mx-1 cursor-pointer' : 'mx-1 cursor-pointer'}
                 >
                   <LayoutGrid className="w-4 h-4" />
                 </Button>
               </div>
             
-              <Button className="mt-1 mx-2 cursor-pointer bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700" onClick={() => setShowAddDialog(true)}>
+              <Button 
+                // className="mt-1 mx-2 cursor-pointer bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700" 
+                className="mt-1 mx-2 cursor-pointer " 
+                onClick={() => setShowAddDialog(true)}>
                 <Plus className="w-4 h-4 mr-2" />
                 Add Connection
               </Button>

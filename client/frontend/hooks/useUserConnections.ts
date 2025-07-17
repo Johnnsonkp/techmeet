@@ -10,6 +10,8 @@ export function useUserConnections() {
   const BASE_URL = process.env.NEXT_PUBLIC_FLASK_BASE_URL || "http://localhost:5328";
 
   useEffect(() => {
+    console.log("Fetching user connections with token:", token);
+
     async function fetchConnections() {
       setLoading(true);
       setConnectionError(null);

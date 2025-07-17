@@ -56,7 +56,7 @@ export function useCountdownTimer(targetDateString: string) {
         newTime.seconds === 0
       ) {
         clearInterval(intervalRef.current!);
-        alert("Time is up!");
+        // alert("Time is up!");
       }
     }
 

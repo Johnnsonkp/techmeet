@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 import { AuthButton } from './AuthButton';
+import Link from 'next/link';
 import {Loader2Icon} from "lucide-react";
 import { toast } from "sonner";
 
@@ -43,8 +44,6 @@ export const AuthStep1: React.FC<AuthStep1Props> = ({ formData, updateFormData, 
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh] w-full">
-        {toast.loading("loading...")}
-        loading...
         <Loader2Icon className="animate-spin w-20 h-20 text-indigo-600" />
       </div>
     );
@@ -65,16 +64,16 @@ export const AuthStep1: React.FC<AuthStep1Props> = ({ formData, updateFormData, 
         {formData.mode === 'signup' ? (
           <>
             Already have an account?{' '}
-            <button onClick={toggleMode} className="cursor-pointer text-blue-600 font-medium hover:underline">
+            <Link href={"/auth/signin"} className="cursor-pointer text-blue-600 font-medium hover:underline">
               Sign In
-            </button>
+            </Link>
           </>
         ) : (
           <>
             Don’t have an account?{' '}
-            <button onClick={toggleMode} className="cursor-pointer text-blue-600 font-medium hover:underline">
+            <Link href={"/auth/signup"} className="cursor-pointer text-blue-600 font-medium hover:underline">
               Create one
-            </button>
+            </Link>
           </>
         )}
       </div>
