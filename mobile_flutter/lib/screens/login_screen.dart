@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
+import '../providers/auth_provider.dart';
 
 class LoginScreen extends StatefulWidget {
   final Function(String) onLogin;
@@ -47,6 +49,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
+        Provider.of<AuthProvider>(context, listen: false)
+            .setToken(data['token'], data['user']['id']);
         widget.onLogin(data['token']);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Logged in successfully')),
@@ -88,6 +92,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (response.statusCode == 201) {
         final data = jsonDecode(response.body);
+        Provider.of<AuthProvider>(context, listen: false)
+            .setToken(data['token'], data['user']['id']);
         widget.onLogin(data['token']);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Registered successfully')),
