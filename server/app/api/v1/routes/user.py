@@ -12,6 +12,8 @@ from app.api.v1.services.profile_facade import ProfileFacade
 from datetime import datetime
 from app.api.v1.models.connection import Connection
 from app.api.v1.models.user_event import UserEvent
+from google.oauth2 import id_token
+from google.auth.transport.requests import Request
 
 api = Namespace('users', description='User operations')
 
@@ -32,6 +34,10 @@ user_login_model = api.model('User', {
     'password': fields.String(required=True),
 })
 
+google_login_model = api.model('GoogleLogin', {
+    'id_token': fields.String(required=True, description='Google ID token'),
+})
+
 @api.route('/', methods=['GET', 'POST', 'OPTIONS'])
 class UserList(Resource):
     def get(self):
@@ -46,7 +52,6 @@ class UserList(Resource):
             } for user in users
         ], 200
 
-
 @api.route('/sign_up', methods=['GET', 'POST'])
 @api.expect(user_model)
 @api.doc('create_user')
@@ -59,7 +64,6 @@ class NewUserAuth(Resource):
         else:
             data = request.get_json()
             image = None
-        # Convert is_admin to boolean if present
         if 'is_admin' in data:
             if isinstance(data['is_admin'], str):
                 data['is_admin'] = data['is_admin'].lower() == 'true'
@@ -70,10 +74,8 @@ class NewUserAuth(Resource):
         if User.query.filter_by(email=email).first():
             return {'message': 'Email already exists'}, 400
         
-        # Attempt to find an existing profile for the job
         profile = Profile.query.filter_by(job_title=desired_job).first()
 
-        # If no profile exists, create one via OpenAI
         if not profile and desired_job:
             job_data = ProfileFacade.create_career_data(desired_job)
             if job_data:
@@ -84,11 +86,9 @@ class NewUserAuth(Resource):
         img_url = None
         if image:
             public_id = str(email) + str(datetime.now())
-            print(f"public id {public_id}")
             img_url = UserFacade.cloudinary_img_upload(image, public_id)
             data['profile_photo_url'] = img_url
 
-        # Now create the user and link profile
         new_user = User.register_user(data, is_oauth=False)
         if profile:
             new_user.profile_id = profile.id
@@ -100,7 +100,6 @@ class NewUserAuth(Resource):
 
         return {"token": jwt_token, "user": created_user}, 201
 
-
 @api.route('/login', methods=['GET', 'POST'])
 @api.expect(user_login_model)
 @api.doc('sign_in')
@@ -109,26 +108,56 @@ class ExistingUserAuth(Resource):
         """Authenticate a user by email and password"""
         data = request.get_json()
 
-        print(f"login data {data}")
-
         email = data.get('email')
         password = data.get('password')
 
         user = User.query.filter_by(email=email).first()
         
-
-        # if not user or not user.check_password(password):
         if not user or not user.verify_password(password):
             return {'message': 'Invalid email or password'}, 401
-        
-        print(f" user: {user}")
 
         jwt_token = create_access_token(identity=str(user.id))
         parsed_user_data = UserFacade.to_dict(user)
 
-        print(f" token: {jwt_token} user: {parsed_user_data}")
         return {"token": jwt_token, "user": parsed_user_data}
 
+@api.route('/google-login', methods=['POST'])
+@api.expect(google_login_model)
+@api.doc('google_sign_in')
+class GoogleLogin(Resource):
+    def post(self):
+        """Authenticate a user with Google ID token"""
+        data = request.get_json()
+        id_token_str = data.get('id_token')
+        client_id = 'YOUR_CLIENT_ID.apps.googleusercontent.com'  # Replace with your Google Client ID
+        try:
+            idinfo = id_token.verify_oauth2_token(id_token_str, Request(), client_id)
+            email = idinfo['email']
+            first_name = idinfo.get('given_name', '')
+            last_name = idinfo.get('family_name', '')
+
+            user = User.query.filter_by(email=email).first()
+            if not user:
+                # Create new user
+                user_data = {
+                    'first_name': first_name,
+                    'last_name': last_name,
+                    'email': email,
+                    'password': '',  # No password for OAuth users
+                    'job_title': '',
+                    'employment_status': '',
+                    'technical_skills': [],
+                    'is_oauth': True,
+                }
+                user = User.register_user(user_data, is_oauth=True)
+                db.session.add(user)
+                db.session.commit()
+
+            jwt_token = create_access_token(identity=str(user.id))
+            parsed_user_data = UserFacade.to_dict(user)
+            return {"token": jwt_token, "user": parsed_user_data}, 200
+        except ValueError as e:
+            return {'message': f'Invalid Google token: {str(e)}'}, 401
 
 @api.route('/profile', methods=['GET', 'PUT'])
 class UserProfileResource(Resource):
@@ -142,8 +171,6 @@ class UserProfileResource(Resource):
         if not user.profile:
             return {'message': 'Profile not found'}, 404
         profile = user.profile
-
-        print(f" profile: {profile}")
 
         return {
             'id': profile.id,
@@ -166,7 +193,6 @@ class UserProfileResource(Resource):
         profile = user.profile
 
         data = request.get_json()
-        # Update profile fields if present in request
         if 'job_title' in data:
             profile.job_title = data['job_title']
         if 'skills' in data:
@@ -199,15 +225,12 @@ class UserStats(Resource):
         if not user:
             return {'message': 'User not found'}, 404
 
-        # Count accepted connections (user is requester or receiver)
         connections_count = Connection.query.filter(
-            ((Connection.user_id == user_id) )
+            ((Connection.user_id == user_id))
         ).count()
 
-        # Count events attended (UserEvent records for this user)
         events_attended_count = UserEvent.query.filter_by(user_id=user_id).count()
 
-        # Placeholders for future logic
         upcoming_events_count = 0
         active_goals_count = 0
 
