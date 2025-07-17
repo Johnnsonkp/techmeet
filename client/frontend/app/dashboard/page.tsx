@@ -25,7 +25,11 @@ function Page() {
   const [mounted, setMounted] = useState(false);
   const [userStats, setUserStats] = useState<UserStats | null>();
   const [recEvents, setRecEvents] = useState<any[]>([]);
-  const [userEvents, setUserEvents] = useState<any[]>([]);
+  // const [userEvents, setUserEvents] = useState<any[]>([]);
+  const setUserEvents = useEventStore((s) => s.setUserEvents);
+  const userEvents = useEventStore((s) => s.userEvents);
+  const refreshEvents = useEventStore((s) => s.refreshEvents);
+  const setRefreshEvents = useEventStore((s) => s.setRefreshEvents);
   const BASE_URL = process.env.NEXT_PUBLIC_FLASK_BASE_URL || "http://localhost:5328";
 
   useEffect(() => {
@@ -63,7 +67,11 @@ function Page() {
         setUserEvents([]);
       }
     }
-    fetchUserEvents();
+    if (refreshEvents) {
+      console.log("Refreshing user events...");
+      fetchUserEvents();
+      setRefreshEvents(false); // Reset refresh state after fetching
+    }
   }, [token]);
 
 
@@ -96,8 +104,8 @@ function Page() {
   const stats = [
       { label: "Events Attended", value: "0", icon: Calendar },
       { label: "Upcoming Events", value: userStats?.connections_count || 0, icon: Plus },
-      { label: "Total Connections", value: userStats?.connections_count || 5, icon: Users },
-      { label: "Active Goals", value: "0", icon: Target },
+      { label: "Total Connections", value: userStats?.connections_count || 0, icon: Users },
+      { label: "Active Goals", value: "1", icon: Target },
   ];
 
   if (!mounted) return null;

@@ -31,9 +31,9 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ConnectionForm } from "@/components/forms/ConnectionsForm";
 import { Input } from "@/components/ui/input";
-import Link from "next/link";
 import { toast } from "sonner";
 import { useAuthStore } from "@/store/authStore";
+import { useEventStore } from '@/store/eventStore';
 import { useUserConnections } from "@/hooks/useUserConnections";
 
 const Connections = () => {
@@ -42,6 +42,7 @@ const Connections = () => {
   const [viewMode, setViewMode] = useState<'row' | 'column'>('row');
   const [showAddDialog, setShowAddDialog] = useState(false);
   const { fetchedConnection, loading, connectionError } = useUserConnections();
+  const userEvents = useEventStore((s) => s.userEvents) || [];
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -62,29 +63,8 @@ const Connections = () => {
 
   const [connections, setConnections] = useState<any[]>([]);
 
-  // Sync local state with fetchedConnection
-  useEffect(() => {
-    if (Array.isArray(fetchedConnection)) {
-      setConnections(fetchedConnection);
-    }
-  }, [fetchedConnection]);
 
-  // Filtered connections from fetched data
-  const filteredConnections = (connections || []).filter((connection: any) =>
-    connection?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    connection?.company?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (Array.isArray(connection?.tags) && (connection.tags as any[]).some((tag: any) => tag.toLowerCase().includes(searchTerm.toLowerCase())))
-  );
-
-  // Stats (example, can be improved to use fetchedConnection)
-  const stats = [
-    { label: "Total Connections", value: fetchedConnection?.length || 0, icon: Users },
-    { label: "Events Attended", value: "-", icon: Calendar },
-    { label: "Active Goals", value: "-", icon: Target },
-    { label: "This Month", value: "-", icon: Plus }
-  ];
-
-  // Add Connection handler (integrated with backend)
+    // Add Connection handler (integrated with backend)
   const handleAddConnection = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -143,6 +123,23 @@ const Connections = () => {
     }
   };
 
+  // Sync local state with fetchedConnection (only on initial load)
+  useEffect(() => {
+    if (Array.isArray(fetchedConnection) && connections.length === 0) {
+      setConnections(fetchedConnection);
+    }
+    // eslint-disable-next-line
+  }, [fetchedConnection]);
+
+  // Filtered connections from fetched data
+  const filteredConnections = (connections || []).filter((connection: any) =>
+    connection?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    connection?.company?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (Array.isArray(connection?.tags) && (connection.tags as any[]).some((tag: any) => tag.toLowerCase().includes(searchTerm.toLowerCase())))
+  );
+
+
+
   return (
     <div id="userdDashboard" className="min-h-screen bg-white">
       <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
@@ -150,6 +147,7 @@ const Connections = () => {
           <DialogHeader>
             <DialogTitle>Add Connection</DialogTitle>
           </DialogHeader>
+        
           <form onSubmit={handleAddConnection} className="space-y-4">
             <div className="flex gap-4">
               <Input required placeholder="Full Name" value={form.name} onChange={e => setForm(f => ({...f, name: e.target.value}))} />
@@ -160,6 +158,17 @@ const Connections = () => {
               <Input placeholder="Job Title" value={form.jobTitle} onChange={e => setForm(f => ({...f, jobTitle: e.target.value}))} />
             </div>
             <div className="flex gap-4">
+              {/* Dropdown for Event Met */}
+              <select
+                className="w-full border rounded px-3 py-2 text-sm"
+                value={form.eventMet}
+                onChange={e => setForm(f => ({ ...f, eventMet: e.target.value }))}
+              >
+                <option value="">Select Event Met</option>
+                {userEvents.map((event) => (
+                  <option key={event.id} value={event.name}>{event.name}</option>
+                ))}
+              </select>
               <Input placeholder="Event Date" value={form.eventDate} onChange={e => setForm(f => ({...f, eventDate: e.target.value}))} />
             </div>
             <Input placeholder="Notes" value={form.notes} onChange={e => setForm(f => ({...f, notes: e.target.value}))} />
@@ -176,8 +185,10 @@ const Connections = () => {
             {error && <div className="text-red-500 text-sm pt-2">{error}</div>}
             {success && <div className="text-green-600 text-sm pt-2">{success}</div>}
           </form>
+
         </DialogContent>
       </Dialog>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Page Header */}
         <div className="mb-8">
@@ -285,6 +296,7 @@ const Connections = () => {
                     onClick={async e => {
                       e.stopPropagation();
                       if (!window.confirm('Are you sure you want to delete this connection?')) return;
+
                       try {
                         const res = await fetch(`${BASE_URL}/api/v1/connections/${connection.id}`, {
                           method: 'DELETE',
