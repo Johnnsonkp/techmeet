@@ -23,7 +23,14 @@ class BaseConfig:
     CLOUD_API_KEY = os.getenv('CLOUD_API_KEY')
     CLOUD_API_SECRET = os.getenv('CLOUD_API_SECRET')
 
+     # Google Calendar OAuth2 configuration
+    CLIENT_ID = os.getenv('CLIENT_ID')
+    CLIENT_SECRET = os.getenv('CLIENT_SECRET')
+    REDIRECT_URI = os.getenv('REDIRECT_URI')
+    REFRESH_TOKEN = os.getenv('REFRESH_TOKEN')
+    TOKEN = os.getenv('TOKEN')
 
+    
 class DevelopmentConfig(BaseConfig):
     """Development configuration."""
     DEBUG = True

@@ -2,6 +2,7 @@ import { useAuthStore } from '@/store/authStore';
 
 interface AuthData {
   token: string;
+  refresh_token?: string;
   user: {
     id: string;
     email: string;
@@ -17,6 +18,7 @@ interface AuthData {
 // You can make this a regular function that accepts setAuth as a param
 export function syncAuthToLocal(authData: AuthData, setAuth: any) {
   const { token, user, provider = 'credentials' } = authData;
+  // const refresh_token = useAuthStore((s) => s.refresh_token);
 
   // Save JWT in localStorage
   localStorage.setItem('tm_jwt', token);
@@ -33,4 +35,5 @@ export function syncAuthToLocal(authData: AuthData, setAuth: any) {
     access_token: token,
     provider,
   });
+  return
 }

@@ -70,7 +70,7 @@ function SearchBar() {
       <div className="relative flex overflow-hidden ">
         <select
           id='search-select'
-            className="max-w-[170px] bg-white/80 dark:bg-gray-800 h-11 px-5 rounded-l-full text-sm focus:outline-none outline-none border-2 border-gray-500 dark:border-gray-600 border-r-1 cursor-pointer max-h-12 overflow-y-hidden">
+            className="max-w-[170px] bg-white/80 dark:bg-gray-800 h-11 px-5 rounded-l-full text-sm focus:outline-none outline-none border-1 border-gray-300 dark:border-gray-600 border-r-1 cursor-pointer max-h-12 overflow-y-hidden">
             <option className="font-medium cursor-pointer" value="categories">categories</option>
             {categories && categories?.length ? categories?.map((category: Categories) => (
                 <option key={category.id} className="font-medium cursor-pointer" value={category.name}>
@@ -85,14 +85,14 @@ function SearchBar() {
           placeholder="Search"
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className="bg-white/80 dark:bg-gray-800 h-11 flex px-5 w-[350px] rounded-r-full text-sm focus:outline-none border-2 border-l-0 border-gray-500 dark:border-gray-600"
+          className="bg-white/80 dark:bg-gray-800 h-11 flex px-5 w-[350px] rounded-r-full text-sm focus:outline-none border-1 border-l-0 border-gray-300 dark:border-gray-600"
           required 
           step="any" 
         />
 
         <Button
           onClick={handleSubmit}
-          className="cursor-pointer absolute inset-y-0 right-0 mr-2 flex items-center px-4 bg-black rounded-2xl h-[80%] w-[100px] my-auto text-white text-sm"
+          className="cursor-pointer absolute inset-y-0 right-0 mr-1 flex items-center px-4 bg-black rounded-2xl h-[80%] w-[100px] my-auto text-white text-sm"
           disabled={loading}
         >
           {status.loading && status.action == 'Search'? 

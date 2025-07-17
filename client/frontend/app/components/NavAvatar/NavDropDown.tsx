@@ -50,11 +50,11 @@ function NavDropDown({user}: any) {
 
       <div 
         className={`${!user || !user.email? "block": 'hidden'} dropdown-menu absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-xl py-1 z-50 opacity-0 invisible transition-all duration-300 transform -translate-y-2 border border-gray-100"`}>
-        <a href="/auth" className="px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 flex items-center transition-colors duration-200">
+        <a href="/auth/signup" className="px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 flex items-center transition-colors duration-200">
           <User2Icon size={15}/>
           <span className='ml-2 text-xs'>Register</span>
         </a>
-        <a href="/auth" className="px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 flex items-center transition-colors duration-200">
+        <a href="/auth/signin" className="px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 flex items-center transition-colors duration-200">
           <UserCogIcon size={15}/>
           <span className='ml-2 text-xs'>Sign in</span>
         </a>
