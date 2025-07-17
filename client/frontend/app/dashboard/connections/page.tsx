@@ -34,11 +34,14 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useAuthStore } from "@/store/authStore";
 import { useEventStore } from '@/store/eventStore';
+import { useFetchUserProfile } from '@/hooks/fetchUserProfile';
 import { useUserConnections } from "@/hooks/useUserConnections";
 
 const Connections = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const token = useAuthStore((s) => s.access_token);
+  const { profile } = useFetchUserProfile(token);
+  const userJobTitle = profile?.job_title || '';
   const [viewMode, setViewMode] = useState<'row' | 'column'>('row');
   const [showAddDialog, setShowAddDialog] = useState(false);
   const { fetchedConnection, loading, connectionError } = useUserConnections();
@@ -145,7 +148,8 @@ const Connections = () => {
       <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add Connection</DialogTitle>
+            <DialogTitle>Add a Connection</DialogTitle>
+            <hr className="my-2"></hr>
           </DialogHeader>
         
           <form onSubmit={handleAddConnection} className="space-y-4">
@@ -171,7 +175,26 @@ const Connections = () => {
               </select>
               <Input placeholder="Event Date" value={form.eventDate} onChange={e => setForm(f => ({...f, eventDate: e.target.value}))} />
             </div>
-            <Input placeholder="Notes" value={form.notes} onChange={e => setForm(f => ({...f, notes: e.target.value}))} />
+            {/* Connected Goal Dropdown */}
+            <div className="flex gap-4">
+              <select
+                className="w-full border rounded px-3 py-2 text-sm"
+                value={form.goal}
+                onChange={e => setForm(f => ({ ...f, goal: e.target.value }))}
+              >
+                <option value="">Select Connected Goal</option>
+                {userJobTitle && <option value={userJobTitle}>{userJobTitle}</option>}
+                {/* Add more static or dynamic options here if needed */}
+              </select>
+            </div>
+            {/* <Input placeholder="Notes" value={form.notes} onChange={e => setForm(f => ({...f, notes: e.target.value}))} /> */}
+            <textarea 
+              className="border-1 w-[100%] p-2 text-sm" 
+              placeholder="Notes" 
+              value={form.notes} 
+              onChange={e => setForm(f => ({...f, notes: e.target.value}))} 
+            />
+
             <Input placeholder="Tags (comma separated)" value={form.tags} onChange={e => setForm(f => ({...f, tags: e.target.value}))} />
             <div className="flex gap-4">
               <Input placeholder="LinkedIn" value={form.linkedin} onChange={e => setForm(f => ({...f, linkedin: e.target.value}))} />

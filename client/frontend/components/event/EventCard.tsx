@@ -97,7 +97,8 @@ export function EventCardGrid({event} : EventCardProps) {
     selectEvent(event)
     let url = slugify(event.name)
     
-    router.push(`events/${event?.position}-${url}`);
+    // router.push(`events/${event?.position}-${url}`);
+    router.push(`events/${event?.id}-${url}`);
   }
 
   function getTagsWithWordLimit(tags: string[], maxTags: number, maxWords: number) {
@@ -169,10 +170,16 @@ export function EventCardGrid({event} : EventCardProps) {
       
       <CardContent className="p-3 pt-0 mt-0">
         <div className="flex items-center justify-between mb-1">
-          <div className="flex items-center text-gray-600 text-xs">
-            <Calendar className="w-3 h-3 mr-1" />
-            {event?.date || event?.datetime || formatDateTimeNow()}
-            {/* <Clock className="w-3 h-3 ml-3 mr-1" /> */}
+          <div className="w-[100%] flex items-center justify-between text-gray-600 text-xs">
+            
+            <div className='flex items-center'>
+              <Calendar className="w-3 h-3 mr-1" />
+              {event?.date || event?.datetime?.slice(0, 25) || formatDateTimeNow()}
+            </div>
+
+            {event?.source_api == "Eventbrite" && <img className='w-17 h-4 object-contain' src="images/Eventbrite_Logo_1.png"/>}
+            {event?.source_api == "humanitix" && <img className='h-5 object-contain' src="images/humanitix_logo.png"/>}
+            {event?.source_api == "meetup" && <img className='h-6 object-contain' src="images/meetup_logo.png"/>}
           </div>
         </div>
         
@@ -185,13 +192,13 @@ export function EventCardGrid({event} : EventCardProps) {
         </div>
 
         
-        <h3 className="text-md font-semibold text-gray-900 mb-3 group-hover:text-purple-600 transition-colors min-h-13">
+        <h3 className="text-md font-semibold text-gray-900 mb-1 group-hover:text-purple-600 transition-colors min-h-13">
           {event?.name?.length > 50 ? event?.name?.slice(0, 50) + "..." : event?.name}
         </h3> 
         
         <div className='relative'>
           {typeof event?.attendee_image_1 === "string" && event.attendee_image_1.trim() !== "" ? (
-            <div className="absolute bottom-[-35] mt-4 flex items-center text-xs font-medium text-primary w-[100%] justify-between">
+            <div className="absolute bottom-[-35] mt-3 flex items-center text-xs font-medium text-primary w-[100%] justify-between">
               
               <div className='flex items-center'>
               <div className='mr-1 flex'>
@@ -219,10 +226,6 @@ export function EventCardGrid({event} : EventCardProps) {
               </div>
 
                 <div className="flex gap-1 ml-3">
-                  {/* {event.tags && event.tags.map((tag, index) => (
-                    index <= 3 && 
-                      <span key={index} className="bg-indigo-100 text-indigo-800 px-1 py-1 rounded-full text-[11px]">#{tag}</span>    
-                    ))} */}
                   {limitedTagsWithAttendees.map((tag, index) => (
                     <span key={index} className="bg-indigo-100 text-indigo-800 px-1 py-1 rounded-full text-[11px]">#{tag}</span>
                   ))}
@@ -231,14 +234,10 @@ export function EventCardGrid({event} : EventCardProps) {
             </div>
             ) : 
 
-              <div className="flex gap-1 mt-4 absolute bottom-[-35]">
+              <div className="flex gap-1 mt-3 absolute bottom-[-35]">
                 {limitedTags.map((tag, index) => (
                   <span key={index} className="bg-indigo-100 text-indigo-800 px-1 py-1 rounded-full text-[11px]">#{tag}</span>
                 ))}
-                {/* {event.tags && event.tags.map((tag, index) => (
-                    index < 4 && 
-                      <span key={index} className="bg-indigo-100 text-indigo-800 px-1 py-1 rounded-full text-[11px]">#{tag}</span>    
-                    ))} */}
               </div>
           }
         </div>   
