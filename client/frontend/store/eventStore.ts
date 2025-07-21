@@ -124,7 +124,7 @@ export const useEventStore = create<EventState>()(
       setCurrentSearchTerm: (term) => set({ currentSearchTerm: term }), // <-- Setter
       getFirst3ValidEvents: () => {
         const events = get().events?.events || [];
-        return events.filter(e => e.datetime && e.location).slice(0, 6);
+        return events.filter(e => e.datetime && e.location && e.image).slice(0, 6);
       },
     }),
     {

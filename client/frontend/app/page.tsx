@@ -1,6 +1,7 @@
 import { AllPostsCustom } from "@/app/components/Posts";
 import BottomBar from "@/components/timer/bottomBar/BottomBar";
 import CircularControl from "@/components/control/CircularControl";
+import CircularRemote2 from "@/components/hero/CircularRemote2";
 import DefaultFooter from "@/components/footer/Footer";
 import GetStartedCode from "@/app/components/GetStartedCode";
 import { HeroSection } from "@/components/hero/HeroSection";
@@ -27,6 +28,7 @@ export default async function Page() {
         
         <div className=" flex flex-col items-center">
           <TimerDisplay />
+          {/* <CircularRemote2 /> */}
           <div className="container relative mx-auto max-w-2xl pb-20 pt-10 space-y-6 lg:max-w-4xl lg:px-12 flex flex-col items-center">
             <div className="prose sm:prose-lg md:prose-xl xl:prose-2xl text-gray-700 prose-a:text-gray-700 font-light text-center">
             Techmeet helps you source, book, and connect at tech meetups, hackathons, and conferences — all in one place.

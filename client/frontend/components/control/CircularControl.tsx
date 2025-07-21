@@ -55,9 +55,10 @@ const CircularControl: React.FC<CircularControlProps> = ({
   };
 
   return (
-    <div className={cn("absolute bottom-12 right-12 z-20", className)}>
+    // <div className={cn("absolute bottom-12 right-12 z-20", className)}>
+    <div className={cn(" z-20", className)}>
       {/* Main circular container */}
-      <div className="relative w-80 h-80 rounded-full backdrop-blur-md bg-control-bg-alpha border border-control-border shadow-2xl">
+      <div className="relative w-60 h-60 rounded-full backdrop-blur-md bg-control-bg-alpha border border-control-border shadow-2xl">
         
         {/* Center circle */}
         <div className="absolute inset-6 rounded-full bg-control-bg border border-control-border flex items-center justify-center">

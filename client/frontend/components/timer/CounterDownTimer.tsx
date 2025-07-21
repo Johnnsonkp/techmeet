@@ -2,6 +2,10 @@
 
 import { useEffect, useRef, useState } from 'react';
 
+import CircularControl from '../control/CircularControl';
+import CircularControl3 from '../control/CicularControl3';
+import CircularRemote2 from '@/components/hero/CircularRemote2';
+
 type Timer = {
   days: number;
   hours: number;
@@ -86,10 +90,13 @@ export function TimerDisplay() {
         }
       }
   
-      return <div style={styles.glassCard} className={`glass-card p-4 rounded-xl text-center transform hover:-translate-y-2 transition-all w-32 h-32 border-white border-4 flex-row justify-center items-center`}>
-        <div className="text-4xl font-bold text-white">{item}</div>
-        <div className="text-xl text-white">{metric}</div>
-      </div>
+      return( 
+        <div style={styles.glassCard} 
+          className={`glass-card p-4 rounded-xl text-center transform hover:-translate-y-2 transition-all w-32 h-32 border-white border-4 flex-row justify-center items-center`}>
+          <div className="text-4xl font-bold text-white">{item}</div>
+          <div className="text-xl text-white">{metric}</div>
+        </div>
+      )
   }
 
   return (
@@ -98,6 +105,13 @@ export function TimerDisplay() {
       <GlassCard  item={hours} metric={"Hours"}/>
       <GlassCard  item={minutes} metric={"Minutes"}/>
       <GlassCard  item={seconds} metric={"Seconds"}/>
+
+      <div className="z-10 p-0 absolute top-90 right-[-80px]">
+        {/* <img src="/images/event-s-2.png" alt="Event S" className="border-2 border-red-500 w-[500px] z-10 p-0 scale-[0.8]" /> */}
+        <CircularControl3 />
+        <CircularRemote2 />
+        {/* <CircularControl className='' /> */}
+      </div>
     </div>
   );
 }
