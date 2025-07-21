@@ -27,7 +27,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   Future<void> _fetchEventDetails() async {
     try {
       final response = await http.get(
-          Uri.parse('http://localhost:5328/api/v1/events/${widget.eventId}'));
+          Uri.parse('http://10.0.1.86:5328/api/v1/events/${widget.eventId}'));
       if (response.statusCode == 200) {
         setState(() {
           _event = jsonDecode(response.body);
@@ -51,7 +51,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     try {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       final response = await http.post(
-        Uri.parse('http://localhost:5328/api/v1/events/${widget.eventId}/book'),
+        Uri.parse('http://10.0.1.86:5328/api/v1/events/${widget.eventId}/book'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ${authProvider.token}',
@@ -79,7 +79,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://localhost:5328/api/v1/events/eventbrite-link/${widget.eventId}'),
+            'http://10.0.1.86:5328/api/v1/events/eventbrite-link/${widget.eventId}'),
       );
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);

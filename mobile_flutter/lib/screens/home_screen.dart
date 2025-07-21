@@ -31,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _fetchEvents() async {
     try {
       final response =
-          await http.get(Uri.parse('http://localhost:5328/api/v1/events'));
+          await http.get(Uri.parse('http://10.0.1.86:5328/api/v1/events'));
       if (response.statusCode == 200) {
         setState(() {
           _events = jsonDecode(response.body)['events'];
@@ -60,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final query = _searchController.text.toLowerCase();
     try {
       final response = await http.get(
-          Uri.parse('http://localhost:5328/api/v1/events/search?q=$query'));
+          Uri.parse('http://10.0.1.86:5328/api/v1/events/search?q=$query'));
       if (response.statusCode == 200) {
         setState(() {
           _filteredEvents = jsonDecode(response.body)['events'];

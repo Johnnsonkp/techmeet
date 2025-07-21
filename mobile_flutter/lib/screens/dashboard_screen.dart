@@ -26,7 +26,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     try {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       final response = await http.get(
-        Uri.parse('http://localhost:5328/api/v1/user_events'),
+        Uri.parse('http://10.0.1.86:5328/api/v1/user_events'),
         headers: {'Authorization': 'Bearer ${authProvider.token}'},
       );
       if (response.statusCode == 200) {

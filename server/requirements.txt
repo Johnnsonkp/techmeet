@@ -39,3 +39,4 @@ openai
 gspread
 oauth2client
 pandas
+keybert==0.8.5

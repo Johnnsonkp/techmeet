@@ -1,5 +1,3 @@
-"""User Model Route"""
-
 from flask_restx import Namespace, Resource, fields
 from flask import request
 import requests
@@ -129,7 +127,7 @@ class GoogleLogin(Resource):
         """Authenticate a user with Google ID token"""
         data = request.get_json()
         id_token_str = data.get('id_token')
-        client_id = 'YOUR_CLIENT_ID.apps.googleusercontent.com'  # Replace with your Google Client ID
+        client_id = '298167153207-tki4jcpo5cdsil2hl1i2hu1ba94fv30r.apps.googleusercontent.com'
         try:
             idinfo = id_token.verify_oauth2_token(id_token_str, Request(), client_id)
             email = idinfo['email']
