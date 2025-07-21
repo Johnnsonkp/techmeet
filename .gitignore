@@ -1,12 +1,12 @@
 __pycache__/
 *.pyc
 venv/
+env/
 node_modules/
 client/studio/
-.env
-.env*
-env/
-env*
 .expo/
-/server/credentials.json*
+server/.env
+client/frontend/.env.local
+server/credentials.json
+server/*.json
 types/
