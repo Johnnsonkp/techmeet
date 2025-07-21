@@ -23,6 +23,7 @@ class CalendarEvents(Resource):
         data = request.get_json()
         # email = data.get('email')
         token = data.get('access_token')
+        refresh_token = data.get('refresh_token')
         SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 
         def get_calendar_events(creds, time_min=None, time_max=None):
@@ -39,12 +40,14 @@ class CalendarEvents(Resource):
             return {"error": "Missing required fields"}, 400
 
         creds = Credentials(
-            token=os.getenv('TOKEN'),
-            refresh_token=os.getenv('REFRESH_TOKEN'),
+            # token=os.getenv('TOKEN'),
+            # refresh_token=os.getenv('REFRESH_TOKEN'),
+            token=token,
+            refresh_token=refresh_token,
             token_uri = "https://oauth2.googleapis.com/token",
             client_id = os.getenv('CLIENT_ID'),
             client_secret = os.getenv('CLIENT_SECRET'),
-            scopes=['https://www.googleapis.com/auth/calendar.readonly']
+            scopes=['https://www.googleapis.com/auth/calendar']
         )
 
         # View events
