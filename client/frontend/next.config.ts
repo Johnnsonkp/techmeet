@@ -23,8 +23,6 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "example.com",
-<<<<<<< HEAD
-=======
       },
       {
         protocol: "https",
@@ -33,15 +31,16 @@ const nextConfig: NextConfig = {
       {
         protocol: "http",
         hostname: "res.cloudinary.com",
->>>>>>> e6b2a658ee8cc0af1316a3e4fae26bf1581eaa5d
-      }
+      },
     ],
-    dangerouslyAllowSVG: true, // See issue #2
+    dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
   env: {
-    // Matches the behavior of `sanity dev` which sets styled-components to use the fastest way of inserting CSS rules in both dev and production. It's default behavior is to disable it in dev mode.
     SC_DISABLE_SPEEDY: "false",
+    NEXT_PUBLIC_FLASK_BASE_URL: process.env.NEXT_PUBLIC_FLASK_BASE_URL,
+    NEXT_PUBLIC_SANITY_PROJECT_ID: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
+    NEXT_PUBLIC_SANITY_DATASET: process.env.NEXT_PUBLIC_SANITY_DATASET,
   },
 };
 
