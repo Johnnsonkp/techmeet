@@ -60,9 +60,10 @@ function Page() {
         const data = await res.json();
         if (res.ok && data.booked_events) {
           setUserEvents(data.booked_events);
-        } else {
-          setUserEvents([]);
-        }
+        } 
+        // else {
+        //   setUserEvents([]);
+        // }
       } catch (err) {
         setUserEvents([]);
       }

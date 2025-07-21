@@ -1,0 +1,258 @@
+.circle {
+  position: absolute;
+  top: 70%;
+  left: 70%;
+  width: 150px;
+  height: 150px;
+  transition: width 0.3s, height 0.3s, transform 0.3s;
+  transform-origin: top left;
+  border-bottom-right-radius: 100%;
+  border: 2px solid red;
+}
+
+.circle .link {
+  display: block;
+}
+
+.circle .link::before {
+  position: absolute;
+  display: block;
+  color: white;
+  font-family: 'FontAwesome';
+  font-size: 1.5em;
+  top: 1em;
+  right: 1em;
+}
+
+.wrapcircles.closed .circle {
+  transform: rotate(90deg);
+  width: 50px;
+  height: 50px;
+  transition-delay: 0s;
+}
+
+.wrapcircles.closed #click {
+  transform: none;
+  transition: all 0.3s;
+}
+
+.wrapcircles.closed #click span {
+  top: 1.125em;
+  right: 2em;
+}
+
+.wrapcircles.closed #click span::after {
+  transform: rotate(90deg);
+}
+
+.wrapcircles.closed #click span::before {
+  transform: none;
+}
+
+#click {
+  cursor: pointer;
+}
+
+#click span {
+  transition: bottom 0.3s, left 0.3s;
+  display: block;
+  width: 30px;
+  height: 30px;
+  top: 1em;
+  right: 1em;
+  position: absolute;
+}
+
+#click span::before,
+#click span::after {
+  display: block;
+  position: absolute;
+  content: '';
+  width: 30px;
+  height: 8px;
+  transition: transform 0.3s;
+  top: 11px;
+  border-radius: 3px;
+  background: white;
+}
+
+#click span::before {
+  transform: rotate(-45deg);
+}
+
+#click span::after {
+  transform: rotate(45deg);
+}
+
+.c-1 {
+  background: #43A047;
+  transition-delay: 0.1s, 0.1s, 0.1s;
+  transform: rotate(18deg);
+}
+
+.c-1 .link::before {
+  transform: rotate(-18deg);
+  content: '\f0f3';
+}
+
+.c-2 {
+  background: #388E3C;
+  transition-delay: 0.2s, 0.2s, 0.2s;
+  transform: rotate(36deg);
+}
+
+.c-2 .link::before {
+  transform: rotate(-36deg);
+  content: '\f013';
+}
+
+.c-3 {
+  background: #2E7D32;
+  transition-delay: 0.3s, 0.3s, 0.3s;
+  transform: rotate(54deg);
+}
+
+.c-3 .link::before {
+  transform: rotate(-54deg);
+  content: '\f1cb';
+}
+
+.c-4 {
+  background: #1B5E20;
+  transition-delay: 0.4s, 0.4s, 0.4s;
+  transform: rotate(72deg);
+}
+
+.c-4 .link::before {
+  transform: rotate(-72deg);
+  content: '\f099';
+}
+
+.c-5 {
+  background: #4CAF50;
+  z-index: -1;
+}
+
+.c-6 {
+  background: #1B5E20;
+  transition-delay: 0.4s, 0.4s, 0.4s;
+  transform: rotate(90deg);
+}
+
+.c-6 .link::before {
+  transform: rotate(-90deg);
+  content: '\f099';
+}
+
+.c-7 {
+  background: #1B5E20;
+  transition-delay: 0.4s, 0.4s, 0.4s;
+  transform: rotate(108deg);
+}
+
+.c-7 .link::before {
+  transform: rotate(-108deg);
+  content: '\f099';
+}
+
+.c-8 {
+  background: #1B5E20;
+  transition-delay: 0.4s, 0.4s, 0.4s;
+  transform: rotate(126deg);
+}
+
+.c-8 .link::before {
+  transform: rotate(-126deg);
+  content: '\f099';
+}
+
+.c-9 {
+  background: #1B5E20;
+  transition-delay: 0.4s, 0.4s, 0.4s;
+  transform: rotate(144deg);
+}
+
+.c-9 .link::before {
+  transform: rotate(-144deg);
+  content: '\f099';
+}
+
+.c-10 {
+  background: #1B5E20;
+  transition-delay: 0.4s, 0.4s, 0.4s;
+  transform: rotate(162deg);
+}
+
+.c-10 .link::before {
+  transform: rotate(-162deg);
+  content: '\f099';
+}
+
+.c-11 {
+  background: #1B5E20;
+  transition-delay: 0.4s, 0.4s, 0.4s;
+  transform: rotate(180deg);
+}
+
+.c-11 .link::before {
+  transform: rotate(-180deg);
+  content: '\f099';
+}
+
+.c-12 {
+  background: #1B5E20;
+  transition-delay: 0.4s, 0.4s, 0.4s;
+  transform: rotate(198deg);
+}
+
+.c-12 .link::before {
+  transform: rotate(-198deg);
+  content: '\f099';
+}
+
+.c-13 {
+  background: #1B5E20;
+  transition-delay: 0.4s, 0.4s, 0.4s;
+  transform: rotate(216deg);
+}
+
+.c-13 .link::before {
+  transform: rotate(-216deg);
+  content: '\f099';
+}
+
+.c-14 {
+  background: #1B5E20;
+  transition-delay: 0.4s, 0.4s, 0.4s;
+  transform: rotate(234deg);
+}
+
+.c-14 .link::before {
+  transform: rotate(-234deg);
+  content: '\f099';
+}
+
+.c-15 {
+  background: #1B5E20;
+  transition-delay: 0.4s, 0.4s, 0.4s;
+  transform: rotate(252deg);
+}
+
+.c-15 .link::before {
+  transform: rotate(-252deg);
+  content: '\f099';
+}
+
+/* Rotating animation class */
+.rotate {
+  animation: rotate360 70.5s linear infinite;
+}
+
+@keyframes rotate360 {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

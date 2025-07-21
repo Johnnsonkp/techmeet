@@ -23,12 +23,27 @@ function CustomCalendar() {
   const typeRef = useRef(null);
   const modalRef = useRef(null);
   const access_token = useAuthStore((s) => s.access_token);
-  const { data } = getCalendar();
-  
 
+  // Fetch events from Flask backend using getCalendar hook
   useEffect(() => {
-    console.log("Calendar data:", data);
-  }, [currentDate, events, filterType]);
+    async function fetchBackendEvents() {
+      try {
+        const data = await getCalendar(); // getCalendar should call Flask backend
+        if (data && data.length > 0) {
+
+          const updatedEvents = saveFetchedEvent(data);
+
+          if (updatedEvents && updatedEvents.length > 0) {
+            setEvents(updatedEvents);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to fetch backend events:', err);
+      }
+    }
+    fetchBackendEvents();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentDate]);
 
   const loadEvents = () => {
     const savedEvents = localStorage.getItem('calendarEvents');
@@ -56,17 +71,47 @@ function CustomCalendar() {
     modalRef.current.style.display = 'none';
   };
 
+
+  const saveFetchedEvent = (data) => {
+
+    const existingEvents = events || [];
+    
+    const newEvents = (data || []).map((event, index) => ({
+      id: event.id || `${event.summary}-${event.date}`,
+      title: event.summary,
+      type: 'work',
+      date: event.date ? new Date(event.date) : (event.start && (event.start.dateTime ? new Date(event.start.dateTime) : new Date(event.start.date)))
+    }));
+
+    const merged = [...existingEvents];
+    console.log('Merged events:', merged);
+    
+    newEvents.forEach(ev => {
+      if (!merged.some(e => e.id === ev.id)) {
+        merged.push(ev);
+      }
+    });
+
+    return merged;
+  };
+
+
+
   const saveEvent = () => {
     const title = titleRef.current.value;
     const type = typeRef.current.value;
+
     if (!title) return;
+
     const newEvent = {
       id: Date.now(),
       title,
       type,
       date: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate())
     };
+
     const updatedEvents = [...events, newEvent];
+
     saveEvents(updatedEvents);
     closeModal();
     titleRef.current.value = '';
@@ -130,6 +175,7 @@ function CustomCalendar() {
     }
 
     const remainingDays = 42 - (paddingDays + lastDay.getDate());
+    
     for (let i = 1; i <= remainingDays; i++) {
       calendarDays.push(
         <div key={`next-${i}`} className="day-cell different-month">
@@ -141,31 +187,8 @@ function CustomCalendar() {
     return calendarDays;
   };
 
-  const base_url = process.env.NEXT_PUBLIC_FLASK_BASE_URL;
-
-  const getCalendarEvents = () => {
-    const res = fetch(`${base_url}/api/v1/google_calendar`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${access_token}`
-      }
-    })
-    return res;
-    // const data = res
-    
-    // if(data){
-    //   return data;
-    // }
-  }
-
-  // useEffect(() => {
-  //   getCalendarEvents()
-  //   .then((data) => console.log("Calendar events loaded successfully.", data))
-  // }, []);
-
   return (
-    <div>
+    <div className=''>
       <div className="calendar-container">
         <div className="calendar-header">
           <div className="month-nav">
@@ -199,10 +222,10 @@ function CustomCalendar() {
         <div className="modal-content">
           <h2>Add Event</h2>
           <div className="form-group">
-            <input type="text" ref={titleRef} placeholder="Event Title" />
+            <input className="input" type="text" ref={titleRef} placeholder="Event Title" />
           </div>
           <div className="form-group">
-            <select ref={typeRef}>
+            <select className="select" ref={typeRef}>
               <option value="work">Work</option>
               <option value="personal">Personal</option>
               <option value="meeting">Meeting</option>

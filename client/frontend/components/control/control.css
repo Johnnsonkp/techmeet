@@ -1,0 +1,60 @@
+#container { margin: 0%; }
+
+/* #circle { position: relative; width: 700px; padding-bottom: 100%; overflow: hidden; } */
+#circle { 
+  width: 1000px; 
+  padding-bottom: 100%; 
+  overflow: hidden;
+  position: relative;
+  top: -10; 
+  right: -505;
+}
+
+#circle text { font-family: 'Helvetica Neue', Arial; font-size: 11px; font-weight: semi-bold;}
+
+#circle svg { position: absolute; left: 0; top: 0; width: 50%; height: 50%;
+
+  -webkit-animation-name: rotate;
+     -moz-animation-name: rotate;
+      -ms-animation-name: rotate;
+       -o-animation-name: rotate;
+          animation-name: rotate;
+  -webkit-animation-duration: 50s;
+     -moz-animation-duration: 50s;
+      -ms-animation-duration: 50s;
+       -o-animation-duration: 50s;
+          animation-duration: 50s;
+  -webkit-animation-iteration-count: infinite;
+     -moz-animation-iteration-count: infinite;
+      -ms-animation-iteration-count: infinite;
+       -o-animation-iteration-count: infinite;
+          animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear;
+     -moz-animation-timing-function: linear;
+      -ms-animation-timing-function: linear;
+       -o-animation-timing-function: linear;
+          animation-timing-function: linear;
+
+}
+
+@-webkit-keyframes rotate {
+    from { -webkit-transform: rotate(360deg); }
+    to { -webkit-transform: rotate(0); }
+}
+@-moz-keyframes rotate {
+    from { -moz-transform: rotate(360deg); }
+    to { -moz-transform: rotate(0); }
+}
+@-ms-keyframes rotate {
+    from { -ms-transform: rotate(360deg); }
+    to { -ms-transform: rotate(0); }
+}
+@-o-keyframes rotate {
+    from { -o-transform: rotate(360deg); }
+    to { -o-transform: rotate(0); }
+}
+@keyframes rotate {
+    from { transform: rotate(360deg); }
+    to { transform: rotate(0); }
+}
+
