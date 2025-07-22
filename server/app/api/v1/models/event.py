@@ -1,4 +1,5 @@
 from app import db
+from datetime import datetime
 
 class Event(db.Model):
     __tablename__ = 'events'
@@ -40,3 +41,20 @@ class Event(db.Model):
     source_api_id = db.Column(db.Integer, db.ForeignKey('source_apis.id'))
 
     tags = db.relationship('Tag', secondary='event_tags', backref='events')
+
+
+    def to_google_iso8601(self):
+        """Convert the event's datetime to Google Calendar's ISO 8601 format"""
+        if not self.datetime:
+            return None
+            
+        try:
+            # Parse the stored datetime string
+            dt = datetime.strptime(self.datetime, '%Y-%m-%d %H:%M:%S')
+            
+            # Format to ISO 8601 with timezone (Google's preferred format)
+            # Example output: "2024-12-25T15:30:00+00:00"
+            return dt.isoformat() + 'Z'  # 'Z' indicates UTC timezone
+            
+        except (ValueError, TypeError):
+            return None

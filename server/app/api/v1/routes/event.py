@@ -208,3 +208,31 @@ class BookEvent(Resource):
             return {"message": message}, 201
         else:
             return {"message": message}, 400
+
+# add Google ISO 8601  dateTime format of specific event 
+@api.route('/<int:event_id>/google_datetime', methods=['GET'])
+class EventGoogleDateTime(Resource):
+    @api.doc('get_google_datetime',
+             responses={
+                 200: 'Success',
+                 404: 'Event not found',
+                 500: 'Internal server error'
+             })
+    def get(self, event_id):
+        """Get Google ISO 8601 formatted datetime for an event"""
+        try:
+            event = Event.query.get(event_id)
+            if not event:
+                return {"message": "Event not found"}, 404
+            
+            google_datetime = event.to_google_iso8601()
+            if not google_datetime:
+                return {"message": "Event has no valid datetime"}, 400
+            
+            return {
+                "event_id": event_id,
+                "google_iso8601_datetime": google_datetime
+            }, 200
+            
+        except Exception as e:
+            return {"message": "Error processing request", "error": str(e)}, 500
