@@ -10,9 +10,10 @@ interface AuthStep1Props {
   updateFormData: (data: Partial<any>) => void;
   onNext: () => void;
   loading?: boolean;
+  setLoading: (loading: boolean) => void;
 }
 
-export const AuthStep1: React.FC<AuthStep1Props> = ({ formData, updateFormData, onNext, loading }) => {
+export const AuthStep1: React.FC<AuthStep1Props> = ({ formData, updateFormData, onNext, loading, setLoading }) => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const toggleMode = () => {
@@ -83,8 +84,10 @@ export const AuthStep1: React.FC<AuthStep1Props> = ({ formData, updateFormData, 
         provider="google"
         label="Continue with Google"
         iconSrc="https://www.svgrepo.com/show/475656/google-color.svg"
+        setLoading={setLoading}
       />
       <AuthButton
+        setLoading={setLoading}
         provider="github"
         label="Continue with GitHub"
         iconSrc="https://ucarecdn.com/be5b0ffd-85e8-4639-83a6-5162dfa15a16/"

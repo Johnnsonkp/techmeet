@@ -22,7 +22,8 @@ export function HeaderClientWrapper({ children }: { children: React.ReactNode })
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  let headerClass = "fixed z-50 h-19 inset-0 flex items-center backdrop-blur-lg ";
+  // let headerClass = "fixed z-50 h-19 inset-0 flex items-center backdrop-blur-sm ";
+  let headerClass = "fixed z-50 h-19 inset-0 flex items-center";
   if (pathname === "/") {
     headerClass += isScrolling ? " bg-white/80 text-black" : " transparent text-white";
   } else {

@@ -20,6 +20,7 @@ export function syncAuthToLocal(authData: AuthData, setAuth: any) {
   const { token, user, provider = 'credentials' } = authData;
   // const refresh_token = useAuthStore((s) => s.refresh_token);
 
+  console.log('tm_jwt', token);
   // Save JWT in localStorage
   localStorage.setItem('tm_jwt', token);
 

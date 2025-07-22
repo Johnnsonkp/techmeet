@@ -9,6 +9,8 @@ export function useFetchUserProfile(token: string | null) {
   useEffect(() => {
     if (!token) return;
 
+    console.log("Fetched profile data token:", token);
+
     const fetchProfile = async () => {
       setLoading(true);
       setError(null);

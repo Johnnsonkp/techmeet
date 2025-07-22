@@ -41,10 +41,13 @@ class GoogleOAuth(Resource):
 
         expires_at = datetime.fromtimestamp(int(token_data.get('exp', 0)))
 
+        new_user = False
+
         # Find or create user
         user = User.query.filter_by(email=email).first()
         if not user:
             user = User.register_user(data, is_oauth=True)
+            new_user = True
             db.session.add(user)
 
         # Find or create oauth connection
@@ -62,4 +65,10 @@ class GoogleOAuth(Resource):
         print(f"user_facade.to_dict(user) {UserFacade.to_dict(user)}")
 
         jwt_token = create_access_token(identity=str(user.id))
-        return jsonify({"token": jwt_token, "refresh_token": refresh_token, "user": UserFacade.to_dict(user), "provider": "google"})
+        return jsonify({
+            "token": jwt_token, 
+            "refresh_token": refresh_token, 
+            "user": UserFacade.to_dict(user), 
+            "provider": "google",
+            "new_user": new_user
+        })

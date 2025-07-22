@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { LogoCapsule } from "@/components/profile/Tag";
 import React from 'react';
+import { addEventToGoogleCalendar } from "@/hooks/useGoogleCalendar";
 import {toast} from "sonner";
 import { use } from 'react';
 import { useAuthStore } from "@/store/authStore";
@@ -19,8 +20,10 @@ const page = ({ params }: { params: Promise<{ id: string }> }) => {
   const selectedEvent = useEventStore((s) => s.selectedEvent)
   const user = useAuthStore((s) => s.user);
   const token = useAuthStore((s) => s.access_token);
+  const refresh_token = useAuthStore((s) => s.refresh_token);
   const BASE_URL = process.env.NEXT_PUBLIC_FLASK_BASE_URL || "http://localhost:5328";
   const router = useRouter();
+  const setUserEvents = useEventStore((s) => s.setUserEvents);
 
   // Add loading and error state
   const [loading, setLoading] = React.useState(!selectedEvent);
@@ -44,6 +47,8 @@ const page = ({ params }: { params: Promise<{ id: string }> }) => {
 
 
   async function bookEvent(eventId: number | undefined, userId: any) {
+
+    console.log("Booking event with ID:", eventId, "for user ID:", userId);
     
     if(!eventId || !userId) {
       toast.error("You must be logged in to book an event.");
@@ -53,6 +58,7 @@ const page = ({ params }: { params: Promise<{ id: string }> }) => {
       }, 2000)
     }
 
+    const jwt_token = localStorage.getItem('tm_jwt');
     try {
       const response = await fetch(`${BASE_URL}/api/v1/user_events/${eventId}`, {
         method: 'POST',
@@ -65,8 +71,22 @@ const page = ({ params }: { params: Promise<{ id: string }> }) => {
 
       const data = await response.json();
       if (response.ok) {
+        setUserEvents(data.booked_event);
         toast.success("Event booked successfully!");
         console.log('Event booked:', data);
+        console.log("tm_jwt:", jwt_token);
+
+        addEventToGoogleCalendar({
+          access_token: `${token}`,
+          refresh_token: `${refresh_token}`,
+          summary: `${data.booked_event.name}`,
+          start: "2025-07-26T10:00:00Z",
+          end: "2025-07-26T11:00:00Z",
+          description: "Discuss project updates",
+          jwtToken: `${jwt_token}`
+        })
+          .then(event => console.log("Event created:", event))
+          .catch(err => console.error("Error:", err));
 
         setTimeout(() => {
           return router.push('/dashboard');

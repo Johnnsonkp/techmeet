@@ -14,8 +14,8 @@ export const useFetchEvents = () => {
   const [error, setError] = useState<string | null>(null);
   const [noEventsFound, setNoEventsFound] = useState(false);
 
-  console.log("base_url", base_url);
-  console.log("process.env.NEXT_PUBLIC_FLASK_BASE_URL", process.env.NEXT_PUBLIC_FLASK_BASE_URL);
+  // console.log("base_url", base_url);
+  // console.log("process.env.NEXT_PUBLIC_FLASK_BASE_URL", process.env.NEXT_PUBLIC_FLASK_BASE_URL);
 
   // Fetch paginated events
   const fetchEvents = async (page: number, limit: number) => {

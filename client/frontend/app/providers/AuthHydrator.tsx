@@ -41,7 +41,8 @@ export function AuthHydrator() {
       provider: typedSession.provider,
     });
 
-    if (!onboardingRequired || onboardingRequired === 'true') return;
+    // if (!onboardingRequired || onboardingRequired === 'true') return;
+    // if (onboardingRequired === 'true') return;
 
     (async () => {
       try {
@@ -55,9 +56,20 @@ export function AuthHydrator() {
             refresh_token: typedSession.refresh_token,
           }),
         });
+
         const data = await res.json();
+
         if (data?.token) {
           localStorage.setItem('tm_jwt', data.token);
+
+          console.log('new_user', data.new_user);
+          
+          if (data.new_user === true) {
+            localStorage.setItem('tm_onboarding_required', 'true');
+          } else {
+            localStorage.setItem('tm_onboarding_required', 'false');
+          }
+          
           setAuth({
             user: {
               id: data.user?.id,
@@ -69,6 +81,7 @@ export function AuthHydrator() {
             access_token: data.token,
             refresh_token: data.refresh_token,
             provider: data.provider,
+            oAuth_onboardingRequired: data.new_user || null,
           });
         } else {
           console.error('Flask did not return a valid token:', data);

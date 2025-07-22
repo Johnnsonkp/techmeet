@@ -11,7 +11,7 @@ export default function RequireAuth({ children }: { children: React.ReactNode })
   useEffect(() => {
     const token = accessToken || localStorage.getItem('tm_jwt');
     if (!token) {
-      router.replace('/auth');
+      router.replace('/auth/signin');
     }
   }, [accessToken]);
 

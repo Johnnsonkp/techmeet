@@ -55,11 +55,12 @@ export const MultiStepAuth = () => {
   const [error, setError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const authUser = useAuthStore((s) => s.user);
+  const oauth_onboarding = useAuthStore((s) => s.oAuth_onboardingRequired);
   const setAuth = useAuthStore((s) => s.setAuth);
   const router = useRouter();
 
   useEffect(() => {
-    if (authUser && userSignedIn == false) {
+    if (authUser && userSignedIn == false && oauth_onboarding == true) {
       // Set onboarding flag if Google OAuth user and profile not complete
       localStorage.setItem('tm_onboarding_required', 'true');
       setCurrentStep(2);
@@ -249,6 +250,7 @@ export const MultiStepAuth = () => {
                 updateFormData={updateFormData}
                 onNext={handleNext}
                 loading={loading}
+                setLoading={setLoading}
               />
             )}
             {formData.mode === 'signup' && currentStep === 2 && (
@@ -258,6 +260,7 @@ export const MultiStepAuth = () => {
                 onNext={handleNext}
                 onBack={handleBack}
                 loading={loading}
+
               />
             )}
             {formData.mode === 'signup' && currentStep === 3 && (

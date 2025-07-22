@@ -12,6 +12,7 @@ interface AuthState {
   access_token: string | null;
   refresh_token: string | null;
   provider: string | null;
+  oAuth_onboardingRequired?: boolean | null;
 }
 
 interface AuthStore extends AuthState {
@@ -26,6 +27,7 @@ export const useAuthStore = create<AuthStore>()(
       access_token: null,
       refresh_token: null,
       provider: null,
+      oAuth_onboardingRequired: false,
       setAuth: (data) => set(data),
       logout: () => set({ user: null, access_token: null, refresh_token: null, provider: null }),
     }),

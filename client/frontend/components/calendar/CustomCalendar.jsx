@@ -95,8 +95,6 @@ function CustomCalendar() {
     return merged;
   };
 
-
-
   const saveEvent = () => {
     const title = titleRef.current.value;
     const type = typeRef.current.value;

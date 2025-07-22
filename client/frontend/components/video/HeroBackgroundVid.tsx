@@ -13,6 +13,7 @@ function HeroBackgroundVid() {
   const [showNext, setShowNext] = useState(false);
   const videoRef1: any = useRef<HTMLVideoElement>(null);
   const videoRef2: any = useRef<HTMLVideoElement>(null);
+  const [showFallback, setShowFallback] = useState(false);
 
   const nextIdx = (videoIdx + 1) % videoSources.length;
 
@@ -31,7 +32,7 @@ function HeroBackgroundVid() {
   };
 
   return (
-    <div className="absolute inset-0 w-full h-full z-0 bg-gray-900/60">
+    <div className="absolute inset-0 w-full h-full z-0 bg-[rgba(0, 0, 0, 0.6)]">
       <video
         ref={videoRef1}
         className={`absolute w-full h-full object-cover blur-[2px] transition-opacity duration-0 ${showNext ? "opacity-0" : "opacity-100"}`}
@@ -41,8 +42,10 @@ function HeroBackgroundVid() {
         playsInline
         preload="auto"
         aria-hidden="true"
+        // poster="/images/rear-view-audience.jpg"
         src={videoSources[videoIdx]}
         onEnded={handleEnded}
+        onError={() => setShowFallback(true)}
         onLoadedMetadata={() => handleLoadedMetadata(videoRef1)}
       />
       <video
@@ -54,10 +57,19 @@ function HeroBackgroundVid() {
         playsInline
         preload="auto"
         aria-hidden="true"
+        // poster="/images/rear-view-audience.jpg"
         src={videoSources[nextIdx]}
         style={{ pointerEvents: "none" }}
+        onError={() => setShowFallback(true)}
         onLoadedMetadata={() => handleLoadedMetadata(videoRef2)}
       />
+      {showFallback && (
+        <img
+          src="/images/rear-view-audience.jpg"
+          alt="Fallback"
+          className="absolute w-full h-full object-cover"
+        />
+      )}
     </div>
   );
 }

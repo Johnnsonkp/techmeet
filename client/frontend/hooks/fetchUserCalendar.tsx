@@ -5,7 +5,7 @@ export async function getCalendar() {
   // Access tokens from Zustand store
   const token = useAuthStore.getState().access_token;
   const refresh_token = useAuthStore.getState().refresh_token;
-  const BASE_URL = 'http://localhost:5328';
+  const BASE_URL = process.env.NEXT_PUBLIC_FLASK_BASE_URL || 'http://localhost:5328';
 
   try {
     const response = await fetch(`${BASE_URL}/api/v1/google_calendar/`, {

@@ -19,10 +19,11 @@ api = Namespace('calendar', description='Google Calendar')
 class CalendarEvents(Resource):
     @jwt_required()
     def post(self):
-    
+        """Get upcoming events from Google Calendar"""
         data = request.get_json()
         # email = data.get('email')
         token = data.get('access_token')
+        refresh_token = data.get('refresh_token')
         SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 
         def get_calendar_events(creds, time_min=None, time_max=None):
@@ -39,12 +40,14 @@ class CalendarEvents(Resource):
             return {"error": "Missing required fields"}, 400
 
         creds = Credentials(
-            token=os.getenv('TOKEN'),
-            refresh_token=os.getenv('REFRESH_TOKEN'),
+            # token=os.getenv('TOKEN'),
+            # refresh_token=os.getenv('REFRESH_TOKEN'),
+            token=token,
+            refresh_token=refresh_token,
             token_uri = "https://oauth2.googleapis.com/token",
             client_id = os.getenv('CLIENT_ID'),
             client_secret = os.getenv('CLIENT_SECRET'),
-            scopes=['https://www.googleapis.com/auth/calendar.readonly']
+            scopes=['https://www.googleapis.com/auth/calendar']
         )
 
         # View events
@@ -54,6 +57,54 @@ class CalendarEvents(Resource):
             print(f"Found {len(events)} events")
             return events, 200
 
+
+
+# Route to create a new event in Google Calendar
+@api.route('/add', methods=['POST'])
+class CreateCalendarEvent(Resource):
+    @jwt_required()
+    def post(self):
+        data = request.get_json()
+        token = data.get('access_token')
+        refresh_token = data.get('refresh_token')
+        summary = data.get('summary')
+        start = data.get('start')
+        end = data.get('end')
+        description = data.get('description')
+
+        if not all([token, refresh_token, summary, start, end]):
+            return {"error": "Missing required fields"}, 400
+
+        creds = Credentials(
+            token=token,
+            refresh_token=refresh_token,
+            token_uri = "https://oauth2.googleapis.com/token",
+            client_id = os.getenv('CLIENT_ID'),
+            client_secret = os.getenv('CLIENT_SECRET'),
+            scopes=['https://www.googleapis.com/auth/calendar']
+        )
+
+        service = build('calendar', 'v3', credentials=creds)
+        event = {
+            'summary': summary,
+            'start': {'dateTime': start, 'timeZone': 'UTC'},
+            'end': {'dateTime': end, 'timeZone': 'UTC'}
+        }
+        if description:
+            event['description'] = description
+
+        try:
+            print(f"Creating event: {event}")
+            # created_event = service.events().insert(calendarId='primary', body=event).execute()
+            # return jsonify({
+            #     'id': created_event.get('id'),
+            #     'title': created_event.get('summary'),
+            #     'start': created_event.get('start', {}).get('dateTime'),
+            #     'end': created_event.get('end', {}).get('dateTime')
+            # })
+        except Exception as e:
+            return {"error": f"Failed to create event: {str(e)}"}, 500
+        
 
 # class CalendarBase(Resource):
     
@@ -145,41 +196,41 @@ class CalendarEvents(Resource):
 #         except requests.exceptions.RequestException as e:
 #             return {"error": f"API connection failed: {str(e)}"}, 500
 
-#     @jwt_required()
-#     def post(self):
-#         """Create new event"""
-#         data = api.payload
-#         if not all(k in data for k in ['summary', 'start', 'end']):
-#             return {"error": "Missing required fields"}, 400
+    # @jwt_required()
+    # def post(self):
+    #     """Create new event"""
+    #     data = api.payload
+    #     if not all(k in data for k in ['summary', 'start', 'end']):
+    #         return {"error": "Missing required fields"}, 400
 
-#         oauth = self._get_oauth_connection(get_jwt_identity())
-#         if not oauth:
-#             return {"error": "Google connection not found"}, 404
-#         if not self._verify_token_active(oauth):
-#             return {"error": "Token expired"}, 401
+    #     oauth = self._get_oauth_connection(get_jwt_identity())
+    #     if not oauth:
+    #         return {"error": "Google connection not found"}, 404
+    #     if not self._verify_token_active(oauth):
+    #         return {"error": "Token expired"}, 401
 
-#         event = {
-#             'summary': data['summary'],
-#             'start': {'dateTime': data['start'], 'timeZone': 'UTC'},
-#             'end': {'dateTime': data['end'], 'timeZone': 'UTC'}
-#         }
-#         if 'description' in data:
-#             event['description'] = data['description']
+    #     event = {
+    #         'summary': data['summary'],
+    #         'start': {'dateTime': data['start'], 'timeZone': 'UTC'},
+    #         'end': {'dateTime': data['end'], 'timeZone': 'UTC'}
+    #     }
+    #     if 'description' in data:
+    #         event['description'] = data['description']
 
-#         try:
-#             res = self._call_google_api(oauth, 'POST', 'events', json=event)
-#             if res.status_code != 200:
-#                 return {"error": res.json().get('error', {}).get('message', 'API error')}, res.status_code
+    #     try:
+    #         res = self._call_google_api(oauth, 'POST', 'events', json=event)
+    #         if res.status_code != 200:
+    #             return {"error": res.json().get('error', {}).get('message', 'API error')}, res.status_code
                 
-#             return jsonify({
-#                 'id': res.json().get('id'),
-#                 'title': res.json().get('summary'),
-#                 'start': res.json().get('start', {}).get('dateTime'),
-#                 'end': res.json().get('end', {}).get('dateTime')
-#             })
-#         except requests.exceptions.RequestException as e:
+    #         return jsonify({
+    #             'id': res.json().get('id'),
+    #             'title': res.json().get('summary'),
+    #             'start': res.json().get('start', {}).get('dateTime'),
+    #             'end': res.json().get('end', {}).get('dateTime')
+    #         })
+    #     except requests.exceptions.RequestException as e:
             
-#             return {"error": f"API connection failed: {str(e)}"}, 500
+    #         return {"error": f"API connection failed: {str(e)}"}, 500
 
 
             
