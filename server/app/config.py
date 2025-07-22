@@ -5,8 +5,7 @@ from datetime import timedelta
 load_dotenv()
 
 class BaseConfig:
-    """Base configuration."""
-    SECRET_KEY = os.getenv('SECRET_KEY', 'insecure-default-key')
+    SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'insecure-default-key')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=7)
     JWT_ERROR_MESSAGE_KEY = "message"
@@ -19,26 +18,23 @@ class BaseConfig:
     CLIENT_ID = os.getenv('CLIENT_ID')
     CLIENT_SECRET = os.getenv('CLIENT_SECRET')
     REDIRECT_URI = os.getenv('REDIRECT_URI')
-    REFRESH_TOKEN = os.getenv('TOKEN')
+    REFRESH_TOKEN = os.getenv('REFRESH_TOKEN')
 
 class DevelopmentConfig(BaseConfig):
-    """Development configuration."""
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///techmeet.db'
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///tech_meet.db'
 
 class ProductionConfig(BaseConfig):
-    """Production configuration."""
     DEBUG = False
     SQLALCHEMY_DATABASE_URI = os.getenv('MYSQL_URL')
 
     def __init__(self):
-        if not os.getenv('SECRET_KEY'):
-            raise RuntimeError("SECRET_KEY must be set in production")
+        if not os.getenv('JWT_SECRET_KEY'):
+            raise RuntimeError("JWT_SECRET_KEY must be set in production")
         if not self.SQLALCHEMY_DATABASE_URI:
             raise RuntimeError("MYSQL_URL must be set in production")
 
 class TestingConfig(BaseConfig):
-    """Testing configuration."""
     TESTING = True
     SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
 

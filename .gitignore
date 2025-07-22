@@ -10,3 +10,4 @@ client/frontend/.env.local
 server/credentials.json
 server/*.json
 types/
+client/frontend/sanity/env.ts
