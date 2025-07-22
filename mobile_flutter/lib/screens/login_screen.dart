@@ -17,9 +17,10 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isLoading = false;
   bool _showRegisterForm = false;
   final GoogleSignIn _googleSignIn = GoogleSignIn(
-    scopes: ['email'],
-    clientId:
-        '298167153207-tki4jcpo5cdsil2hl1i2hu1ba94fv30r.apps.googleusercontent.com',
+    scopes: [
+      'email',
+      'https://www.googleapis.com/auth/calendar.events',
+    ],
   );
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -40,7 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
           'password': _passwordController.text,
         }),
       );
-
+      print('Login response: ${response.statusCode} ${response.body}');
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         Provider.of<AuthProvider>(context, listen: false)
@@ -57,6 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       }
     } catch (e) {
+      print('Network error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Failed to connect to backend')),
       );
@@ -68,6 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _loginWithGoogle() async {
     setState(() => _isLoading = true);
     try {
+      await _googleSignIn.signOut(); // Clear any previous session
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       if (googleUser == null) {
         setState(() => _isLoading = false);
@@ -82,7 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
           'id_token': googleAuth.idToken,
         }),
       );
-
+      print('Google login response: ${response.statusCode} ${response.body}');
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         Provider.of<AuthProvider>(context, listen: false)
@@ -99,6 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       }
     } catch (e) {
+      print('Google Sign-In error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Failed to connect to backend')),
       );
@@ -125,7 +129,7 @@ class _LoginScreenState extends State<LoginScreen> {
               : _technicalSkillsController.text),
         }),
       );
-
+      print('Register response: ${response.statusCode} ${response.body}');
       if (response.statusCode == 201) {
         final data = jsonDecode(response.body);
         Provider.of<AuthProvider>(context, listen: false)
@@ -142,6 +146,7 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       }
     } catch (e) {
+      print('Network error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Failed to connect to backend')),
       );
@@ -154,89 +159,172 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Login')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (_showRegisterForm) ...[
-                TextField(
-                  controller: _firstNameController,
-                  decoration: const InputDecoration(labelText: 'First Name'),
-                ),
-                TextField(
-                  controller: _lastNameController,
-                  decoration: const InputDecoration(labelText: 'Last Name'),
-                ),
-                TextField(
-                  controller: _emailController,
-                  decoration: const InputDecoration(labelText: 'Email'),
-                ),
-                TextField(
-                  controller: _passwordController,
-                  decoration: const InputDecoration(labelText: 'Password'),
-                  obscureText: true,
-                ),
-                TextField(
-                  controller: _jobTitleController,
-                  decoration: const InputDecoration(labelText: 'Job Title'),
-                ),
-                TextField(
-                  controller: _employmentStatusController,
-                  decoration:
-                      const InputDecoration(labelText: 'Employment Status'),
-                ),
-                TextField(
-                  controller: _technicalSkillsController,
-                  decoration: const InputDecoration(
-                      labelText:
-                          'Technical Skills (JSON array, e.g., ["JavaScript", "Python"])'),
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: _register,
-                  child: const Text('Register'),
-                ),
-                const SizedBox(height: 10),
-                TextButton(
-                  onPressed: () => setState(() => _showRegisterForm = false),
-                  child: const Text('Back to Login'),
-                ),
-              ] else ...[
-                TextField(
-                  controller: _emailController,
-                  decoration: const InputDecoration(labelText: 'Email'),
-                ),
-                TextField(
-                  controller: _passwordController,
-                  decoration: const InputDecoration(labelText: 'Password'),
-                  obscureText: true,
-                ),
-                const SizedBox(height: 20),
-                _isLoading
-                    ? const CircularProgressIndicator()
-                    : Column(
-                        children: [
-                          ElevatedButton(
-                            onPressed: _loginWithEmail,
-                            child: const Text('Login'),
-                          ),
-                          const SizedBox(height: 10),
-                          ElevatedButton(
-                            onPressed: _loginWithGoogle,
-                            child: const Text('Sign in with Google'),
-                          ),
-                          const SizedBox(height: 10),
-                          TextButton(
-                            onPressed: () =>
-                                setState(() => _showRegisterForm = true),
-                            child: const Text('Register'),
-                          ),
-                        ],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 32.0),
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 400),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (_showRegisterForm) ...[
+                    TextField(
+                      controller: _firstNameController,
+                      decoration: InputDecoration(
+                        labelText: 'First Name',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
                       ),
-              ],
-            ],
+                    ),
+                    const SizedBox(height: 16),
+                    TextField(
+                      controller: _lastNameController,
+                      decoration: InputDecoration(
+                        labelText: 'Last Name',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    TextField(
+                      controller: _emailController,
+                      decoration: InputDecoration(
+                        labelText: 'Email',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    TextField(
+                      controller: _passwordController,
+                      decoration: InputDecoration(
+                        labelText: 'Password',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                      obscureText: true,
+                    ),
+                    const SizedBox(height: 16),
+                    TextField(
+                      controller: _jobTitleController,
+                      decoration: InputDecoration(
+                        labelText: 'Job Title',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    TextField(
+                      controller: _employmentStatusController,
+                      decoration: InputDecoration(
+                        labelText: 'Employment Status',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    TextField(
+                      controller: _technicalSkillsController,
+                      decoration: InputDecoration(
+                        labelText:
+                            'Technical Skills (JSON array, e.g., ["JavaScript", "Python"])',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: _register,
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 16.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                      child: const Text('Register',
+                          style: TextStyle(fontSize: 16)),
+                    ),
+                    const SizedBox(height: 10),
+                    TextButton(
+                      onPressed: () =>
+                          setState(() => _showRegisterForm = false),
+                      child: const Text('Back to Login',
+                          style: TextStyle(fontSize: 14)),
+                    ),
+                  ] else ...[
+                    TextField(
+                      controller: _emailController,
+                      decoration: InputDecoration(
+                        labelText: 'Email',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    TextField(
+                      controller: _passwordController,
+                      decoration: InputDecoration(
+                        labelText: 'Password',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                      obscureText: true,
+                    ),
+                    const SizedBox(height: 20),
+                    _isLoading
+                        ? const Center(child: CircularProgressIndicator())
+                        : Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              ElevatedButton(
+                                onPressed: _loginWithEmail,
+                                style: ElevatedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 16.0),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                ),
+                                child: const Text('Login',
+                                    style: TextStyle(fontSize: 16)),
+                              ),
+                              const SizedBox(height: 10),
+                              ElevatedButton(
+                                onPressed: _loginWithGoogle,
+                                style: ElevatedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 16.0),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                ),
+                                child: const Text('Sign in with Google',
+                                    style: TextStyle(fontSize: 16)),
+                              ),
+                              const SizedBox(height: 10),
+                              TextButton(
+                                onPressed: () =>
+                                    setState(() => _showRegisterForm = true),
+                                child: const Text('Register',
+                                    style: TextStyle(fontSize: 14)),
+                              ),
+                            ],
+                          ),
+                  ],
+                ],
+              ),
+            ),
           ),
         ),
       ),

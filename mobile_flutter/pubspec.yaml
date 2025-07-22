@@ -12,7 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   http: ^1.2.2
-  google_sign_in: ^7.1.1
+  google_sign_in: ^6.2.1
   provider: ^6.1.2
   url_launcher: ^6.3.0
   cupertino_icons: ^1.0.8
