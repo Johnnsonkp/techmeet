@@ -22,7 +22,7 @@ const SignInPage: React.FC = () => {
   const pathname = usePathname();
   const [loading, setLoading] = useState(false);
   const authUser = useAuthStore((s) => s.user);
-  const onboardingRequired = localStorage.getItem('tm_onboarding_required');
+  const onboardingRequired = localStorage.getItem('tm_onboarding_required') || null;
    const [error, setError] = useState<string | null>(null);
 
   const updateFormData = (updates: Partial<typeof formData>) =>
