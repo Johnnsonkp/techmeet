@@ -17,11 +17,15 @@ bcrypt = Bcrypt()
 jwt = JWTManager()
 migrate = Migrate()
 
-def create_app(config_class=None):
-    """ method used to create an app instance"""
+api = Api(
+    title='TechMeet API',
+    description='TechMeet Application API',
+    version='1.0'
+)
+
+def create_app(config_name='development'):
     app = Flask(__name__)
     CORS(app, origins=["http://localhost:3000", "https://techmeet-production.up.railway.app"], supports_credentials=True)
-
     app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
     cloudinary.config(
@@ -30,12 +34,10 @@ def create_app(config_class=None):
         api_secret=os.getenv('CLOUD_API_SECRET')
     )
 
-    config_name = config_class or os.getenv('FLASK_CONFIG', 'default')
-    
+    config_name = config_name or os.getenv('FLASK_CONFIG', 'default')
     app.config.from_object(config_map.get(config_name, config_map['default']))
 
-    api = Api(app, version='1.0', title='TechMeet API', description='TechMeet Application API')
-    
+    api.init_app(app)
     from app.api.v1.routes.user import api as users_ns
     from app.api.v1.routes.oauth_connection import api as oauth_ns
     from app.api.v1.routes.profile import api as profiles_ns
