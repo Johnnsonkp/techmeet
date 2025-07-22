@@ -34,7 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _isLoading = true);
     try {
       final response = await http.post(
-        Uri.parse('http://10.0.1.86:5328/api/v1/users/login'),
+        Uri.parse('http://127.0.0.1:5328/api/v1/users/login'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'email': _emailController.text,
@@ -79,7 +79,7 @@ class _LoginScreenState extends State<LoginScreen> {
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
       final response = await http.post(
-        Uri.parse('http://10.0.1.86:5328/api/v1/users/google-login'),
+        Uri.parse('http://127.0.0.1:5328/api/v1/users/google-login'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'id_token': googleAuth.idToken,
@@ -115,7 +115,7 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _isLoading = true);
     try {
       final response = await http.post(
-        Uri.parse('http://10.0.1.86:5328/api/v1/users/sign_up'),
+        Uri.parse('http://127.0.0.1:5328/api/v1/users/sign_up'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'first_name': _firstNameController.text,
