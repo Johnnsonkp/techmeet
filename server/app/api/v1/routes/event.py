@@ -209,7 +209,7 @@ class BookEvent(Resource):
         else:
             return {"message": message}, 400
 
-# add Google ISO 8601  dateTime format of specific event 
+# get Google ISO 8601  dateTime format of specific event 
 @api.route('/<int:event_id>/google_datetime', methods=['GET'])
 class EventGoogleDateTime(Resource):
     @api.doc('get_google_datetime',
@@ -236,3 +236,25 @@ class EventGoogleDateTime(Resource):
             
         except Exception as e:
             return {"message": "Error processing request", "error": str(e)}, 500
+        
+# get all events with formatted ISO 8601 dateTime
+@api.route('/with_google_datetime', methods=['GET'])
+class EventsWithGoogleDateTime(Resource):
+    @api.doc('get_events_with_google_datetime')
+    def get(self):
+        """Get all events with Google ISO 8601 formatted datetime"""
+        try:
+            events = Event.query.all()
+            result = []
+            for event in events:
+                result.append({
+                    "id": event.id,
+                    "title": event.name,
+                    "summary": event.description[:100] if event.description else "",
+                    "date": event.to_google_iso8601(),  # convert to ISO 8601 
+                    "location": event.location,
+                    "type": "work"  # Default type or map from your event model
+                })
+            return {"events": result}, 200
+        except Exception as e:
+            return {"message": "Error fetching events", "error": str(e)}, 500
