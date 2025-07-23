@@ -135,13 +135,8 @@ class Event(db.Model):
         print(f"Original datetime: {test_event.datetime}")
         print(f"ISO8601 datetime: {iso_datetime}")
         
-        return iso_datetime
+        return iso_datetime, test_event.datetime
 
-# To call this test method, you can do:
-if __name__ == "__main__":
-    # Call the test method
-    result = Event.test_google_iso8601_conversion()
-    print(f"Test result: {result}")
 
 
        
