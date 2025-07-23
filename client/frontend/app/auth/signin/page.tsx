@@ -22,7 +22,7 @@ const SignInPage: React.FC = () => {
   const pathname = usePathname();
   const [loading, setLoading] = useState(false);
   const authUser = useAuthStore((s) => s.user);
-  const onboardingRequired = localStorage.getItem('tm_onboarding_required') || null;
+  // const onboardingRequired = localStorage.getItem('tm_onboarding_required') || null;
    const [error, setError] = useState<string | null>(null);
 
   const updateFormData = (updates: Partial<typeof formData>) =>
@@ -68,6 +68,8 @@ const SignInPage: React.FC = () => {
   };
 
   useEffect(() => {
+    const onboardingRequired = localStorage.getItem('tm_onboarding_required')
+
     if (
       authUser &&
       authUser.id && onboardingRequired === 'false' &&
@@ -76,7 +78,7 @@ const SignInPage: React.FC = () => {
       console.log('User already authenticated, redirecting to dashboard', authUser);
       router.push('/dashboard');
     }
-  }, [authUser, pathname, router, onboardingRequired])
+  }, [authUser, pathname, router])
 
   return (
     <div className="min-h-screen bg-white ">

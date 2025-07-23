@@ -24,51 +24,51 @@ export function useCountdownTimer(targetDateString: string) {
   const targetDate = new Date(targetDateString);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  useEffect(() => {
-    function calculateTime(): Timer {
-      const now = new Date();
-      const diff = targetDate.getTime() - now.getTime();
+  // useEffect(() => {
+  //   function calculateTime(): Timer {
+  //     const now = new Date();
+  //     const diff = targetDate.getTime() - now.getTime();
 
-      if (diff <= 0) {
-        return { days: 0, hours: 0, minutes: 0, seconds: 0 };
-      }
+  //     if (diff <= 0) {
+  //       return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+  //     }
 
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-      const minutes = Math.floor((diff / (1000 * 60)) % 60);
-      const seconds = Math.floor((diff / 1000) % 60);
+  //     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  //     const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  //     const minutes = Math.floor((diff / (1000 * 60)) % 60);
+  //     const seconds = Math.floor((diff / 1000) % 60);
 
-      return { days, hours, minutes, seconds };
-    }
+  //     return { days, hours, minutes, seconds };
+  //   }
 
-    function updateCountdown() {
-      const newTime = calculateTime();
-      setTimerObj((prev) => {
-        const isSame =
-          prev.days === newTime.days &&
-          prev.hours === newTime.hours &&
-          prev.minutes === newTime.minutes &&
-          prev.seconds === newTime.seconds;
+  //   function updateCountdown() {
+  //     const newTime = calculateTime();
+  //     setTimerObj((prev) => {
+  //       const isSame =
+  //         prev.days === newTime.days &&
+  //         prev.hours === newTime.hours &&
+  //         prev.minutes === newTime.minutes &&
+  //         prev.seconds === newTime.seconds;
 
-        return isSame ? prev : newTime;
-      });
+  //       return isSame ? prev : newTime;
+  //     });
 
-      if (
-        newTime.days === 0 &&
-        newTime.hours === 0 &&
-        newTime.minutes === 0 &&
-        newTime.seconds === 0
-      ) {
-        clearInterval(intervalRef.current!);
-        // alert("Time is up!");
-      }
-    }
+  //     if (
+  //       newTime.days === 0 &&
+  //       newTime.hours === 0 &&
+  //       newTime.minutes === 0 &&
+  //       newTime.seconds === 0
+  //     ) {
+  //       clearInterval(intervalRef.current!);
+  //       // alert("Time is up!");
+  //     }
+  //   }
 
-    intervalRef.current = setInterval(updateCountdown, 1000);
-    updateCountdown(); // Initial call
+  //   intervalRef.current = setInterval(updateCountdown, 1000);
+  //   updateCountdown(); // Initial call
 
-    return () => clearInterval(intervalRef.current!); // Cleanup
-  }, [targetDateString, targetDate]);
+  //   return () => clearInterval(intervalRef.current!); // Cleanup
+  // }, [targetDateString, targetDate]);
 
   return timerObj;
 }
@@ -99,6 +99,27 @@ export function TimerDisplay() {
       )
   }
 
+  const text = [
+    "Events Discovery ~ Events Discovery ~ Events Discovery ~ Events Discovery ~",
+    "Calendar Integration ~ Calendar Integration ~ Calendar Integration ~ Calendar Integration ~",
+    "Google Authentication ~ Google Authentication ~ Google Authentication ~ Google Authentication ~"
+  ];
+
+  // State for current text index
+  const [currentTextIdx, setCurrentTextIdx] = useState(0);
+  const currentText = text[currentTextIdx];
+
+  useEffect(() => {
+    // Use a ref to avoid closure over stale state
+    let index = currentTextIdx;
+    const interval = setInterval(() => {
+      index = (index + 1) % text.length;
+      setCurrentTextIdx(index);
+    }, 20000);
+    return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div className="grid grid-cols-4 gap-4 -mt-16 group">
       <GlassCard  item={days} metric={"Days"}/>
@@ -108,7 +129,7 @@ export function TimerDisplay() {
 
       <div className="z-10 p-0 absolute top-90 right-[-80px]">
         {/* <img src="/images/event-s-2.png" alt="Event S" className="border-2 border-red-500 w-[500px] z-10 p-0 scale-[0.8]" /> */}
-        <CircularControl3 />
+        <CircularControl3 text={currentText}/>
         <CircularRemote2 />
         {/* <CircularControl className='' /> */}
       </div>

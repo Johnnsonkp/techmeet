@@ -5,13 +5,13 @@
       border-radius: 10px;
       /* box-shadow: 0 5px 20px rgba(0,0,0,0.1); */
       padding: 0px 0px;
-      /* border: 1px solid red; */
+      /* border: 1px solid #ff0000; */
   }
   .calendar-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
   }
   .month-nav {
       display: flex;
@@ -94,9 +94,21 @@
           opacity: 1;
       }
   }
+
+  /* Default event color: purple */
+  .event { background: #a6adfd; }
+
+  /* TechMeet event color: orange */
+  .techmeet-event {
+    background: #ffe0b2 !important;
+  }
+
+  /* Optionally, you can keep these for other event types if needed */
   .event.work { background: #ffcdd2; }
   .event.personal { background: #c8e6c9; }
   .event.meeting { background: #bbdefb; }
+  .event.all { background: #bbdefb; }
+
   .event.dragging {
       opacity: 0.5;
       transform: scale(0.95);

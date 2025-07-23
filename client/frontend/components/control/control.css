@@ -1,4 +1,13 @@
-#container { margin: 0%; }
+/* Fade in/out for circular text transitions */
+.fade-in {
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out 5s;
+}
+.fade-out {
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out 5s;
+}
+#circle-container { margin: 0%; }
 
 /* #circle { position: relative; width: 700px; padding-bottom: 100%; overflow: hidden; } */
 #circle { 
@@ -38,23 +47,23 @@
 }
 
 @-webkit-keyframes rotate {
-    from { -webkit-transform: rotate(360deg); }
-    to { -webkit-transform: rotate(0); }
+    from { -webkit-transform: rotate(0); }
+    to { -webkit-transform: rotate(360deg); }
 }
 @-moz-keyframes rotate {
-    from { -moz-transform: rotate(360deg); }
-    to { -moz-transform: rotate(0); }
+    from { -moz-transform: rotate(0); }
+    to { -moz-transform: rotate(360deg); }
 }
 @-ms-keyframes rotate {
-    from { -ms-transform: rotate(360deg); }
-    to { -ms-transform: rotate(0); }
+    from { -ms-transform: rotate(0); }
+    to { -ms-transform: rotate(360deg); }
 }
 @-o-keyframes rotate {
-    from { -o-transform: rotate(360deg); }
-    to { -o-transform: rotate(0); }
+    from { -o-transform: rotate(0); }
+    to { -o-transform: rotate(360deg); }
 }
 @keyframes rotate {
-    from { transform: rotate(360deg); }
-    to { transform: rotate(0); }
+    from { transform: rotate(0); }
+    to { transform: rotate(360deg); }
 }
 

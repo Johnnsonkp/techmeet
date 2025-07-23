@@ -70,7 +70,8 @@ class UserEvents(Resource):
                 ] if hasattr(event, 'tags') and event.tags else []
             })
 
-        print(f"User {user.id} has booked events: {booked_events}")
+        # print(f"User {user.id} has booked events: {booked_events}")
+        print(f"User {user.id} has booked events: {len(booked_events)} events")
         
         response = {
             "user_id": user.id,

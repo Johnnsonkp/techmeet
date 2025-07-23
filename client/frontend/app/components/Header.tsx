@@ -39,11 +39,11 @@ export default async function Header() {
                   Events
                 </Link>
               </li>
-              <li className="sm:before:w-[1px] sm:before:bg-gray-200 before:block flex sm:gap-4 md:gap-6">
+              {/* <li className="sm:before:w-[1px] sm:before:bg-gray-200 before:block flex sm:gap-4 md:gap-6">
                 <Link href="/about" className="hover:underline">
                   About
                 </Link>
-              </li>
+              </li> */}
 
               <li className="sm:before:w-[1px] sm:before:bg-gray-200 before:block flex sm:gap-4 md:gap-6">
                 <Link href="/blog" className="hover:underline py-2 px-4 ">

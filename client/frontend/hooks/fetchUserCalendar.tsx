@@ -1,7 +1,7 @@
 import { useAuthStore } from '@/store/authStore'
 
 // getCalendar is a utility async function, not a React hook
-export async function getCalendar() {
+export async function getCalendar(time_min?: string, time_max?: string) {
   // Access tokens from Zustand store
   const token = useAuthStore.getState().access_token;
   const refresh_token = useAuthStore.getState().refresh_token;
@@ -17,6 +17,8 @@ export async function getCalendar() {
       body: JSON.stringify({
         access_token: token,
         refresh_token: refresh_token,
+        time_min,
+        time_max,
       }),
     });
 

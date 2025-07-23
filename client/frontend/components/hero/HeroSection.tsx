@@ -2,6 +2,7 @@ import { Button } from "../ui/button";
 import CircularRemote2 from "./CircularRemote2";
 import HeroBackgroundVid from "../video/HeroBackgroundVid";
 import HeroEventSearch from "../search/HeroEventSearch";
+import Link from "next/link";
 
 export const HeroSection = () => {
 
@@ -60,15 +61,23 @@ export const HeroSection = () => {
             </div>
           </div>
 
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight text-gray-200">
+          {/* <h1 className="text-4xl md:text-6xl font-semibold space-x-1 mb-6 leading-tight text-gray-200">
+            #1 Platform for Discovering Tech Events & Networking Opportunities
+          </h1> */}
+          <h1 className="text-4xl md:text-4xl lg:text-6xl font-bold mb-6 text-gray-200">
             #1 Platform for Discovering Tech Events & Networking Opportunities
           </h1>
 
-          <div className="flex align-end justify-between max-w-lg ">
-            <div className="text-white font-bold text-xl flex items-center align-end mt-7">
+          <div className="flex align-end justify-between max-w-xl">
+            <div className="text-white font-normal text-xl flex items-center align-end mt-7 flex-[0.5]">
               DISCOVER. RESERVE. CONNECT!
             </div>
-            <Button className="mt-8 max-w-lg text-lg rounded-full p-9 bg-blue-500 cursor-pointer">To Events Calendar</Button>
+
+            <Button className="border-5 border-blue-300 mt-8 max-w-lg text-lg rounded-full p-6 bg-blue-500 cursor-pointer flex-[0.5] hover:bg-blue-600 transition-colors duration-300">
+              <Link href="/events" className=" bg-blue-500 flex items-center justify-center w-full h-full hover:bg-blue-600 transition-colors duration-300">
+              To Events Discovery
+              </Link>
+            </Button>
           </div>
 
       </div>

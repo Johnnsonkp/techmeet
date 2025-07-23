@@ -19,20 +19,37 @@ function CustomCalendar() {
   const [events, setEvents] = useState([]);
   const [draggedEvent, setDraggedEvent] = useState(null);
   const [filterType, setFilterType] = useState('all');
+  const [rangeType, setRangeType] = useState('month'); // 'month', 'fortnight', 'week'
   const titleRef = useRef(null);
   const typeRef = useRef(null);
   const modalRef = useRef(null);
   const access_token = useAuthStore((s) => s.access_token);
+  const user_email = useAuthStore((s) => s.user?.email);
 
   // Fetch events from Flask backend using getCalendar hook
   useEffect(() => {
+    if (!user_email) return;
+
+    const now = new Date(currentDate);
+    let time_min = new Date(now.getFullYear(), now.getMonth(), 1);
+    let time_max;
+    if (rangeType === 'month') {
+      time_max = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
+    } else if (rangeType === 'fortnight') {
+      time_max = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 13, 23, 59, 59);
+    } else if (rangeType === 'week') {
+      time_max = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 6, 23, 59, 59);
+    }
+    // Convert to ISO string
+    time_min = time_min.toISOString();
+    time_max = time_max.toISOString();
+
     async function fetchBackendEvents() {
       try {
-        const data = await getCalendar(); // getCalendar should call Flask backend
+        const data = await getCalendar(time_min, time_max); // getCalendar should call Flask backend
+
         if (data && data.length > 0) {
-
-          const updatedEvents = saveFetchedEvent(data);
-
+          const updatedEvents = saveFetchedEvent(data, user_email);
           if (updatedEvents && updatedEvents.length > 0) {
             setEvents(updatedEvents);
           }
@@ -43,7 +60,7 @@ function CustomCalendar() {
     }
     fetchBackendEvents();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentDate]);
+  }, [currentDate, user_email, rangeType]);
 
   const loadEvents = () => {
     const savedEvents = localStorage.getItem('calendarEvents');
@@ -72,14 +89,15 @@ function CustomCalendar() {
   };
 
 
-  const saveFetchedEvent = (data) => {
+  const saveFetchedEvent = (data, user_email) => {
 
     const existingEvents = events || [];
     
     const newEvents = (data || []).map((event, index) => ({
       id: event.id || `${event.summary}-${event.date}`,
       title: event.summary,
-      type: 'work',
+      type: user_email || 'work',
+      // type: `${event?.description.includes("Event booked via TechMeet")? user_email + 'events' : user_email}`,
       date: event.date ? new Date(event.date) : (event.start && (event.start.dateTime ? new Date(event.start.dateTime) : new Date(event.start.date)))
     }));
 
@@ -91,7 +109,6 @@ function CustomCalendar() {
         merged.push(ev);
       }
     });
-
     return merged;
   };
 
@@ -129,13 +146,14 @@ function CustomCalendar() {
   const createEventElement = (event) => (
     <div
       key={event.id}
-      className={`event ${event.type}`}
+      className={`event ${event.type} ${event.type.includes('events') && 'techmeet-event'}`}
       draggable
       onDragStart={() => setDraggedEvent(event)}
       onDragEnd={() => setDraggedEvent(null)}
-      style={{ display: filterType === 'all' || filterType === event.type ? 'block' : 'none' }}
+      style={{ display: filterType === 'all' || filterType == event.type ? 'block' : 'none' }}
     >
       {event.title}
+      {/* {event.type} */}
     </div>
   );
 
@@ -196,16 +214,45 @@ function CustomCalendar() {
             </div>
             <button className="nav-btn" onClick={() => changeMonth(1)}>→</button>
           </div>
-          <div className="filter-controls">
-            {['all', 'work', 'personal', 'meeting'].map(type => (
-              <button
-                key={type}
-                className={`filter-btn ${filterType === type ? 'active' : ''}`}
-                onClick={() => setFilterType(type)}
+          <div className="filter-controls flex gap-4 items-center">
+            {/* Calendar type dropdown */}
+            <div>
+              {/* <label htmlFor="calendar-range" className="mr-2 text-sm font-medium">View:</label> */}
+              {/* <select
+                id="calendar-range"
+                value={rangeType}
+                onChange={e => setRangeType(e.target.value)}
+                className="border rounded px-2 py-1 text-sm"
               >
-                {type.charAt(0).toUpperCase() + type.slice(1)}
-              </button>
-            ))}
+                <option value="month">Month</option>
+                <option value="fortnight">Fortnight</option>
+                <option value="week">Week</option>
+              </select> */}
+            </div>
+            {/* Existing filter dropdown */}
+            <div className="group relative cursor-pointer py-0 border-2 rounded-full min-w-[240px] w-[240px]">
+              <div className="flex items-center justify-between space-x-3 bg-white px-4 min-w-[200px] rounded-full">
+                <a className="menu-hover my-1 py-1 font-medium text-sm text-black lg:mx-4">
+                    {filterType.charAt(0).toUpperCase() + filterType.slice(1) || "Select a calendar"}
+                </a>
+                <span>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                      stroke="currentColor" className="h-5 w-5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                  </svg>
+                </span>
+              </div>
+              <div className="invisible absolute z-50 flex w-full flex-col bg-gray-100 py-1 px-4 text-gray-800 shadow-xl group-hover:visible">
+                {['all', 'events', user_email || 'personal'].map(type => (
+                  <a 
+                    key={type} 
+                    onClick={() => setFilterType(type)}
+                    className="my-2 text-xs block border-b border-gray-100 py-1 font-semibold text-gray-500 hover:text-black md:mx-2">
+                    {type.charAt(0).toUpperCase() + type.slice(1)}
+                  </a>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
         <div className="calendar-grid">
@@ -225,6 +272,7 @@ function CustomCalendar() {
           <div className="form-group">
             <select className="select" ref={typeRef}>
               <option value="work">Work</option>
+              <option value="work">{user_email}</option>
               <option value="personal">Personal</option>
               <option value="meeting">Meeting</option>
             </select>

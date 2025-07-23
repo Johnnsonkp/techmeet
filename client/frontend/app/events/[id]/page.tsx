@@ -75,14 +75,20 @@ const page = ({ params }: { params: Promise<{ id: string }> }) => {
         toast.success("Event booked successfully!");
         console.log('Event booked:', data);
         console.log("tm_jwt:", jwt_token);
+        console.log("data.booked_events.name:", data.booked_event);
 
         addEventToGoogleCalendar({
           access_token: `${token}`,
           refresh_token: `${refresh_token}`,
-          summary: `${data.booked_event.name}`,
+          summary: `${data.booked_event[0].name}`,
           start: "2025-07-26T10:00:00Z",
           end: "2025-07-26T11:00:00Z",
-          description: "Discuss project updates",
+          description: `
+            Event booked via TechMeet ${data.booked_event[0].name} - 
+            ${data.booked_event[0].datetime} - 
+            ${data.booked_event[0]?.image_description} - 
+            ${data.booked_event[0]?.event_link}`
+          ,
           jwtToken: `${jwt_token}`
         })
           .then(event => console.log("Event created:", event))

@@ -7,7 +7,7 @@ from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import Flow
 import os
 
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from dotenv import load_dotenv
 from flask import jsonify
 import requests
@@ -28,20 +28,23 @@ class CalendarEvents(Resource):
 
         def get_calendar_events(creds, time_min=None, time_max=None):
             service = build('calendar', 'v3', credentials=creds)
-            # now = datetime.utcnow().isoformat() + 'Z'
-            now = datetime.now(timezone.utc).isoformat() 
+            now = datetime.now(timezone.utc).isoformat()
+            # If no time_min, default to start of current month
             if not time_min:
                 time_min = now
+            # If no time_max, default to end of current month
+            if not time_max:
+                # End of month
+                end_month = datetime.now(timezone.utc).replace(day=28) + timedelta(days=4)
+                time_max = (end_month - timedelta(days=end_month.day)).isoformat()
             events_result = service.events().list(calendarId='primary', timeMin=time_min, timeMax=time_max,
-                                                  maxResults=20, singleEvents=True, orderBy='startTime').execute()
+                                                  maxResults=100, singleEvents=True, orderBy='startTime').execute()
             return events_result.get('items', [])
 
         if token is None:
             return {"error": "Missing required fields"}, 400
 
         creds = Credentials(
-            # token=os.getenv('TOKEN'),
-            # refresh_token=os.getenv('REFRESH_TOKEN'),
             token=token,
             refresh_token=refresh_token,
             token_uri = "https://oauth2.googleapis.com/token",
@@ -50,8 +53,12 @@ class CalendarEvents(Resource):
             scopes=['https://www.googleapis.com/auth/calendar']
         )
 
+        # Get time_min and time_max from request
+        time_min = data.get('time_min')
+        time_max = data.get('time_max')
+
         # View events
-        events = get_calendar_events(creds)
+        events = get_calendar_events(creds, time_min, time_max)
 
         if events:
             print(f"Found {len(events)} events")
@@ -95,13 +102,13 @@ class CreateCalendarEvent(Resource):
 
         try:
             print(f"Creating event: {event}")
-            # created_event = service.events().insert(calendarId='primary', body=event).execute()
-            # return jsonify({
-            #     'id': created_event.get('id'),
-            #     'title': created_event.get('summary'),
-            #     'start': created_event.get('start', {}).get('dateTime'),
-            #     'end': created_event.get('end', {}).get('dateTime')
-            # })
+            created_event = service.events().insert(calendarId='primary', body=event).execute()
+            return jsonify({
+                'id': created_event.get('id'),
+                'title': created_event.get('summary'),
+                'start': created_event.get('start', {}).get('dateTime'),
+                'end': created_event.get('end', {}).get('dateTime')
+            })
         except Exception as e:
             return {"error": f"Failed to create event: {str(e)}"}, 500
         

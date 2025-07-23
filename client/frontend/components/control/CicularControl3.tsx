@@ -1,10 +1,24 @@
 import './control.css';
 
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
-function CircularControl3() {
+function CircularControl3({ text }: { text: string }) {
+  const [visible, setVisible] = useState(true);
+  const prevText = useRef(text);
+
+  useEffect(() => {
+    if (prevText.current !== text) {
+      setVisible(false);
+      const timeout = setTimeout(() => {
+        setVisible(true);
+        prevText.current = text;
+      }, 350); // match transition duration
+      return () => clearTimeout(timeout);
+    }
+  }, [text]);
+
   return (
-    <div id="container">
+    <div id="circle-container">
       <div id="circle">
         <svg
           width={300}
@@ -22,7 +36,12 @@ function CircularControl3() {
           <g>
             <text fill="#fff" fontSize="16" fontFamily="Arial">
               <textPath href="#circlePath">
-                ABCDE ~ EFGHI JKLMNOPQ ~ ABCDE ~ EFGHI JKLMNOPQ ~ ABCDE ~ EFGHI JKLMNOPQ ~
+                <tspan
+                  className={visible ? 'fade-in' : 'fade-out'}
+                  style={{ transition: 'opacity 0.35s' }}
+                >
+                  {text}
+                </tspan>
               </textPath>
             </text>
           </g>
