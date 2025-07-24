@@ -310,7 +310,7 @@ export const MultiStepAuth = () => {
             {/* Progress Indicator */}
             <div className="mb-5">
               <div className="flex justify-center space-x-4">
-                { formData.mode === 'signup' && 
+                { formData.mode === 'signup' && loading == false &&
                   [1, 2, 3].map((step) => (
                     <div
                       key={step}

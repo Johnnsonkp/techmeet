@@ -28,6 +28,7 @@ function CustomCalendar() {
 
   // Fetch events from Flask backend using getCalendar hook
   useEffect(() => {
+    console.log('Fetching events for:', user_email);
     if (!user_email) return;
 
     const now = new Date(currentDate);
@@ -236,9 +237,9 @@ function CustomCalendar() {
                     {filterType.charAt(0).toUpperCase() + filterType.slice(1) || "Select a calendar"}
                 </a>
                 <span>
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5"
                       stroke="currentColor" className="h-5 w-5">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                   </svg>
                 </span>
               </div>
