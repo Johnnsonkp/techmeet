@@ -4,11 +4,14 @@ import { AuthImageSection } from '../auth/AuthImageSection';
 import { AuthStep1 } from '../auth/AuthStep1';
 import { AuthStep2 } from '../auth/AuthStep2';
 import { AuthStep3 } from '../auth/AuthStep3';
+import {GoogleOauthSignUp} from '@/lib/flask/api';
 import { signUpUser } from '@/lib/flask/api';
 import { syncAuthToLocal } from '@/lib/auth/syncAuth';
 import { toast } from "sonner";
 import { useAuthStore } from '@/store/authStore';
+import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 interface FormData {
   // Step 1
@@ -31,6 +34,18 @@ interface FormData {
   connectWithOthers: boolean;
 }
 
+interface Session {
+  user: {
+    id: string;
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
+  } | null;
+  access_token: string | null;
+  refresh_token: string | null;
+  provider: string | null;
+}
+
 const initialFormData: FormData = {
   mode: 'signup',
   firstName: '',
@@ -47,32 +62,75 @@ const initialFormData: FormData = {
   connectWithOthers: false,
 };
 
+
 export const MultiStepAuth = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<FormData>(initialFormData);
   const [loading, setLoading] = useState(false);
+  const [oAuthAction, setOAuthAction] = useState(null);
   const [userSignedIn, setUserSignedIn] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const oAuth_onboardingRequired = useAuthStore((s) => s.oAuth_onboardingRequired);
   const authUser = useAuthStore((s) => s.user);
-  const oauth_onboarding = useAuthStore((s) => s.oAuth_onboardingRequired);
   const setAuth = useAuthStore((s) => s.setAuth);
   const router = useRouter();
+  const { data: session, status } = useSession();
+  const typedSession = session as Session | null;
+  const pathname = usePathname();
+
+  // useEffect(() => {
+  //   if (authUser && userSignedIn == false && oauth_onboarding == true) {
+  //     // Set onboarding flag if Google OAuth user and profile not complete
+  //     localStorage.setItem('tm_onboarding_required', 'true');
+  //     setCurrentStep(2);
+  //   }
+  //   if (oAuthAction === "/auth/signin"){
+  //     return router.push('/dashboard')
+  //   }
+  //   else if (authUser && userSignedIn == true){
+  //     return router.push('/dashboard')
+  //   }
+  // }, [authUser, userSignedIn]);
 
   useEffect(() => {
-    if (authUser && userSignedIn == false && oauth_onboarding == true) {
-      // Set onboarding flag if Google OAuth user and profile not complete
-      localStorage.setItem('tm_onboarding_required', 'true');
+    const onboardingRequired = localStorage.getItem('tm_onboarding_required')
+
+    if (
+      typedSession &&
+      typedSession?.user?.id && onboardingRequired === 'true' &&
+      (pathname === "/auth/signup")
+    ) {
+      console.log('User already authenticated, redirecting to dashboard', authUser);
+      // router.push('/dashboard');
       setCurrentStep(2);
+      return
     }
-    else if (authUser && userSignedIn == true){
-      return router.push('/dashboard')
-    }
-  }, [authUser, userSignedIn]);
+  }, [typedSession, pathname, router])
+
+
+
+
+  console.log('session:', typedSession);
+  console.log('oAuthAction:', oAuthAction);
+  // Oauth sign in check + redirected to dashboard on success
+
+  // useEffect(() => {
+  //   if (pathname === "/auth/signup" && typedSession?.user){
+  //     console.log('OAuth action oAuth_onboardingRequired:', oAuth_onboardingRequired);
+  //     localStorage.setItem('tm_onboarding_required', 'true');
+  //     // setOAuthAction(null);
+
+  //     setCurrentStep(2);
+  //     // return router.push('/dashboard')
+  //   }
+  // }, [pathname, typedSession])
+
 
   const updateFormData = (updates: Partial<FormData>) => {
     setFormData(prev => ({ ...prev, ...updates }));
   };
+
 
   const validateStep = () => {
     setError(null);
@@ -113,97 +171,127 @@ export const MultiStepAuth = () => {
     }
   };
 
+  
+  async function handleFormSignUp() {
+    const result = await signUpUser({
+      first_name: formData.firstName,
+      last_name: formData.lastName,
+      email: formData.email,
+      password: formData.password,
+      bio: formData.bio,
+      profile_photo_url: formData.profilePhoto || authUser?.image || '',
+      job_title: formData.jobTitle,
+      address: '123 Tech Avenue, Melbourne',
+      is_admin: false,
+      employment_status: formData.employmentStatus,
+      technical_skills: formData.technicalSkills,
+    });
+    setUploading(false);
+    if (!result || !result.token) {
+      setError('Authentication failed: No token returned.');
+      return;
+    }
+    syncAuthToLocal({
+      token: result.token,
+      user: result.user,
+      provider: result?.provider || 'credentials',
+    }, setAuth);
+  }
+
+  async function handleGoogleOauthSignUp() {
+    const result = await GoogleOauthSignUp({
+      first_name: formData.firstName || authUser?.name || '',
+      last_name: formData.lastName,
+      email: formData.email || authUser?.email || '',
+      password: formData.password,
+      bio: formData.bio,
+      profile_photo_url: formData.profilePhoto || authUser?.image || '',
+      job_title: formData.jobTitle,
+      address: '123 Tech Avenue, Melbourne',
+      is_admin: false,
+      employment_status: formData.employmentStatus,
+      technical_skills: formData.technicalSkills,
+      refresh_token: typedSession?.refresh_token || '',
+      token: typedSession?.access_token || '',
+    });
+    setUploading(false);
+    if (!result || !result.token) {
+      setError('Authentication failed: No token returned.');
+      return;
+    }
+    // Sync to local storage for consistency
+    syncAuthToLocal({
+      token: result.token,
+      user: result.user,
+      provider: result?.provider || 'google',
+    }, setAuth);
+
+    setAuth({
+      user: {
+        id: result.user?.id,
+        email: result.user?.email || undefined,
+        name: result.user?.name || result.user?.first_name || undefined,
+        image: result.user?.image || result.user?.profile_photo_url || undefined,
+        bio: result.user?.bio || undefined,
+      },
+      access_token: result.token,
+      refresh_token: result.refresh_token,
+      provider: result.provider,
+      oAuth_onboardingRequired: result.new_user || null,
+    });
+  }
+
+
   const handleSubmit = async () => {
     if (!validateStep()) return;
     setLoading(true);
     setError(null);
 
     try {
-      if (formData.profilePhoto || authUser?.image) {
-        setUploading(true);
-        // Send file to Flask backend using FormData
-        const form = new FormData();
-        form.append('first_name', formData?.firstName || authUser?.name || '');
-        form.append('last_name', formData.lastName);
-        form.append('email', formData.email || authUser?.email || '');
-        form.append('password', formData.password);
-        form.append('bio', formData.bio);
-        form.append('job_title', formData.jobTitle);
-        form.append('address', '123 Tech Avenue, Melbourne');
-        form.append('is_admin', 'false');
-        form.append('employment_status', formData.employmentStatus);
-        form.append('technical_skills', JSON.stringify(formData.technicalSkills));
-        form.append('profile_photo_url', formData.profilePhoto || authUser?.image || '');
+      setUploading(true);
+      if (oAuthAction === "/auth/signup" || pathname === "/auth/signup") {
+        await handleGoogleOauthSignUp()
 
-        console.log('formData:', formData);
-        console.log('Submitting form:', form);
-        
-        const res = await fetch(`${process.env.NEXT_PUBLIC_FLASK_BASE_URL}/api/v1/users/sign_up`, {
-          method: 'POST',
-          body: form,
-        });
-        setUploading(false);
-        if (!res.ok) {
-          const data = await res.json().catch(() => ({}));
-          setError(data.message || 'Sign up failed');
-          return;
-        }
-        const result = await res.json();
-        if (!result || !result.token) {
-          setError('Authentication failed: No token returned.');
-          return;
-        }
-        syncAuthToLocal({
-          token: result.token,
-          user: result.user,
-          provider: result?.provider || 'credentials',
-        }, setAuth);
-
-        // After successful profile completion and backend sync:
-        // Clear onboarding flag and reload to trigger AuthHydrator
-        localStorage.setItem('tm_onboarding_required', 'false');
-        setUserSignedIn(true);
-        router.push('/dashboard');
-        return;
+        toast.success('Google OAuth sign up successful');
       } else {
-
-        console.log('Submitting form else:', formData);
-
-        // fallback: no image, send as JSON
-        const result = await signUpUser({
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          email: formData.email,
-          password: formData.password,
-          bio: formData.bio,
-          profile_photo_url: '',
-          job_title: formData.jobTitle,
-          address: '123 Tech Avenue, Melbourne',
-          is_admin: false,
-          employment_status: formData.employmentStatus,
-          technical_skills: formData.technicalSkills,
-        });
-        if (!result || !result.token) {
-          setError('Authentication failed: No token returned.');
-          return;
-        }
-        syncAuthToLocal({
-          token: result.token,
-          user: result.user,
-          provider: result?.provider || 'credentials',
-        }, setAuth);
-
-        localStorage.setItem('tm_onboarding_required', 'false');
-        setUserSignedIn(true);
-        window.location.reload();
-        return;
+        await handleFormSignUp();
+        toast.success('Sign up successful');
       }
+
+      // const result = await signUpUser({
+      //   first_name: formData.firstName,
+      //   last_name: formData.lastName,
+      //   email: formData.email,
+      //   password: formData.password,
+      //   bio: formData.bio,
+      //   profile_photo_url: formData.profilePhoto || authUser?.image || '',
+      //   job_title: formData.jobTitle,
+      //   address: '123 Tech Avenue, Melbourne',
+      //   is_admin: false,
+      //   employment_status: formData.employmentStatus,
+      //   technical_skills: formData.technicalSkills,
+      // });
+      // setUploading(false);
+      // if (!result || !result.token) {
+      //   setError('Authentication failed: No token returned.');
+      //   return;
+      // }
+      // syncAuthToLocal({
+      //   token: result.token,
+      //   user: result.user,
+      //   provider: result?.provider || 'credentials',
+      // }, setAuth);
+
+      localStorage.setItem('tm_onboarding_required', 'false');
+      setUserSignedIn(true);
+      router.push('/dashboard');
+
     } catch (error: any) {
       toast.error('Something went wrong. Please try again.', error);
       console.error(error);
       setTimeout(() => {
         window.location.reload();
-      }, 2000)
+      }, 2000);
     } finally {
       setLoading(false);
       setUploading(false);
@@ -251,6 +339,7 @@ export const MultiStepAuth = () => {
                 onNext={handleNext}
                 loading={loading}
                 setLoading={setLoading}
+                setOAuthAction={setOAuthAction}
               />
             )}
             {formData.mode === 'signup' && currentStep === 2 && (

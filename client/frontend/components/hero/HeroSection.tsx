@@ -1,3 +1,5 @@
+import './heroSection.css';
+
 import { Button } from "../ui/button";
 import CircularRemote2 from "./CircularRemote2";
 import HeroBackgroundVid from "../video/HeroBackgroundVid";
@@ -73,9 +75,14 @@ export const HeroSection = () => {
               DISCOVER. RESERVE. CONNECT!
             </div>
 
-            <Button className="border-5 border-blue-300 mt-8 max-w-lg text-lg rounded-full p-6 bg-blue-500 cursor-pointer flex-[0.5] hover:bg-blue-600 transition-colors duration-300">
-              <Link href="/events" className=" bg-blue-500 flex items-center justify-center w-full h-full hover:bg-blue-600 transition-colors duration-300">
-              To Events Discovery
+            <Button 
+              className="mt-8 max-w-lg text-lg rounded-full cursor-pointer flex-[0.5] transition-colors duration-300 custom-shadow-btn"
+            >
+              <Link 
+                href="/events" 
+                className="z-1 rounded-full flex items-center justify-center w-full h-full hover:bg-blue-600 transition-colors duration-300"
+              >
+                To Events Discovery
               </Link>
             </Button>
           </div>
@@ -85,3 +92,4 @@ export const HeroSection = () => {
     </section>
   );
 };
+

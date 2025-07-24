@@ -4,6 +4,7 @@ import { AuthButton } from './AuthButton';
 import Link from 'next/link';
 import {Loader2Icon} from "lucide-react";
 import { toast } from "sonner";
+import { usePathname } from 'next/navigation';
 
 interface AuthStep1Props {
   formData: any;
@@ -11,11 +12,16 @@ interface AuthStep1Props {
   onNext: () => void;
   loading?: boolean;
   setLoading: (loading: boolean) => void;
+  setOAuthAction: any;
 }
 
-export const AuthStep1: React.FC<AuthStep1Props> = ({ formData, updateFormData, onNext, loading, setLoading }) => {
+export const AuthStep1: React.FC<AuthStep1Props> = ({ formData, updateFormData, onNext, loading, setLoading, setOAuthAction }) => {
+  
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const pathname = usePathname();
 
+  console.log('AuthStep1 rendered with pathname:', pathname);
+  
   const toggleMode = () => {
     const newMode = formData.mode === 'signup' ? 'signin' : 'signup';
     updateFormData({ mode: newMode });
@@ -85,12 +91,15 @@ export const AuthStep1: React.FC<AuthStep1Props> = ({ formData, updateFormData, 
         label="Continue with Google"
         iconSrc="https://www.svgrepo.com/show/475656/google-color.svg"
         setLoading={setLoading}
+        setOAuthAction={setOAuthAction}
+        pathname={pathname} // Pass pathname if needed for OAuth actions
       />
       <AuthButton
         setLoading={setLoading}
         provider="github"
         label="Continue with GitHub"
         iconSrc="https://ucarecdn.com/be5b0ffd-85e8-4639-83a6-5162dfa15a16/"
+        setOAuthAction={setOAuthAction}
       />
 
       {/* Divider */}

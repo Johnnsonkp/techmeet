@@ -49,6 +49,25 @@ class GoogleOAuth(Resource):
             user = User.register_user(data, is_oauth=True)
             new_user = True
             db.session.add(user)
+            db.session.flush()  # Ensure user.id is available
+
+        # --- Profile creation logic (like /sign_up) ---
+        if not user.profile_id:
+            from app.api.v1.models.profile import Profile
+            from app.api.v1.services.profile_facade import ProfileFacade
+            desired_job = data.get('job_title') or getattr(user, 'job_title', None)
+            profile = None
+            if desired_job:
+                profile = Profile.query.filter_by(job_title=desired_job).first()
+                if not profile:
+                    job_data = ProfileFacade.create_career_data(desired_job)
+                    if job_data:
+                        profile = Profile.create_profile(job_data)
+                        db.session.add(profile)
+                        db.session.commit()
+            if profile:
+                user.profile_id = profile.id
+                db.session.commit()
 
         # Find or create oauth connection
         oauth = OauthConnection.query.filter_by(user_id=user.id, provider="google").first()

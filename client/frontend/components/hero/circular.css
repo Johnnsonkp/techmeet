@@ -1,4 +1,15 @@
-.circle {
+/* Highlighted segment animation for CircularRemote2 */
+.circular-segment {
+  transition: all 0.4s cubic-bezier(.4,2,.6,1);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.circular-segment.active {
+  background: #fff !important;
+  color: #222 !important;
+  box-shadow: 0 0 24px 4px rgba(255,255,255,0.5);
+  border: 2px solid #fff;
+  z-index: 3;
+}.circle {
   position: absolute;
   top: 70%;
   left: 70%;

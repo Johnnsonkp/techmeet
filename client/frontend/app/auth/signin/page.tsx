@@ -10,6 +10,7 @@ import { loginUser } from "@/lib/flask/api";
 import { syncAuthToLocal } from "@/lib/auth/syncAuth";
 import { toast } from "sonner";
 import { useAuthStore } from "@/store/authStore";
+import { useSession } from 'next-auth/react';
 
 const SignInPage: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -21,7 +22,9 @@ const SignInPage: React.FC = () => {
   const router = useRouter();
   const pathname = usePathname();
   const [loading, setLoading] = useState(false);
+  const [oAuthAction, setOAuthAction] = useState(null);
   const authUser = useAuthStore((s) => s.user);
+  const oAuth_onboardingRequired = useAuthStore((s) => s.oAuth_onboardingRequired);
   // const onboardingRequired = localStorage.getItem('tm_onboarding_required') || null;
    const [error, setError] = useState<string | null>(null);
 
@@ -29,7 +32,6 @@ const SignInPage: React.FC = () => {
     setFormData((prev) => ({ ...prev, ...updates }));
 
   const handleSignIn = async () => {
-  
     setLoading(true);
     setError(null);
 
@@ -67,13 +69,43 @@ const SignInPage: React.FC = () => {
     }
   };
 
+    // useEffect(() => {
+    //   if (oAuthAction === "/auth/signin" ){
+    //     console.log('OAuth action oAuth_onboardingRequired:', oAuth_onboardingRequired);
+    //     setOAuthAction(null);
+    //     return router.push('/dashboard')
+    //   }
+    // }, [oAuthAction])
+
+
+    // useEffect(() => {
+    //   if (oAuthAction === "/auth/signin" ){
+    //     console.log('OAuth action oAuth_onboardingRequired:', oAuth_onboardingRequired);
+    //     setOAuthAction(null);
+    //     return router.push('/dashboard')
+    //   }
+    // }, [oAuthAction])
+
+  // useEffect(() => {
+  //   const onboardingRequired = localStorage.getItem('tm_onboarding_required')
+
+  //   if (
+  //     authUser &&
+  //     authUser.id && onboardingRequired === 'false' &&
+  //     (pathname === "/auth/signin" || pathname === "/auth/signup")
+  //   ) {
+  //     console.log('User already authenticated, redirecting to dashboard', authUser);
+  //     router.push('/dashboard');
+  //   }
+  // }, [authUser, pathname, router])
+
   useEffect(() => {
     const onboardingRequired = localStorage.getItem('tm_onboarding_required')
 
     if (
       authUser &&
       authUser.id && onboardingRequired === 'false' &&
-      (pathname === "/auth/signin" || pathname === "/auth/signup")
+      (pathname === "/auth/signin")
     ) {
       console.log('User already authenticated, redirecting to dashboard', authUser);
       router.push('/dashboard');
@@ -95,6 +127,7 @@ const SignInPage: React.FC = () => {
                 onNext={handleSignIn}
                 loading={loading}
                 setLoading={setLoading}
+                setOAuthAction={setOAuthAction}
               />
             
           </div>

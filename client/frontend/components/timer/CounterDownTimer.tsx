@@ -102,7 +102,17 @@ export function TimerDisplay() {
   const text = [
     "Events Discovery ~ Events Discovery ~ Events Discovery ~ Events Discovery ~",
     "Calendar Integration ~ Calendar Integration ~ Calendar Integration ~ Calendar Integration ~",
-    "Google Authentication ~ Google Authentication ~ Google Authentication ~ Google Authentication ~"
+    "Google Authentication ~ Google Authentication ~ Google Authentication ~ Google Authentication ~",
+    "Profile Creation ~ Profile Creation ~ Profile Creation ~ Profile Creation ~",
+    // "Curated Tech Blogs ~ Curated Tech Blogs ~ Curated Tech Blogs ~ Curated Tech Blogs ~"
+  ];
+  // Summary words for each segment
+  const segmentLabels = [
+    "Events",
+    "Calendar",
+    "Auth",
+    "Profile",
+    // "Blogs"
   ];
 
   // State for current text index
@@ -130,7 +140,7 @@ export function TimerDisplay() {
       <div className="z-10 p-0 absolute top-90 right-[-80px]">
         {/* <img src="/images/event-s-2.png" alt="Event S" className="border-2 border-red-500 w-[500px] z-10 p-0 scale-[0.8]" /> */}
         <CircularControl3 text={currentText}/>
-        <CircularRemote2 />
+        <CircularRemote2 segments={segmentLabels} highlightedIdx={currentTextIdx} />
         {/* <CircularControl className='' /> */}
       </div>
     </div>
