@@ -76,41 +76,6 @@ function Page() {
     }
   }, [events, mounted]);
 
-  // useEffect(() => {
-  //   async function fetchUserEvents() {
-  //     if (!token) {
-  //       console.warn("No token available for fetching user events.");
-  //       return;
-  //     }
-  //     try {
-  //       const res = await fetch(`${BASE_URL}/api/v1/user_events/`, {
-  //         method: 'GET',
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       });
-  //       const data = await res.json();
-  //       console.log("User Events:", data);
-  //       if (res.ok && data.booked_event) {
-  //         setUserEvents(data.booked_event);
-  //       } else {
-  //         setUserEvents([]);
-  //       }
-  //     } catch (err) {
-  //       setUserEvents([]);
-  //     }
-  //   }
-
-  //   // Only fetch when all are ready
-  //   if (mounted && refreshEvents && token) {
-  //     console.log("Fetching user events...", token);
-  //     fetchUserEvents();
-  //     setRefreshEvents(false);
-  //   }
-  // }, [mounted, refreshEvents, token]);
-
-
   useEffect(() => {
     async function fetchUserStats() {
       if (!token) return;
@@ -181,8 +146,6 @@ function Page() {
         ) : (
           <div className="col-span-3 text-center text-gray-500 py-8">No registered events found.</div>
         )}
-
-        {/* <div className="bg-muted/50 aspect-video rounded-xl" /> */}
       </div>
 
       <hr className='my-0'></hr>
