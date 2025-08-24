@@ -34,7 +34,6 @@ class EventFacade:
     @staticmethod
     def get_events_from_sheet():
         # base_dir = os.path.dirname(os.path.abspath(__file__))
-        print("get_events google sheets")
         # Google Sheets API setup
         base_dir = os.path.dirname(os.path.abspath(__file__))
         credentials_path = os.path.normpath(os.path.join(base_dir, '../../../../credentials.json'))
@@ -91,7 +90,6 @@ class EventFacade:
         # Read the CSV
         try:
             df = pd.read_csv(csv_path)
-
             # Rename columns for easier access (optional but cleaner)
             df.columns = [
                 'position', 'name', 'datetime', 'location', 'price',
